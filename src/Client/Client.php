@@ -54,7 +54,9 @@ class Client
     {
         $this->connector = new GuzzleClient([
             'base_uri' => $this->options['host'],
-            'headers' => ['Content-Type' => 'application/json'],
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
             'query' => [
                 'api_key' => $this->apiKey
             ]
