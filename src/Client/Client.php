@@ -16,6 +16,13 @@ use GuzzleHttp\Exception\GuzzleException;
 class Client
 {
     /**
+     * Library version
+     *
+     * @var string
+     */
+    const VERSION = '0.0.1';
+
+    /**
      * Weglot API Key
      *
      * @var string
@@ -55,7 +62,8 @@ class Client
         $this->connector = new GuzzleClient([
             'base_uri' => $this->options['host'],
             'headers' => [
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
+                'User-Agent' => $this->options['user-agent']
             ],
             'query' => [
                 'api_key' => $this->apiKey
@@ -72,6 +80,7 @@ class Client
     {
         return [
             'host'  => 'https://api.weglot.com',
+            'user-agent' => 'Weglot/' .self::VERSION
         ];
     }
 
