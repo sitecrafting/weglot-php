@@ -59,6 +59,7 @@ class Client
     {
         $this->connector = new GuzzleClient([
             'base_uri' => $this->options['host'],
+            'headers' => ['Content-Type' => 'application/json'],
             'query' => [
                 'api_key' => $this->apiKey
             ]
@@ -70,7 +71,7 @@ class Client
      *
      * @return array
      */
-    protected function defaultOptions()
+    public function defaultOptions()
     {
         return [
             'host'  => 'https://api.weglot.com',
@@ -103,5 +104,18 @@ class Client
     public function getConnector()
     {
         return $this->connector;
+    }
+
+    /**
+     * @param $method
+     * @param $endpoint
+     * @param array $body
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function makeRequest($method, $endpoint, $body = [])
+    {
+        $this->connector->request($method, $endpoint, [
+            'json' => $body
+        ]);
     }
 }
