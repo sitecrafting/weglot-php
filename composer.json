@@ -1,13 +1,6 @@
 {
     "name": "weglot/weglot-php",
     "type": "project",
-    "license": "GPL",
-    "authors": [
-        {
-            "name": "Thomas DENEULIN",
-            "email": "thomas@weglot.com"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Weglot\\": "src/"

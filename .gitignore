@@ -1,1 +1,4 @@
-vendor
+vendor/
+.idea/
+.vscode/
+.php_cs.cache
