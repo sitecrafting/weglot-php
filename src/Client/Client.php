@@ -104,6 +104,8 @@ class Client
     }
 
     /**
+     * Make the API call and return the response.
+     *
      * @param string $method    Method to use for given endpoint
      * @param string $endpoint  Endpoint to hit on API
      * @param array $body       Body content of the request as array
