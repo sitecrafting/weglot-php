@@ -37,22 +37,17 @@ class Client
      * @param string $apiKey
      * @param array $options
      */
-    public function __construct($apiKey, array $options = [])
+    public function __construct($apiKey, $options = [])
     {
-        // merging default options with user options
-        $this->options = array_merge($this->defaultOptions(), $options);
-
-        $this->connector = $this->setupConnector();
+        $this->setOptions($options);
     }
 
     /**
      * Creating Guzzle HTTP connector based on $options
-     *
-     * @return GuzzleClient
      */
     protected function setupConnector()
     {
-        return new GuzzleClient([
+        $this->connector = new GuzzleClient([
             'base_uri' => $this->options['host']
         ]);
     }
@@ -67,5 +62,33 @@ class Client
         return [
             'host'  => 'https://api.weglot.com',
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setOptions($options)
+    {
+        // merging default options with user options
+        $this->options = array_merge($this->defaultOptions(), $options);
+
+        // then loading / reloading http connector
+        $this->setupConnector();
+    }
+
+    /**
+     * @return GuzzleClient
+     */
+    public function getConnector()
+    {
+        return $this->connector;
     }
 }
