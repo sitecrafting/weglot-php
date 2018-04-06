@@ -21,6 +21,15 @@ use GuzzleHttp\Client as GuzzleClient;
 class Client
 {
     /**
+     * Weglot API Key
+     *
+     * @var string
+     */
+    protected $apiKey;
+
+    /**
+     * Options for client
+     *
      * @var array
      */
     protected $options;
@@ -34,11 +43,12 @@ class Client
 
     /**
      * Client constructor.
-     * @param string $apiKey
-     * @param array $options
+     * @param string    $apiKey     your Weglot API key
+     * @param array     $options    an array of options, currently only "host" is implemented
      */
     public function __construct($apiKey, $options = [])
     {
+        $this->apiKey = $apiKey;
         $this->setOptions($options);
     }
 
@@ -48,7 +58,10 @@ class Client
     protected function setupConnector()
     {
         $this->connector = new GuzzleClient([
-            'base_uri' => $this->options['host']
+            'base_uri' => $this->options['host'],
+            'query' => [
+                'api_key' => $this->apiKey
+            ]
         ]);
     }
 
