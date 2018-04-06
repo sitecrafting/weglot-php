@@ -7,16 +7,11 @@
  * @license https://opensource.org/licenses/MIT The MIT License
  */
 
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 06/04/2018
- * Time: 11:13
- */
-
 namespace Weglot\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Client
 {
@@ -107,14 +102,15 @@ class Client
     }
 
     /**
-     * @param $method
-     * @param $endpoint
-     * @param array $body
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @param string $method    Method to use for given endpoint
+     * @param string $endpoint  Endpoint to hit on API
+     * @param array $body       Body content of the request as array
+     * @return ResponseInterface
+     * @throws GuzzleException
      */
     public function makeRequest($method, $endpoint, $body = [])
     {
-        $this->connector->request($method, $endpoint, [
+        return $this->connector->request($method, $endpoint, [
             'json' => $body
         ]);
     }
