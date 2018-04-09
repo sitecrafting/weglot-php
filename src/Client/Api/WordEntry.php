@@ -10,6 +10,7 @@ namespace Weglot\Client\Api;
 
 use JsonSerializable;
 use Weglot\Client\Api\Enum\WordType;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
 
 /**
  * Class WordEntry
@@ -54,7 +55,7 @@ class WordEntry implements JsonSerializable
      * Returns false if type is incorrect.
      *
      * @param int $type
-     * @return bool
+     * @throws InvalidWordTypeException
      */
     public function setType($type)
     {
@@ -66,7 +67,7 @@ class WordEntry implements JsonSerializable
          * @see src/Client/Api/Enum/WordType.php
          */
         if (!($type >= WordType::__MIN && $type <= WordType::__MAX)) {
-            return true;
+            throw new InvalidWordTypeException();
         }
         $this->type = $type;
     }
