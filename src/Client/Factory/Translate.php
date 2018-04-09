@@ -31,10 +31,13 @@ class Translate
 
     /**
      * @param ResponseInterface $response
+     * @return $this
      */
     public function setResponse(ResponseInterface $response)
     {
         $this->response = $response;
+
+        return $this;
     }
 
     /**

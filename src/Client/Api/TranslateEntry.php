@@ -54,9 +54,9 @@ class TranslateEntry implements JsonSerializable
      */
     public function __construct(array $params, WordCollection $words = null)
     {
-        $this->setParams($params);
-        $this->setInputWords($words);
-        $this->setOutputWords(null);
+        $this->setParams($params)
+            ->setInputWords($words)
+            ->setOutputWords();
     }
 
     /**
@@ -96,6 +96,7 @@ class TranslateEntry implements JsonSerializable
 
     /**
      * @param array $params
+     * @return $this
      * @throws MissingRequiredParamException    If params are missing we throw this exception
      */
     public function setParams(array $params)
@@ -106,6 +107,8 @@ class TranslateEntry implements JsonSerializable
         if (!array_keys_exists($this->requiredParams(), $this->params)) {
             throw new MissingRequiredParamException();
         }
+
+        return $this;
     }
 
     /**
@@ -121,6 +124,7 @@ class TranslateEntry implements JsonSerializable
      * If $words is null, it would put an empty word collection
      *
      * @param WordCollection|null $words
+     * @return $this
      */
     public function setInputWords($words = null)
     {
@@ -129,6 +133,8 @@ class TranslateEntry implements JsonSerializable
         } else {
             $this->inputWords = $words;
         }
+
+        return $this;
     }
 
     /**
@@ -144,6 +150,7 @@ class TranslateEntry implements JsonSerializable
      * If $words is null, it would put an empty word collection
      *
      * @param WordCollection|null $words
+     * @return $this
      */
     public function setOutputWords($words = null)
     {
@@ -152,6 +159,8 @@ class TranslateEntry implements JsonSerializable
         } else {
             $this->outputWords = $words;
         }
+
+        return $this;
     }
 
     /**

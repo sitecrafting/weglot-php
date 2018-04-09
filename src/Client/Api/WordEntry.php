@@ -28,18 +28,27 @@ class WordEntry implements JsonSerializable
      */
     protected $type = WordType::GENERIC;
 
+    /**
+     * WordEntry constructor.
+     * @param $word
+     * @param int $type
+     * @throws InvalidWordTypeException
+     */
     public function __construct($word, $type = WordType::GENERIC)
     {
-        $this->setWord($word);
-        $this->setType($type);
+        $this->setWord($word)
+            ->setType($type);
     }
 
     /**
      * @param string $word
+     * @return $this
      */
     public function setWord($word)
     {
         $this->word = $word;
+
+        return $this;
     }
 
     /**
@@ -54,7 +63,8 @@ class WordEntry implements JsonSerializable
      * Set type of word you gonna translate.
      * Returns false if type is incorrect.
      *
-     * @param int $type
+     * @param $type
+     * @return $this
      * @throws InvalidWordTypeException
      */
     public function setType($type)
@@ -70,6 +80,8 @@ class WordEntry implements JsonSerializable
             throw new InvalidWordTypeException();
         }
         $this->type = $type;
+
+        return $this;
     }
 
     /**

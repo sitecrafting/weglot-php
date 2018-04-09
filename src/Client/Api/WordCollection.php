@@ -21,20 +21,26 @@ class WordCollection implements Countable, Iterator, JsonSerializable, WordColle
 
     /**
      * @param WordEntry $entry
+     * @return $this
      */
     public function addWord(WordEntry $entry)
     {
         $this->collection[] = $entry;
+
+        return $this;
     }
 
     /**
-     * @param WordEntry[] $entries
+     * @param array $entries
+     * @return $this
      */
     public function addWords(array $entries)
     {
         foreach ($entries as $entry) {
             $this->addWord($entry);
         }
+
+        return $this;
     }
 
     /**

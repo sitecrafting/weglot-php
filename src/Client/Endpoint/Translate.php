@@ -45,10 +45,13 @@ class Translate extends Endpoint
 
     /**
      * @param TranslateEntry $translateEntry
+     * @return $this
      */
     public function setTranslateEntry(TranslateEntry $translateEntry)
     {
         $this->translateEntry = $translateEntry;
+
+        return $this;
     }
 
     /**
