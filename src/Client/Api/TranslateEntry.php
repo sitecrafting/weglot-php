@@ -57,7 +57,12 @@ class TranslateEntry implements JsonSerializable
     /**
      * @var WordCollection
      */
-    protected $words;
+    protected $inputWords;
+
+    /**
+     * @var WordCollection
+     */
+    protected $outputWords;
 
     /**
      * TranslateEntry constructor.
@@ -68,7 +73,8 @@ class TranslateEntry implements JsonSerializable
     public function __construct(array $params, WordCollection $words = null)
     {
         $this->setParams($params);
-        $this->setWords($words);
+        $this->setInputWords($words);
+        $this->setOutputWords(null);
     }
 
     /**
@@ -123,23 +129,46 @@ class TranslateEntry implements JsonSerializable
     /**
      * @return WordCollection
      */
-    public function getWords()
+    public function getInputWords()
     {
-        return $this->words;
+        return $this->inputWords;
     }
 
     /**
-     * Used to fill words collection
+     * Used to fill input words collection
      * If $words is null, it would put an empty word collection
      *
      * @param WordCollection|null $words
      */
-    public function setWords($words)
+    public function setInputWords($words)
     {
         if ($words === null) {
-            $this->words = new WordCollection();
+            $this->inputWords = new WordCollection();
         } else {
-            $this->words = $words;
+            $this->inputWords = $words;
+        }
+    }
+
+    /**
+     * @return WordCollection
+     */
+    public function getOutputWords()
+    {
+        return $this->outputWords;
+    }
+
+    /**
+     * Used to fill output words collection
+     * If $words is null, it would put an empty word collection
+     *
+     * @param WordCollection|null $words
+     */
+    public function setOutputWords($words)
+    {
+        if ($words === null) {
+            $this->outputWords = new WordCollection();
+        } else {
+            $this->outputWords = $words;
         }
     }
 
@@ -154,7 +183,7 @@ class TranslateEntry implements JsonSerializable
             'bot' => $this->params['bot'],
             'title' => $this->params['title'],
             'request_url' => $this->params['request_url'],
-            'words' => $this->words->jsonSerialize()
+            'words' => $this->inputWords->jsonSerialize()
         ];
     }
 }

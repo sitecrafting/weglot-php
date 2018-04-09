@@ -69,9 +69,12 @@ class Translate
             'title' => $response['title']
         ];
         $translate = new TranslateEntry($params);
-
+        
         foreach ($response['from_words'] as $word) {
-            $translate->getWords()->addWord(new WordEntry($word));
+            $translate->getInputWords()->addWord(new WordEntry($word));
+        }
+        foreach ($response['to_words'] as $word) {
+            $translate->getOutputWords()->addWord(new WordEntry($word));
         }
 
         return $translate;
