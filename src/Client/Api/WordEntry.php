@@ -9,25 +9,7 @@
 namespace Weglot\Client\Api;
 
 use JsonSerializable;
-
-/**
- * Enum WordEntryType
- * Used to define where was the text we are parsing
- *
- * @package Weglot\Client\Api
- */
-abstract class WordEntryType
-{
-    const GENERIC = 0;
-    const TEXT = 1;
-    const VALUE = 2;
-    const PLACEHOLDER = 3;
-    const META_CONTENT = 4;
-    const IFRAME_SRC = 5;
-    const IMG_SRC = 6;
-    const IMG_ALT = 7;
-    const PDF_HREF = 8;
-}
+use Weglot\Client\Api\Enum\WordType;
 
 /**
  * Class WordEntry
@@ -43,9 +25,9 @@ class WordEntry implements JsonSerializable
     /**
      * @var int
      */
-    protected $type = WordEntryType::GENERIC;
+    protected $type = WordType::GENERIC;
 
-    public function __construct($word, $type = WordEntryType::GENERIC)
+    public function __construct($word, $type = WordType::GENERIC)
     {
         $this->setWord($word);
         $this->setType($type);
