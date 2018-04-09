@@ -8,15 +8,15 @@
 
 namespace Weglot\Client\Api;
 
-use JsonSerializable;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
+use Weglot\Client\Api\Shared\AbstractCollectionEntry;
 
 /**
  * Class WordEntry
  * @package Weglot\Client\Api
  */
-class WordEntry implements JsonSerializable
+class WordEntry extends AbstractCollectionEntry
 {
     /**
      * @var string
