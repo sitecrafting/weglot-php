@@ -1,13 +1,30 @@
 {
-    "name": "weglot/weglot-php",
-    "type": "project",
-    "require": {
-        "php": ">=5.5",
-        "guzzlehttp/guzzle": "^6.3"
+  "name": "weglot/weglot-php",
+  "description": "PHP library for the Weglot API",
+  "type": "library",
+  "licence": "MIT",
+  "authors": [
+    {
+      "name": "Baptiste Leduc",
+      "email": "baptiste@weglot.com",
+      "role": "Developer"
     },
-    "autoload": {
-        "psr-4": {
-            "Weglot\\": "src/"
-        }
+    {
+      "name": "Thomas Deneulin",
+      "email": "thomas@weglot.com",
+      "role": "Review"
     }
+  ],
+  "support": {
+    "email": "support@weglot.com"
+  },
+  "require": {
+    "php": ">=5.5",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Weglot\\": "src/"
+    }
+  }
 }
