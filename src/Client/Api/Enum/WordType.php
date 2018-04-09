@@ -25,4 +25,11 @@ abstract class WordType
     const IMG_SRC = 6;
     const IMG_ALT = 7;
     const PDF_HREF = 8;
+
+    /**
+     * Only for internal use, if you have to add a value in this enum,
+     * please increments the __MAX value.
+     */
+    const __MIN = 0;
+    const __MAX = 8;
 }

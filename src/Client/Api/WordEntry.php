@@ -58,11 +58,17 @@ class WordEntry implements JsonSerializable
      */
     public function setType($type)
     {
-        if ($type >= 0 && $type <= 8) {
-            $this->type = $type;
+        /**
+         * Thoses WordType::__MIN and WordType::__MAX values are
+         * only used to check if given type is okay according to
+         * what we have in WordType.
+         *
+         * @see src/Client/Api/Enum/WordType.php
+         */
+        if (!($type >= WordType::__MIN && $type <= WordType::__MAX)) {
             return true;
         }
-        return false;
+        $this->type = $type;
     }
 
     /**
