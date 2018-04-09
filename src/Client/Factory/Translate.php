@@ -69,7 +69,7 @@ class Translate
             'title' => $response['title']
         ];
         $translate = new TranslateEntry($params);
-        
+
         foreach ($response['from_words'] as $word) {
             $translate->getInputWords()->addWord(new WordEntry($word));
         }
