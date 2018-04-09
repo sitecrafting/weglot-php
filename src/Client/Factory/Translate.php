@@ -9,6 +9,7 @@
 namespace Weglot\Client\Factory;
 
 use Psr\Http\Message\ResponseInterface;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
@@ -59,6 +60,7 @@ class Translate
     /**
      * @return TranslateEntry
      * @throws MissingRequiredParamException
+     * @throws InvalidWordTypeException
      */
     public function handle()
     {

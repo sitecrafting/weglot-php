@@ -8,6 +8,7 @@
 
 namespace Weglot\Client\Endpoint;
 
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Client;
@@ -58,6 +59,7 @@ class Translate extends Endpoint
      * @return TranslateEntry
      * @throws GuzzleException
      * @throws MissingRequiredParamException
+     * @throws InvalidWordTypeException
      */
     public function handle()
     {
