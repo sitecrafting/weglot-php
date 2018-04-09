@@ -64,12 +64,4 @@ class Translate extends Endpoint
         $factory = new TranslateFactory($response);
         return $factory->handle();
     }
-
-    /**
-     * @return bool
-     */
-    public function check()
-    {
-        return true;
-    }
 }
