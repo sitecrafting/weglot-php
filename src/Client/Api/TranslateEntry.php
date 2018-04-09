@@ -122,7 +122,7 @@ class TranslateEntry implements JsonSerializable
      *
      * @param WordCollection|null $words
      */
-    public function setInputWords($words)
+    public function setInputWords($words = null)
     {
         if ($words === null) {
             $this->inputWords = new WordCollection();
@@ -145,7 +145,7 @@ class TranslateEntry implements JsonSerializable
      *
      * @param WordCollection|null $words
      */
-    public function setOutputWords($words)
+    public function setOutputWords($words = null)
     {
         if ($words === null) {
             $this->outputWords = new WordCollection();
