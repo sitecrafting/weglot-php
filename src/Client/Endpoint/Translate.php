@@ -8,11 +8,21 @@
 
 namespace Weglot\Client\Endpoint;
 
+use Weglot\Client\Api\Exception\MissingRequiredParamException;
+use Weglot\Client\Api\TranslateEntry;
+use Weglot\Client\Factory\Translate as TranslateFactory;
+use GuzzleHttp\Exception\GuzzleException;
+
 class Translate extends Endpoint
 {
     const METHOD = 'POST';
     const ENDPOINT = '/translate';
 
+    /**
+     * @return TranslateEntry
+     * @throws GuzzleException
+     * @throws MissingRequiredParamException
+     */
     public function handle()
     {
         $body = [
@@ -27,7 +37,8 @@ class Translate extends Endpoint
         ];
         $response = $this->request($body);
 
-        return $response;
+        $factory = new TranslateFactory($response);
+        return $factory->handle();
     }
 
     /**
