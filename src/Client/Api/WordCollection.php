@@ -17,7 +17,7 @@ class WordCollection implements Countable, Iterator, JsonSerializable, WordColle
     /**
      * @var WordEntry[]
      */
-    private $collection = [];
+    protected $collection = [];
 
     /**
      * @param WordEntry $entry
