@@ -184,16 +184,14 @@ class Parser
             }
         }
 
-        $microData = ["description"];
         $jsons = [];
         $nbJsonStrings = 0;
-
 
         foreach ($dom->find('script[type="application/ld+json"]') as $k => $row) {
             $mustAddjson = false;
             $json = json_decode($row->innertext, true);
             if (json_last_error() === JSON_ERROR_NONE) {
-                foreach ($microData as $key) {
+                foreach ($this->getMicroData() as $key) {
                     $path = explode(">", $key);
                     $value = $this->getValue($json, $path);
 
@@ -242,48 +240,7 @@ class Parser
             die($e->getMessage());
         }
 
-        $translated_words = $translated->getOutputWords();
-
-        for ($i = 0; $i < count($nodes); ++$i) {
-            $property = $nodes[$i]['property'];
-            $type = $nodes[$i]['type'];
-
-            if ($translated_words[$i] !== null) {
-                $current_translated = $translated_words[$i]->getWord();
-
-                if ($type == "meta_desc") {
-                    $nodes[$i]['node']->$property = htmlspecialchars($current_translated);
-                } else {
-                    $nodes[$i]['node']->$property = $current_translated;
-                }
-
-
-                if ($nodes[$i]['type'] == 'img_src') {
-                    $nodes[$i]['node']->src = $current_translated;
-                    if ($nodes[$i]['node']->hasAttribute('srcset') &&
-                        $nodes[$i]['node']->srcset != '' &&
-                        $current_translated != $words[$i]['w']) {
-                        $nodes[$i]['node']->srcset = '';
-                    }
-                }
-            }
-        }
-
-        $index = count($nodes);
-        for ($j = 0; $j < count($jsons); $j++) {
-            $jsonArray = $jsons[$j]['json'];
-            $node = $jsons[$j]['node'];
-            foreach ($microData as $key) {
-                $path = explode(">", $key);
-                $hasV = $this->getValue($jsonArray, $path);
-
-                if (isset($hasV)) {
-                    $this->setValues($jsonArray, $path, $translated_words, $index);
-                }
-            }
-            $node->innertext = json_encode($jsonArray, JSON_PRETTY_PRINT);
-        }
-
+        $this->applyToDom($translated, $nodes, $words, $jsons);
         return $dom->save();
     }
 
@@ -486,9 +443,77 @@ class Parser
     }
 
     /**
+     * @return array
+     */
+    protected function getMicroData()
+    {
+        return ["description"];
+    }
+
+    /**
+     * @param TranslateEntry $translateEntry
+     * @param array $nodes
+     * @param array $words
+     * @param array $jsons
+     */
+    protected function applyToDom(TranslateEntry $translateEntry, array $nodes, array $words, array $jsons)
+    {
+        $translated_words = $translateEntry->getOutputWords();
+
+        for ($i = 0; $i < count($nodes); ++$i) {
+            $property = $nodes[$i]['property'];
+            $type = $nodes[$i]['type'];
+
+            if ($translated_words[$i] !== null) {
+                $current_translated = $translated_words[$i]->getWord();
+
+                if ($type == "meta_desc") {
+                    $nodes[$i]['node']->$property = htmlspecialchars($current_translated);
+                } else {
+                    $nodes[$i]['node']->$property = $current_translated;
+                }
+
+
+                if ($nodes[$i]['type'] == 'img_src') {
+                    $nodes[$i]['node']->src = $current_translated;
+                    if ($nodes[$i]['node']->hasAttribute('srcset') &&
+                        $nodes[$i]['node']->srcset != '' &&
+                        $current_translated != $words[$i]['w']) {
+                        $nodes[$i]['node']->srcset = '';
+                    }
+                }
+            }
+        }
+
+        $index = count($nodes);
+        for ($j = 0; $j < count($jsons); $j++) {
+            $jsonArray = $jsons[$j]['json'];
+            $node = $jsons[$j]['node'];
+            foreach ($this->getMicroData() as $key) {
+                $path = explode(">", $key);
+                $hasV = $this->getValue($jsonArray, $path);
+
+                if (isset($hasV)) {
+                    $this->setValues($jsonArray, $path, $translated_words, $index);
+                }
+            }
+            $node->innertext = json_encode($jsonArray, JSON_PRETTY_PRINT);
+        }
+    }
+
+    /**
+     * ----------------------------------------------------------------------------------------------------------------
+     *
+     * Not refactored
+     *
      * ----------------------------------------------------------------------------------------------------------------
      */
 
+    /**
+     * @param array $data
+     * @param $path
+     * @return null
+     */
     public function getValue($data, $path)
     {
         $temp = $data;
@@ -502,6 +527,11 @@ class Parser
         return $temp;
     }
 
+    /**
+     * @param $value
+     * @param array $words
+     * @param int $nbJsonStrings
+     */
     public function addValues($value, &$words, &$nbJsonStrings)
     {
         if (is_array($value)) {
@@ -520,6 +550,13 @@ class Parser
         }
     }
 
+    /**
+     * @param $data
+     * @param $path
+     * @param array $translatedwords
+     * @param int $index
+     * @return null|void
+     */
     public function setValues(&$data, $path, $translatedwords, &$index)
     {
         $temp = &$data;
