@@ -234,9 +234,6 @@ class Parser
             }
         }
 
-        /**
-         * @TODO switch to user options
-         */
         $params = [
             'language_from' => $this->getLanguageFrom(),
             'language_to' => $this->getLanguageTo()
