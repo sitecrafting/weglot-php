@@ -17,6 +17,6 @@ class Iframe_src extends AbstractChecker
      */
     protected function check()
     {
-        return (strpos(TextUtil::fullTrim($this->node->src), '.youtube.') !== false);
+        return TextUtil::contains(TextUtil::fullTrim($this->node->src), '.youtube.');
     }
 }
