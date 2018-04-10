@@ -18,4 +18,14 @@ class Text
     {
         return trim($word, " \t\n\r\0\x0B\xA0�");
     }
+
+    /**
+     * @param string $haystack
+     * @param string $search
+     * @return bool
+     */
+    public static function contains($haystack, $search)
+    {
+        return strpos($haystack, $search) !== false;
+    }
 }
