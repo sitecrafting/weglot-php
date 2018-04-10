@@ -76,10 +76,10 @@ class Translate
         $translate = new TranslateEntry($params);
 
         foreach ($response['from_words'] as $word) {
-            $translate->getInputWords()->addWord(new WordEntry($word));
+            $translate->getInputWords()->addOne(new WordEntry($word));
         }
         foreach ($response['to_words'] as $word) {
-            $translate->getOutputWords()->addWord(new WordEntry($word));
+            $translate->getOutputWords()->addOne(new WordEntry($word));
         }
 
         return $translate;
