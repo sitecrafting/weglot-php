@@ -9,6 +9,7 @@
 namespace Weglot\Client\Factory;
 
 use Psr\Http\Message\ResponseInterface;
+use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
 use Weglot\Client\Api\Exception\MissingWordsOutputException;
@@ -60,6 +61,7 @@ class Translate
 
     /**
      * @return TranslateEntry
+     * @throws InputAndOutputCountMatchException
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
@@ -77,11 +79,15 @@ class Translate
         ];
         $translate = new TranslateEntry($params);
 
-        foreach ($response['from_words'] as $word) {
-            $translate->getInputWords()->addOne(new WordEntry($word));
-        }
         if (!isset($response['to_words'])) {
             throw new MissingWordsOutputException();
+        }
+        if (count($response['from_words']) !== count($response['to_words'])) {
+            throw new InputAndOutputCountMatchException();
+        }
+
+        foreach ($response['from_words'] as $word) {
+            $translate->getInputWords()->addOne(new WordEntry($word));
         }
         foreach ($response['to_words'] as $word) {
             $translate->getOutputWords()->addOne(new WordEntry($word));
