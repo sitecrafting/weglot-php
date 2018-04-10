@@ -14,6 +14,7 @@ use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
+use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\Util\Server;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -25,6 +26,11 @@ class Parser
      * @var Client
      */
     protected $client;
+
+    /**
+     * @var ConfigProviderInterface
+     */
+    protected $configProvider;
 
     /**
      * @var array
@@ -46,14 +52,16 @@ class Parser
      * @param Client $client
      * @param string $language_from
      * @param string $language_to
+     * @param ConfigProviderInterface $config
      * @param array $excludeBlocks
      */
-    public function __construct(Client $client, $language_from, $language_to, array $excludeBlocks = [])
+    public function __construct(Client $client, $language_from, $language_to, ConfigProviderInterface $config, array $excludeBlocks = [])
     {
         $this
             ->setClient($client)
             ->setLanguageFrom($language_from)
             ->setLanguageTo($language_to)
+            ->setConfigProvider($config)
             ->setExcludeBlocks($excludeBlocks);
     }
 
@@ -93,6 +101,25 @@ class Parser
     public function getExcludeBlocks()
     {
         return $this->excludeBlocks;
+    }
+
+    /**
+     * @param ConfigProviderInterface $config
+     * @return $this
+     */
+    public function setConfigProvider(ConfigProviderInterface $config)
+    {
+        $this->configProvider = $config;
+
+        return $this;
+    }
+
+    /**
+     * @return ConfigProviderInterface
+     */
+    public function getConfigProvider()
+    {
+        return $this->configProvider;
     }
 
     /**
@@ -210,16 +237,12 @@ class Parser
         /**
          * @TODO switch to user options
          */
-        $absolute_url = Server::fullUrl($_SERVER);
-        $bot = Server::detectBot($_SERVER);
-
         $params = [
             'language_from' => $this->getLanguageFrom(),
-            'language_to' => $this->getLanguageTo(),
-            'title' => $this->getTitle($dom),
-            'request_url' => $absolute_url,
-            'bot' => $bot
+            'language_to' => $this->getLanguageTo()
         ];
+        $params = array_merge($params, $this->getConfigProvider()->asArray());
+
         try {
             $translate = new TranslateEntry($params);
             $input = $translate->getInputWords();
