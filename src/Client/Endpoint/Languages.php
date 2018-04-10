@@ -64,6 +64,7 @@ class Languages extends Endpoint
         }
         $language = $data[$this->iso_639_1];
 
-        return $language;
+        $factory = new LanguagesFactory($language);
+        return $factory->handle();
     }
 }

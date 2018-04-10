@@ -8,8 +8,57 @@
 
 namespace Weglot\Client\Factory;
 
+use Weglot\Client\Api\LanguageEntry;
+
 class Languages
 {
+    /**
+     * @var array
+     */
+    protected $language;
+
+    /**
+     * Languages constructor.
+     * @param array $language
+     */
+    public function __construct(array $language)
+    {
+        $this->language = $language;
+    }
+
+    /**
+     * @param array $language
+     * @return $this
+     */
+    public function setLanguage(array $language)
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * @return LanguageEntry
+     */
+    public function handle()
+    {
+        $language = new LanguageEntry(
+            $this->language['code'],
+            $this->language['english'],
+            $this->language['local']
+        );
+
+        return $language;
+    }
+
     /**
      * Only used to replace API endpoint
      * We planned to make this endpoint available soon !
