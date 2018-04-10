@@ -9,17 +9,18 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
-use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
-use Weglot\Parser\Util\Server;
 use GuzzleHttp\Exception\GuzzleException;
 
 class Parser
 {
+    /**
+     * Attribute to match in DOM when we don't want to translate innertext & childs.
+     */
     const ATTRIBUTE_NO_TRANSLATE = 'data-wg-notranslate';
 
     /**
@@ -234,10 +235,15 @@ class Parser
             }
         }
 
+        // Translate endpoint parameters
         $params = [
             'language_from' => $this->getLanguageFrom(),
             'language_to' => $this->getLanguageTo()
         ];
+
+        if ($this->getConfigProvider()->getAutoDiscoverTitle()) {
+            $params['title'] = $this->getTitle($dom);
+        }
         $params = array_merge($params, $this->getConfigProvider()->asArray());
 
         try {

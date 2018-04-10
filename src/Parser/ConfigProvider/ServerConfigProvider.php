@@ -14,9 +14,9 @@ class ServerConfigProvider extends AbstractConfigProvider
 {
     /**
      * ServerConfigProvider constructor.
-     * @param string $title
+     * @param null|string $title    Don't set this title if you want the Parser to parse title from DOM
      */
-    public function __construct($title)
+    public function __construct($title = null)
     {
         list($url, $bot) = $this->loadFromServer();
         parent::__construct($title, $url, $bot);

@@ -11,9 +11,14 @@ namespace Weglot\Parser\ConfigProvider;
 abstract class AbstractConfigProvider implements ConfigProviderInterface
 {
     /**
-     * @var string
+     * @var null|string
      */
     protected $title;
+
+    /**
+     * @var bool
+     */
+    protected $autoDiscoverTitle = true;
 
     /**
      * @var string
@@ -27,31 +32,35 @@ abstract class AbstractConfigProvider implements ConfigProviderInterface
 
     /**
      * AbstractConfigProvider constructor.
-     * @param string $title
      * @param string $url
      * @param int $bot
+     * @param null|string $title    Don't set this title if you want the Parser to parse title from DOM
      */
-    public function __construct($title, $url, $bot)
+    public function __construct($url, $bot, $title = null)
     {
         $this
-            ->setTitle($title)
             ->setUrl($url)
-            ->setBot($bot);
+            ->setBot($bot)
+            ->setTitle($title);
     }
 
     /**
-     * @param string $title
+     * If we put a null value into $title, we would force
+     * the auto discover for the Parser.
+     *
+     * @param null|string $title
      * @return $this
      */
     public function setTitle($title)
     {
+        $this->setAutoDiscoverTitle($title === null);
         $this->title = $title;
 
         return $this;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getTitle()
     {
@@ -59,8 +68,25 @@ abstract class AbstractConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @param string $url
-     * @return $this
+     * {@inheritdoc}
+     */
+    public function setAutoDiscoverTitle($autoDiscoverTitle)
+    {
+        $this->autoDiscoverTitle = $autoDiscoverTitle;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAutoDiscoverTitle()
+    {
+        return $this->autoDiscoverTitle;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setUrl($url)
     {
@@ -70,7 +96,7 @@ abstract class AbstractConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getUrl()
     {
@@ -78,8 +104,7 @@ abstract class AbstractConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @param int $bot
-     * @return $this
+     * {@inheritdoc}
      */
     public function setBot($bot)
     {
@@ -89,7 +114,7 @@ abstract class AbstractConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getBot()
     {
@@ -101,10 +126,15 @@ abstract class AbstractConfigProvider implements ConfigProviderInterface
      */
     public function asArray()
     {
-        return [
-            'title' => $this->getTitle(),
+        $data = [
             'request_url' => $this->getUrl(),
             'bot' => $this->getBot()
         ];
+
+        if (!$this->getAutoDiscoverTitle()) {
+            $data['title'] = $this->getTitle();
+        }
+
+        return $data;
     }
 }

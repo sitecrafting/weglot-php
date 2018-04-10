@@ -11,15 +11,26 @@ namespace Weglot\Parser\ConfigProvider;
 interface ConfigProviderInterface
 {
     /**
-     * @param string $title
+     * @param null|string $title
      * @return $this
      */
     public function setTitle($title);
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getTitle();
+
+    /**
+     * @param bool $autoDiscoverTitle
+     * @return $this
+     */
+    public function setAutoDiscoverTitle($autoDiscoverTitle);
+
+    /**
+     * @return bool
+     */
+    public function getAutoDiscoverTitle();
 
     /**
      * @param string $url
