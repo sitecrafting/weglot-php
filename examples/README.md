@@ -2,7 +2,7 @@
 
 ## Description
 
-Here is some example of use for Weglot API.
+Here are some use cases for Weglot API
 
 Each example is independant and can be used out of this repository.
 We use `.env` to get Weglot API Key or other credentials and `composer` for dependencies.
