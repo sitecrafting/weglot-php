@@ -8,7 +8,6 @@
 
 namespace Weglot\Client\Factory;
 
-use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
@@ -19,24 +18,24 @@ use Weglot\Client\Api\WordEntry;
 class Translate
 {
     /**
-     * @var ResponseInterface
+     * @var array
      */
-    protected $response = null;
+    protected $response = [];
 
     /**
      * Translate constructor.
-     * @param ResponseInterface $response
+     * @param array $response
      */
-    public function __construct(ResponseInterface $response)
+    public function __construct(array $response)
     {
         $this->setResponse($response);
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param array $response
      * @return $this
      */
-    public function setResponse(ResponseInterface $response)
+    public function setResponse(array $response)
     {
         $this->response = $response;
 
@@ -44,19 +43,11 @@ class Translate
     }
 
     /**
-     * @return ResponseInterface
+     * @return array
      */
     public function getResponse()
     {
         return $this->response;
-    }
-
-    /**
-     * @return array
-     */
-    public function getResponseAsArray()
-    {
-        return json_decode($this->response->getBody()->getContents(), true);
     }
 
     /**
@@ -68,7 +59,7 @@ class Translate
      */
     public function handle()
     {
-        $response = $this->getResponseAsArray();
+        $response = $this->getResponse();
 
         $params = [
             'language_from' => $response['l_from'],
