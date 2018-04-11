@@ -130,14 +130,13 @@ class Client implements ClientCachingInterface
      * @param string $method    Method to use for given endpoint
      * @param string $endpoint  Endpoint to hit on API
      * @param array $body       Body content of the request as array
-     * @param bool $ignoreCache Is used to ignore cache on certain cases (as Status)
      * @param bool $asArray     To know if we return an array or ResponseInterface
      * @return array|ResponseInterface
      * @throws GuzzleException
      */
-    public function makeRequest($method, $endpoint, $body = [], $ignoreCache = false, $asArray = true)
+    public function makeRequest($method, $endpoint, $body = [], $asArray = true)
     {
-        if (!$ignoreCache && $this->cacheEnabled()) {
+        if ($this->cacheEnabled()) {
             $cacheKey = $this->getCacheGenerateKey($method, $endpoint, $body);
 
             if ($this->cacheHasItem($cacheKey)) {
@@ -150,7 +149,7 @@ class Client implements ClientCachingInterface
         ]);
         $array = json_decode($response->getBody()->getContents(), true);
 
-        if (!$ignoreCache && $this->cacheEnabled()) {
+        if ($this->cacheEnabled()) {
             $this->cacheCommitItem($cacheKey, $array);
         }
 

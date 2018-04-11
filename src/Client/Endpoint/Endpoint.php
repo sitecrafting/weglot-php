@@ -70,7 +70,18 @@ abstract class Endpoint
      */
     protected function request(array $body = [], $ignoreCache = false, $asArray = true)
     {
+        if ($ignoreCache) {
+            $oldCacheItemPool = $this->getClient()->getCacheItemPool();
+            $this->getClient()->setCacheItemPool(null);
+        }
+
         $parentClass = get_called_class();
-        return $this->client->makeRequest($parentClass::METHOD, $parentClass::ENDPOINT, $body, $ignoreCache, $asArray);
+        $response = $this->getClient()->makeRequest($parentClass::METHOD, $parentClass::ENDPOINT, $body, $asArray);
+
+        if ($ignoreCache) {
+            $this->getClient()->setCacheItemPool($oldCacheItemPool);
+        }
+
+        return $response;
     }
 }
