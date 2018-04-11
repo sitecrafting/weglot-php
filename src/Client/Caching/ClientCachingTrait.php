@@ -100,6 +100,7 @@ trait ClientCachingTrait
     {
         $item = $this->cacheItemPool->getItem($key);
         $item->set($value);
+        $item->expiresAfter($this->getCacheExpire());
 
         return $this->cacheItemPool->save($item);
     }
