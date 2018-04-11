@@ -9,7 +9,6 @@
 namespace Weglot\Client\Endpoint;
 
 use Weglot\Client\Client;
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
 abstract class Endpoint
@@ -63,7 +62,7 @@ abstract class Endpoint
 
     /**
      * @param array $body   Content of your request
-     * @return ResponseInterface
+     * @return array
      * @throws GuzzleException
      */
     protected function request($body)

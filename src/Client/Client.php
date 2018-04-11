@@ -10,11 +10,14 @@
 namespace Weglot\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Weglot\Client\Caching\ClientCachingInterface;
+use Weglot\Client\Caching\ClientCachingTrait;
 
-class Client
+class Client implements ClientCachingInterface
 {
+    use ClientCachingTrait;
+
     /**
      * Library version
      *
@@ -126,13 +129,28 @@ class Client
      * @param string $method    Method to use for given endpoint
      * @param string $endpoint  Endpoint to hit on API
      * @param array $body       Body content of the request as array
-     * @return ResponseInterface
+     * @return array
      * @throws GuzzleException
      */
     public function makeRequest($method, $endpoint, $body = [])
     {
-        return $this->connector->request($method, $endpoint, [
+        if ($this->cacheEnabled()) {
+            $cacheKey = $this->getCacheGenerateKey($method, $endpoint, $body);
+
+            if ($this->cacheHasItem($cacheKey)) {
+                return $this->cacheGetItem($cacheKey);
+            }
+        }
+
+        $response = $this->connector->request($method, $endpoint, [
             'json' => $body
         ]);
+        $response = json_decode($response->getBody()->getContents(), true);
+
+        if ($this->cacheEnabled()) {
+            $this->cacheCommitItem($cacheKey, $response);
+        }
+
+        return $response;
     }
 }
