@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - parsing-web-page
   - simple-client-languages
   - simple-client-status
+  - simple-client-translate
 
 ## [0.1-beta] - 2018-04-11
 ### Added
