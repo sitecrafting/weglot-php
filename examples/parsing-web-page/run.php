@@ -13,7 +13,7 @@ $dotenv = new \Dotenv\Dotenv(__DIR__);
 $dotenv->load();
 
 // Url to parse
-$url = 'https://staging.emmystore.com/products/id225854';
+$url = 'https://weglot.com/documentation/getting-started';
 
 // Config with $_SERVER variables
 $_SERVER['SERVER_NAME'] = 'weglot.com';
