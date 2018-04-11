@@ -68,7 +68,7 @@ abstract class Endpoint
      * @return array|ResponseInterface
      * @throws GuzzleException
      */
-    protected function request(array $body, $ignoreCache = false, $asArray = true)
+    protected function request(array $body = [], $ignoreCache = false, $asArray = true)
     {
         $parentClass = get_called_class();
         return $this->client->makeRequest($parentClass::METHOD, $parentClass::ENDPOINT, $body, $ignoreCache, $asArray);
