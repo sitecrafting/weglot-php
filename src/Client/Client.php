@@ -11,6 +11,7 @@ namespace Weglot\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Caching\ClientCachingInterface;
 use Weglot\Client\Caching\ClientCachingTrait;
 
@@ -129,12 +130,14 @@ class Client implements ClientCachingInterface
      * @param string $method    Method to use for given endpoint
      * @param string $endpoint  Endpoint to hit on API
      * @param array $body       Body content of the request as array
-     * @return array
+     * @param bool $ignoreCache Is used to ignore cache on certain cases (as Status)
+     * @param bool $asArray     To know if we return an array or ResponseInterface
+     * @return array|ResponseInterface
      * @throws GuzzleException
      */
-    public function makeRequest($method, $endpoint, $body = [])
+    public function makeRequest($method, $endpoint, $body = [], $ignoreCache = false, $asArray = true)
     {
-        if ($this->cacheEnabled()) {
+        if (!$ignoreCache && $this->cacheEnabled()) {
             $cacheKey = $this->getCacheGenerateKey($method, $endpoint, $body);
 
             if ($this->cacheHasItem($cacheKey)) {
@@ -145,12 +148,15 @@ class Client implements ClientCachingInterface
         $response = $this->connector->request($method, $endpoint, [
             'json' => $body
         ]);
-        $response = json_decode($response->getBody()->getContents(), true);
+        $array = json_decode($response->getBody()->getContents(), true);
 
-        if ($this->cacheEnabled()) {
-            $this->cacheCommitItem($cacheKey, $response);
+        if (!$ignoreCache && $this->cacheEnabled()) {
+            $this->cacheCommitItem($cacheKey, $array);
         }
 
+        if ($asArray) {
+            return $array;
+        }
         return $response;
     }
 }
