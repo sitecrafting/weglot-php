@@ -10,9 +10,10 @@ namespace Weglot\Client\Api\Shared;
 
 use Countable;
 use Iterator;
+use ArrayAccess;
 use JsonSerializable;
 
-abstract class AbstractCollection implements Countable, Iterator, JsonSerializable, AbstractCollectionInterface
+abstract class AbstractCollection implements Countable, Iterator, ArrayAccess, JsonSerializable, AbstractCollectionInterface
 {
     /**
      * @var AbstractCollectionEntry[]
@@ -94,6 +95,40 @@ abstract class AbstractCollection implements Countable, Iterator, JsonSerializab
         }
 
         return $words;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->collection[$offset]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        return isset($this->collection[$offset]) ? $this->collection[$offset] : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (isset($this->collection[$offset]) && $value instanceof AbstractCollectionEntry) {
+            $this->collection[$offset] = $value;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->collection[$offset]);
     }
 
     /**
