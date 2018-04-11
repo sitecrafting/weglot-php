@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 11:59
- */
 
 namespace Weglot\Parser\Check;
 
-use \Weglot\Parser\Util\Text as TextUtil;
+use Weglot\Parser\Util\Text as TextUtil;
 
+/**
+ * Class A_pdf
+ * @package Weglot\Parser\Check
+ */
 class A_pdf extends AbstractChecker
 {
     protected $extensions = [

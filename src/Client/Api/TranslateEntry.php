@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 09/04/2018
- * Time: 10:09
- */
 
 namespace Weglot\Client\Api;
 

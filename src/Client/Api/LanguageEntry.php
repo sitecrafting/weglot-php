@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 09/04/2018
- * Time: 16:28
- */
 
 namespace Weglot\Client\Api;
 
 use Weglot\Client\Api\Shared\AbstractCollectionEntry;
 
+/**
+ * Class LanguageEntry
+ * @package Weglot\Client\Api
+ */
 class LanguageEntry extends AbstractCollectionEntry
 {
     /**

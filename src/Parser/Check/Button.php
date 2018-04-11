@@ -8,7 +8,7 @@
 
 namespace Weglot\Parser\Check;
 
-use \Weglot\Parser\Util\Text as TextUtil;
+use Weglot\Parser\Util\Text as TextUtil;
 
 class Button extends AbstractChecker
 {

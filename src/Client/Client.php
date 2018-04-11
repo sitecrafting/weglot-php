@@ -1,12 +1,5 @@
 <?php
 
-/**
- * HTTP Client library
- *
- * @author  Baptiste Leduc <baptiste@weglot.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- */
-
 namespace Weglot\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
@@ -15,6 +8,10 @@ use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Caching\ClientCachingInterface;
 use Weglot\Client\Caching\ClientCachingTrait;
 
+/**
+ * Class Client
+ * @package Weglot\Client
+ */
 class Client implements ClientCachingInterface
 {
     use ClientCachingTrait;
@@ -24,7 +21,7 @@ class Client implements ClientCachingInterface
      *
      * @var string
      */
-    const VERSION = '0.0.1';
+    const VERSION = '0.1-beta';
 
     /**
      * Weglot API Key

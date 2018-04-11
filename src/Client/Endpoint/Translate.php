@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 06/04/2018
- * Time: 16:28
- */
 
 namespace Weglot\Client\Endpoint;
 
@@ -17,6 +11,10 @@ use Weglot\Client\Client;
 use Weglot\Client\Factory\Translate as TranslateFactory;
 use GuzzleHttp\Exception\GuzzleException;
 
+/**
+ * Class Translate
+ * @package Weglot\Client\Endpoint
+ */
 class Translate extends Endpoint
 {
     const METHOD = 'POST';

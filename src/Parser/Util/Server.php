@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 11:05
- */
 
 namespace Weglot\Parser\Util;
 
 use Weglot\Client\Api\Enum\BotType;
 
+/**
+ * Class Server
+ * @package Weglot\Parser\Util
+ */
 class Server
 {
     /**

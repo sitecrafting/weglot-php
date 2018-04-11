@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 11:53
- */
 
 namespace Weglot\Parser\Check;
 
-use \Weglot\Parser\Util\Text as TextUtil;
+use Weglot\Parser\Util\Text as TextUtil;
 
+/**
+ * Class Meta_desc
+ * @package Weglot\Parser\Check
+ */
 class Meta_desc extends AbstractChecker
 {
     /**

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 06/04/2018
- * Time: 16:28
- */
 
 namespace Weglot\Client\Endpoint;
 
@@ -12,6 +6,10 @@ use Weglot\Client\Api\Exception\InvalidLanguageException;
 use Weglot\Client\Client;
 use Weglot\Client\Factory\Languages as LanguagesFactory;
 
+/**
+ * Class Languages
+ * @package Weglot\Client\Endpoint
+ */
 class Languages extends Endpoint
 {
     const METHOD = 'GET';

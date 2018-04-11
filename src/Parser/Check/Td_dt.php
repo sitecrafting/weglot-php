@@ -1,13 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 11:40
- */
 
 namespace Weglot\Parser\Check;
 
+/**
+ * Class Td_dt
+ * @package Weglot\Parser\Check
+ */
 class Td_dt extends AbstractChecker
 {
     /**
