@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - examples:
   - cached-client-translate
+  - parsing-web-page
 
 ## [0.1-beta] - 2018-04-11
 ### Added
