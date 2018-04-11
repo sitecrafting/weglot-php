@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__. '/../../vendor/autoload.php';
+require_once __DIR__. '/vendor/autoload.php';
 
 use Weglot\Client\Client;
 use GuzzleHttp\Exception\GuzzleException;
