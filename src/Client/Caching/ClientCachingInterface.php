@@ -11,7 +11,7 @@ use Psr\Cache\CacheItemPoolInterface;
 interface ClientCachingInterface
 {
     /**
-     * @param CacheItemPoolInterface|null $cacheItemPool
+     * @param null|CacheItemPoolInterface $cacheItemPool
      * @return $this
      */
     public function setCacheItemPool($cacheItemPool);

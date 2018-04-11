@@ -23,7 +23,7 @@ trait ClientCachingTrait
     /**
      * {@inheritdoc}
      */
-    public function setCacheItemPool(CacheItemPoolInterface $cacheItemPool)
+    public function setCacheItemPool($cacheItemPool)
     {
         $this->cacheItemPool = $cacheItemPool;
 
