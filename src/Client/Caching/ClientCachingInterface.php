@@ -11,10 +11,10 @@ use Psr\Cache\CacheItemPoolInterface;
 interface ClientCachingInterface
 {
     /**
-     * @param CacheItemPoolInterface $cacheItemPool
+     * @param CacheItemPoolInterface|null $cacheItemPool
      * @return $this
      */
-    public function setCacheItemPool(CacheItemPoolInterface $cacheItemPool);
+    public function setCacheItemPool($cacheItemPool);
 
     /**
      * @return CacheItemPoolInterface
