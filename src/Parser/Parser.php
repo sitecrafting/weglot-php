@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 10:12
- */
 
 namespace Weglot\Parser;
 
@@ -16,6 +10,10 @@ use Weglot\Client\Endpoint\Translate;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
+/**
+ * Class Parser
+ * @package Weglot\Parser
+ */
 class Parser
 {
     /**

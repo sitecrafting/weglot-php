@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 06/04/2018
- * Time: 16:28
- */
 
 namespace Weglot\Client\Endpoint;
 
@@ -12,6 +6,10 @@ use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
+/**
+ * Class Endpoint
+ * @package Weglot\Client\Endpoint
+ */
 abstract class Endpoint
 {
     const METHOD = 'GET';

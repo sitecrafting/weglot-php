@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 09/04/2018
- * Time: 16:29
- */
 
 namespace Weglot\Client\Api\Shared;
 
@@ -13,6 +7,10 @@ use Iterator;
 use ArrayAccess;
 use JsonSerializable;
 
+/**
+ * Class AbstractCollection
+ * @package Weglot\Client\Api\Shared
+ */
 abstract class AbstractCollection implements Countable, Iterator, ArrayAccess, JsonSerializable, AbstractCollectionInterface
 {
     /**

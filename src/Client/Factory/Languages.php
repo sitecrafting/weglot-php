@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 09/04/2018
- * Time: 17:14
- */
 
 namespace Weglot\Client\Factory;
 
 use Weglot\Client\Api\LanguageEntry;
 
+/**
+ * Class Languages
+ * @package Weglot\Client\Factory
+ */
 class Languages
 {
     /**

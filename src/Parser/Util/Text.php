@@ -1,13 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 10:45
- */
 
 namespace Weglot\Parser\Util;
 
+/**
+ * Class Text
+ * @package Weglot\Parser\Util
+ */
 class Text
 {
     /**

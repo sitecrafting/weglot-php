@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 09/04/2018
- * Time: 10:04
- */
 
 namespace Weglot\Client\Factory;
 
@@ -15,6 +9,10 @@ use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
 
+/**
+ * Class Translate
+ * @package Weglot\Client\Factory
+ */
 class Translate
 {
     /**

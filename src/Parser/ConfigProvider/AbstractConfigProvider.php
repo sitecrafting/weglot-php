@@ -1,13 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 15:24
- */
 
 namespace Weglot\Parser\ConfigProvider;
 
+/**
+ * Class AbstractConfigProvider
+ * @package Weglot\Parser\ConfigProvider
+ */
 abstract class AbstractConfigProvider implements ConfigProviderInterface
 {
     /**

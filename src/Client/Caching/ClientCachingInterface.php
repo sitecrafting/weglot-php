@@ -1,16 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 11/04/2018
- * Time: 10:11
- */
 
 namespace Weglot\Client\Caching;
 
-use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
+/**
+ * Interface ClientCachingInterface
+ * @package Weglot\Client\Caching
+ */
 interface ClientCachingInterface
 {
     /**

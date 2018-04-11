@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 06/04/2018
- * Time: 16:28
- */
 
 namespace Weglot\Client\Endpoint;
 
 use GuzzleHttp\Exception\GuzzleException;
 
+/**
+ * Class Status
+ * @package Weglot\Client\Endpoint
+ */
 class Status extends Endpoint
 {
     const METHOD = 'GET';
