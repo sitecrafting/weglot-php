@@ -8,6 +8,7 @@
 
 namespace Weglot\Client\Endpoint;
 
+use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -61,13 +62,26 @@ abstract class Endpoint
     abstract public function handle();
 
     /**
-     * @param array $body   Content of your request
-     * @return array
+     * @param array $body       Content of your request
+     * @param bool $ignoreCache To ignore cache, false by default
+     * @param bool $asArray
+     * @return array|ResponseInterface
      * @throws GuzzleException
      */
-    protected function request($body)
+    protected function request(array $body = [], $ignoreCache = false, $asArray = true)
     {
+        if ($ignoreCache) {
+            $oldCacheItemPool = $this->getClient()->getCacheItemPool();
+            $this->getClient()->setCacheItemPool(null);
+        }
+
         $parentClass = get_called_class();
-        return $this->client->makeRequest($parentClass::METHOD, $parentClass::ENDPOINT, $body);
+        $response = $this->getClient()->makeRequest($parentClass::METHOD, $parentClass::ENDPOINT, $body, $asArray);
+
+        if ($ignoreCache) {
+            $this->getClient()->setCacheItemPool($oldCacheItemPool);
+        }
+
+        return $response;
     }
 }
