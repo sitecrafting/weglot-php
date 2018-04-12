@@ -9,6 +9,7 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use SimpleHtmlDom\simple_html_dom_node;
 use Weglot\Parser\Util\Text;
 
 class DomChecker
@@ -19,6 +20,11 @@ class DomChecker
      * @var simple_html_dom
      */
     protected $dom;
+
+    /**
+     * @var array
+     */
+    protected $discoverCaching;
 
     public function __construct(simple_html_dom $dom)
     {
@@ -42,6 +48,29 @@ class DomChecker
     public function getDom()
     {
         return $this->dom;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetDiscoverCaching()
+    {
+        $this->discoverCaching = [];
+
+        return $this;
+    }
+
+    /**
+     * @param string $domToSearch
+     * @return simple_html_dom_node
+     */
+    public function discoverCachingGet($domToSearch)
+    {
+        if (!isset($discoverCaching[$domToSearch])) {
+            $this->discoverCaching[$domToSearch] = $this->getDom()->find($domToSearch);
+        }
+
+        return $this->discoverCaching[$domToSearch];
     }
 
     /**
@@ -77,18 +106,14 @@ class DomChecker
      */
     public function handle(array &$words, array &$nodes)
     {
-        $discoverCaching = [];
+        $this->resetDiscoverCaching();
         $checkers = $this->getCheckers();
 
         foreach ($checkers as $class) {
             $details = $this->getClassDetails($class);
             $property = $details['property'];
 
-            if (!isset($discoverCaching[$element['dom']])) {
-                $discoverCaching[$details['dom']] = $this->getDom()->find($details['dom']);
-            }
-
-            foreach ($discoverCaching[$details['dom']] as $k => $node) {
+            foreach ($this->discoverCachingGet($details['dom']) as $k => $node) {
                 $instance = new $class($node, $property);
 
                 if ($instance->handle()) {
