@@ -8,11 +8,4 @@ namespace Weglot\Parser\Check;
  */
 class A_dt extends AbstractChecker
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function check()
-    {
-        return true;
-    }
 }

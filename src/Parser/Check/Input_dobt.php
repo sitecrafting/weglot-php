@@ -8,11 +8,4 @@ namespace Weglot\Parser\Check;
  */
 class Input_dobt extends AbstractChecker
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function check()
-    {
-        return true;
-    }
 }

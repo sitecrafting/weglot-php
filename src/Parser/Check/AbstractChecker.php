@@ -96,5 +96,8 @@ abstract class AbstractChecker
     /**
      * @return bool
      */
-    abstract protected function check();
+    protected function check()
+    {
+        return true;
+    }
 }

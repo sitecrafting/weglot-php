@@ -8,11 +8,4 @@ namespace Weglot\Parser\Check;
  */
 class Rad_obt extends AbstractChecker
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function check()
-    {
-        return true;
-    }
 }
