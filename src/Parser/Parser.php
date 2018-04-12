@@ -184,30 +184,10 @@ class Parser
         $this->filterExcludeBlocks($dom);
 
         $checker = new DomChecker($dom);
-        list($words, $nodes) = $checker->handle($words, $nodes);
+        list($words, $nodes) = $checker->handle();
 
-        $jsons = [];
-        $nbJsonStrings = 0;
-
-        foreach ($dom->find('script[type="application/ld+json"]') as $k => $row) {
-            $mustAddjson = false;
-            $json = json_decode($row->innertext, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                foreach ($this->getMicroData() as $key) {
-                    $path = explode(">", $key);
-                    $value = $this->getValue($json, $path);
-
-                    if (isset($value)) {
-                        $mustAddjson = true;
-                        $this->addValues($value, $words, $nbJsonStrings);
-                    }
-                }
-
-                if ($mustAddjson) {
-                    array_push($jsons, ['node' => $row, 'json' => $json]);
-                }
-            }
-        }
+        $checker = new JsonChecker($dom, $words);
+        list($words, $jsons) = $checker->handle();
 
         // Translate endpoint parameters
         $params = [

@@ -26,6 +26,10 @@ class DomChecker
      */
     protected $discoverCaching;
 
+    /**
+     * DomChecker constructor.
+     * @param simple_html_dom $dom
+     */
     public function __construct(simple_html_dom $dom)
     {
         $this->setDom($dom);
@@ -94,11 +98,10 @@ class DomChecker
     {
         $class = self::CHECKERS_NAMESPACE. $class;
         return [
-            'class' => $class,
-            'dom' => $class::DOM,
-            'property' => $class::PROPERTY,
-            'wordType' => $class::WORD_TYPE
-
+            $class,
+            $class::DOM,
+            $class::PROPERTY,
+            $class::WORD_TYPE
         ];
     }
 
@@ -114,8 +117,8 @@ class DomChecker
         foreach ($checkers as $class) {
             list($class, $dom, $property, $wordType) = $this->getClassDetails($class);
 
-            $nodes = $this->discoverCachingGet($dom);
-            foreach ($nodes as $k => $node) {
+            $discoveringNodes = $this->discoverCachingGet($dom);
+            foreach ($discoveringNodes as $k => $node) {
                 $instance = new $class($node, $property);
 
                 if ($instance->handle()) {
