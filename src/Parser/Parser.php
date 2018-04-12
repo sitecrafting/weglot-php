@@ -3,6 +3,7 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
@@ -13,6 +14,7 @@ use Weglot\Parser\Check\DomChecker;
 use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Weglot\Parser\Formatter\IgnoredNodes;
 
 /**
  * Class Parser
@@ -189,13 +191,15 @@ class Parser
     }
 
     /**
-     * @param string $source
+     * @param $source
      * @return string
+     * @throws InvalidWordTypeException
      */
     public function translate($source)
     {
         if ($this->client->apiKeyCheck()) {
-            $source = $this->ignoreNodes($source);
+            $ignoredNodesFormatter = new IgnoredNodes($source);
+            $source = $ignoredNodesFormatter->getSource();
         }
 
         $dom = \SimpleHtmlDom\str_get_html(
@@ -245,40 +249,6 @@ class Parser
 
         $this->applyToDom($translated, $nodes, $jsons);
         return $dom->save();
-    }
-
-    /**
-     * Convert < & > for some dom tags to let them able
-     * to go through API calls.
-     *
-     * @param string $source
-     * @return string
-     */
-    protected function ignoreNodes($source)
-    {
-        $nodes_to_ignore = [
-            ['<strong>', '</strong>'],
-            ['<em>', '</em>'],
-            ['<abbr>', '</abbr>'],
-            ['<acronym>', '</acronym>'],
-            ['<b>', '</b>'],
-            ['<bdo>', '</bdo>'],
-            ['<big>', '</big>'],
-            ['<cite>', '</cite>'],
-            ['<kbd>', '</kbd>'],
-            ['<q>', '</q>'],
-            ['<small>', '</small>'],
-            ['<sub>', '</sub>'],
-            ['<sup>', '</sup>'],
-        ];
-
-        foreach ($nodes_to_ignore as $ignore) {
-            $pattern = '#' . $ignore[0] . '([^>]*)?' . $ignore[1] . '#';
-            $replace = htmlentities($ignore[0]) . '$1' . htmlentities($ignore[1]);
-            $source = preg_replace($pattern, $replace, $source);
-        }
-
-        return $source;
     }
 
     /**
