@@ -56,6 +56,22 @@ class DomChecker
     }
 
     /**
+     * @param string $class
+     * @return array
+     */
+    private function getClassDetails($class)
+    {
+        $class = self::CHECKERS_NAMESPACE. $class;
+        return [
+            'class' => $class,
+            'dom' => $class::DOM,
+            'property' => $class::PROPERTY,
+            'wordType' => $class::WORD_TYPE
+
+        ];
+    }
+
+    /**
      * @param array $words
      * @param array $nodes
      */
@@ -65,21 +81,19 @@ class DomChecker
         $checkers = $this->getCheckers();
 
         foreach ($checkers as $class) {
-            $class = self::CHECKERS_NAMESPACE. $class;
-            $domToMatch = $class::DOM;
-            $property = $class::PROPERTY;
-            $wordType = $class::WORD_TYPE;
+            $details = $this->getClassDetails($class);
+            $property = $details['property'];
 
             if (!isset($discoverCaching[$element['dom']])) {
-                $discoverCaching[$domToMatch] = $this->getDom()->find($domToMatch);
+                $discoverCaching[$details['dom']] = $this->getDom()->find($details['dom']);
             }
 
-            foreach ($discoverCaching[$domToMatch] as $k => $node) {
+            foreach ($discoverCaching[$details['dom']] as $k => $node) {
                 $instance = new $class($node, $property);
 
                 if ($instance->handle()) {
                     $words[] = [
-                        't' => $wordType,
+                        't' => $details['wordType'],
                         'w' => $node->$property,
                     ];
 
