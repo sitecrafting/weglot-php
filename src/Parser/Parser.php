@@ -214,7 +214,7 @@ class Parser
             foreach ($discoverCaching[$element['dom']] as $k => $node) {
                 $property = $element['property'];
 
-                $instance = new $element['type']($node, $property);
+                $instance = new $element['class']($node, $property);
 
                 if ($instance->handle()) {
                     $words[] = [
@@ -224,7 +224,7 @@ class Parser
 
                     $nodes[] = [
                         'node' => $node,
-                        'type' => $element['type'],
+                        'class' => $element['class'],
                         'property' => $property,
                     ];
                 }
@@ -347,115 +347,115 @@ class Parser
         return [
             [
                 'dom' => 'text',
-                'type' => Text::class,
+                'class' => Text::class,
                 'property' => 'outertext',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'input[type="submit"],input[type="button"]',
-                'type' => Button::class,
+                'class' => Button::class,
                 'property' => 'value',
                 't' => WordType::VALUE,
             ],
             [
                 'dom' => 'input[type="submit"],input[type="button"]',
-                'type' => Input_dv::class,
+                'class' => Input_dv::class,
                 'property' => 'data-value',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'input[type="submit"],input[type="button"]',
-                'type' => Input_dobt::class,
+                'class' => Input_dobt::class,
                 'property' => 'data-order_button_text',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'input[type="radio"]',
-                'type' => Rad_obt::class,
+                'class' => Rad_obt::class,
                 'property' => 'data-order_button_text',
                 't' => WordType::VALUE,
             ],
             [
                 'dom' => "td",
-                'type' => Td_dt::class,
+                'class' => Td_dt::class,
                 'property' => 'data-title',
                 't' => WordType::VALUE,
             ],
             [
                 'dom' => 'input[type="text"],input[type="password"],input[type="search"],input[type="email"],input:not([type]),textarea',
-                'type' => Placeholder::class,
+                'class' => Placeholder::class,
                 'property' => 'placeholder',
                 't' => WordType::PLACEHOLDER,
             ],
             [
                 'dom' => 'meta[name="description"],meta[property="og:title"],meta[property="og:description"],meta[property="og:site_name"],meta[name="twitter:title"],meta[name="twitter:description"]',
-                'type' => Meta_desc::class,
+                'class' => Meta_desc::class,
                 'property' => 'content',
                 't' => WordType::META_CONTENT,
             ],
             [
                 'dom' => 'iframe',
-                'type' => Iframe_src::class,
+                'class' => Iframe_src::class,
                 'property' => 'src',
                 't' => WordType::IFRAME_SRC
             ],
             [
                 'dom' => 'img',
-                'type' => Img_src::class,
+                'class' => Img_src::class,
                 'property' => 'src',
                 't' => WordType::IMG_SRC,
             ],
             [
                 'dom' => 'img',
-                'type' => Img_alt::class,
+                'class' => Img_alt::class,
                 'property' => 'alt',
                 't' => WordType::IMG_ALT,
             ],
             [
                 'dom' => 'a',
-                'type' => A_pdf::class,
+                'class' => A_pdf::class,
                 'property' => 'href',
                 't' => WordType::PDF_HREF,
             ],
             [
                 'dom' => 'a',
-                'type' => A_title::class,
+                'class' => A_title::class,
                 'property' => 'title',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => A_dv::class,
+                'class' => A_dv::class,
                 'property' => 'data-value',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => A_dt::class,
+                'class' => A_dt::class,
                 'property' => 'data-title',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => A_dto::class,
+                'class' => A_dto::class,
                 'property' => 'data-tooltip',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => A_dho::class,
+                'class' => A_dho::class,
                 'property' => 'data-hover',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => A_dco::class,
+                'class' => A_dco::class,
                 'property' => 'data-content',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => A_dte::class,
+                'class' => A_dte::class,
                 'property' => 'data-text',
                 't' => WordType::TEXT,
             ]
@@ -498,19 +498,18 @@ class Parser
         for ($i = 0; $i < count($nodes); ++$i) {
             $currentNode = $nodes[$i];
             $property = $currentNode['property'];
-            $type = $currentNode['type'];
 
             if ($translated_words[$i] !== null) {
                 $current_translated = $translated_words[$i]->getWord();
 
-                if ($type instanceof Meta_desc) {
+                if ($currentNode['class'] instanceof Meta_desc) {
                     $currentNode['node']->$property = htmlspecialchars($current_translated);
                 } else {
                     $currentNode['node']->$property = $current_translated;
                 }
 
 
-                if ($type instanceof Img_src) {
+                if ($currentNode['class'] instanceof Img_src) {
                     $currentNode['node']->src = $current_translated;
                     if ($currentNode['node']->hasAttribute('srcset') &&
                         $currentNode['node']->srcset != '' &&
