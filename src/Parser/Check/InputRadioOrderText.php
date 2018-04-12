@@ -5,23 +5,23 @@ namespace Weglot\Parser\Check;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class Img_src
+ * Class Rad_obt
  * @package Weglot\Parser\Check
  */
-class Img_src extends AbstractChecker
+class InputRadioOrderText extends AbstractChecker
 {
     /**
      * {@inheritdoc}
      */
-    const DOM = 'img';
+    const DOM = 'input[type="radio"]';
 
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'src';
+    const PROPERTY = 'data-order_button_text';
 
     /**
      * {@inheritdoc}
      */
-    const WORD_TYPE = WordType::IMG_SRC;
+    const WORD_TYPE = WordType::VALUE;
 }

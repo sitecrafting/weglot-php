@@ -5,10 +5,10 @@ namespace Weglot\Parser\Check;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class A_dte
+ * Class A_dv
  * @package Weglot\Parser\Check
  */
-class A_dte extends AbstractChecker
+class LinkDataValue extends AbstractChecker
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class A_dte extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'data-text';
+    const PROPERTY = 'data-value';
 
     /**
      * {@inheritdoc}

@@ -5,23 +5,23 @@ namespace Weglot\Parser\Check;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class A_dho
+ * Class Td_dt
  * @package Weglot\Parser\Check
  */
-class A_dho extends AbstractChecker
+class TdDataTitle extends AbstractChecker
 {
     /**
      * {@inheritdoc}
      */
-    const DOM = 'a';
+    const DOM = 'td';
 
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'data-hover';
+    const PROPERTY = 'data-title';
 
     /**
      * {@inheritdoc}
      */
-    const WORD_TYPE = WordType::TEXT;
+    const WORD_TYPE = WordType::VALUE;
 }

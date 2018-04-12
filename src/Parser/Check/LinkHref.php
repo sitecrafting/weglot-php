@@ -9,7 +9,7 @@ use Weglot\Parser\Util\Text as TextUtil;
  * Class A_pdf
  * @package Weglot\Parser\Check
  */
-class A_pdf extends AbstractChecker
+class LinkHref extends AbstractChecker
 {
     /**
      * {@inheritdoc}

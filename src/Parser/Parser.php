@@ -7,8 +7,8 @@ use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
-use Weglot\Parser\Check\Img_src;
-use Weglot\Parser\Check\Meta_desc;
+use Weglot\Parser\Check\ImageSource;
+use Weglot\Parser\Check\MetaContent;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -336,14 +336,14 @@ class Parser
             if ($translated_words[$i] !== null) {
                 $current_translated = $translated_words[$i]->getWord();
 
-                if ($currentNode['class'] instanceof Meta_desc) {
+                if ($currentNode['class'] instanceof MetaContent) {
                     $currentNode['node']->$property = htmlspecialchars($current_translated);
                 } else {
                     $currentNode['node']->$property = $current_translated;
                 }
 
 
-                if ($currentNode['class'] instanceof Img_src) {
+                if ($currentNode['class'] instanceof ImageSource) {
                     $currentNode['node']->src = $current_translated;
                     if ($currentNode['node']->hasAttribute('srcset') &&
                         $currentNode['node']->srcset != '' &&

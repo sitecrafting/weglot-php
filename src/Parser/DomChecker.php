@@ -112,6 +112,7 @@ class DomChecker
         foreach ($checkers as $class) {
             $details = $this->getClassDetails($class);
             $property = $details['property'];
+            $class = $details['class'];
 
             foreach ($this->discoverCachingGet($details['dom']) as $k => $node) {
                 $instance = new $class($node, $property);

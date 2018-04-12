@@ -5,23 +5,23 @@ namespace Weglot\Parser\Check;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class Input_dv
+ * Class Img_src
  * @package Weglot\Parser\Check
  */
-class Input_dv extends AbstractChecker
+class ImageSource extends AbstractChecker
 {
     /**
      * {@inheritdoc}
      */
-    const DOM = 'input[type="submit"],input[type="button"]';
+    const DOM = 'img';
 
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'data-value';
+    const PROPERTY = 'src';
 
     /**
      * {@inheritdoc}
      */
-    const WORD_TYPE = WordType::TEXT;
+    const WORD_TYPE = WordType::IMG_SRC;
 }

@@ -8,7 +8,7 @@ use Weglot\Client\Api\Enum\WordType;
  * Class Input_dobt
  * @package Weglot\Parser\Check
  */
-class Input_dobt extends AbstractChecker
+class InputButtonOrderText extends AbstractChecker
 {
     /**
      * {@inheritdoc}

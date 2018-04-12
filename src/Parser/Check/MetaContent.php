@@ -9,7 +9,7 @@ use Weglot\Parser\Util\Text as TextUtil;
  * Class Meta_desc
  * @package Weglot\Parser\Check
  */
-class Meta_desc extends AbstractChecker
+class MetaContent extends AbstractChecker
 {
     /**
      * {@inheritdoc}

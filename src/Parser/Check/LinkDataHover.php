@@ -5,10 +5,10 @@ namespace Weglot\Parser\Check;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class A_title
+ * Class A_dho
  * @package Weglot\Parser\Check
  */
-class A_title extends AbstractChecker
+class LinkDataHover extends AbstractChecker
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class A_title extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'title';
+    const PROPERTY = 'data-hover';
 
     /**
      * {@inheritdoc}

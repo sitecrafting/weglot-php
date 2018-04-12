@@ -9,7 +9,7 @@ use Weglot\Parser\Util\Text as TextUtil;
  * Class Iframe_src
  * @package Weglot\Parser\Check
  */
-class Iframe_src extends AbstractChecker
+class IframeSrc extends AbstractChecker
 {
     /**
      * {@inheritdoc}

@@ -8,7 +8,7 @@ use Weglot\Client\Api\Enum\WordType;
  * Class Img_alt
  * @package Weglot\Parser\Check
  */
-class Img_alt extends AbstractChecker
+class ImageAlt extends AbstractChecker
 {
     /**
      * {@inheritdoc}
