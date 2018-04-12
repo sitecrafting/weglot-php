@@ -183,10 +183,8 @@ class Parser
 
         $this->filterExcludeBlocks($dom);
 
-        $words = [];
-        $nodes = [];
         $checker = new DomChecker($dom);
-        $checker->handle($words, $nodes);
+        list($words, $nodes) = $checker->handle($words, $nodes);
 
         $jsons = [];
         $nbJsonStrings = 0;

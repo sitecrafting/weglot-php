@@ -103,11 +103,12 @@ class DomChecker
     }
 
     /**
-     * @param array $words
-     * @param array $nodes
+     * @return array
      */
-    public function handle(array &$words, array &$nodes)
+    public function handle()
     {
+        $words = [];
+        $nodes = [];
         $checkers = $this->getCheckers();
 
         foreach ($checkers as $class) {
@@ -131,5 +132,10 @@ class DomChecker
                 }
             }
         }
+
+        return [
+            $words,
+            $nodes
+        ];
     }
 }
