@@ -78,6 +78,8 @@ class DomChecker
      */
     protected function getCheckers()
     {
+        $this->resetDiscoverCaching();
+
         $files = array_diff(scandir(__DIR__. '/Check'), ['AbstractChecker.php', '..', '.']);
         return array_map(function ($filename) {
             return Text::removeFileExtension($filename);
@@ -106,20 +108,18 @@ class DomChecker
      */
     public function handle(array &$words, array &$nodes)
     {
-        $this->resetDiscoverCaching();
         $checkers = $this->getCheckers();
 
         foreach ($checkers as $class) {
-            $details = $this->getClassDetails($class);
-            $property = $details['property'];
-            $class = $details['class'];
+            list($class, $dom, $property, $wordType) = $this->getClassDetails($class);
 
-            foreach ($this->discoverCachingGet($details['dom']) as $k => $node) {
+            $nodes = $this->discoverCachingGet($dom);
+            foreach ($nodes as $k => $node) {
                 $instance = new $class($node, $property);
 
                 if ($instance->handle()) {
                     $words[] = [
-                        't' => $details['wordType'],
+                        't' => $wordType,
                         'w' => $node->$property,
                     ];
 
