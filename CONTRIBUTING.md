@@ -38,7 +38,7 @@ If you wish to deviate, please explain your reasoning.
 Please run your code through:
 [PHP CS Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 
-We provide configuration for this tool through `.php_cs` file.
+We provide configuration for this tool through [`.php_cs`](./.php_cs) file.
 
 ### Security issues
 If you find any security risk in the project, please open an issue or contact us at `support@weglot.com` regarding the impact.
