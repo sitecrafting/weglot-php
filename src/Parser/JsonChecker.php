@@ -87,8 +87,7 @@ class JsonChecker
             $mustAddjson = false;
             $json = json_decode($row->innertext, true);
             if (json_last_error() === JSON_ERROR_NONE) {
-                $path = explode(">", 'description');
-                $value = $this->getValue($json, $path);
+                $value = $this->getValue($json, ['description']);
 
                 if (isset($value)) {
                     $mustAddjson = true;
