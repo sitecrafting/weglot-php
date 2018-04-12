@@ -4,6 +4,7 @@ namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
 use Weglot\Client\Api\TranslateEntry;
+use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
@@ -290,14 +291,6 @@ class Parser
     }
 
     /**
-     * @return array
-     */
-    protected function getMicroData()
-    {
-        return ["description"];
-    }
-
-    /**
      * @param TranslateEntry $translateEntry
      * @param array $nodes
      * @param array $words
@@ -315,9 +308,9 @@ class Parser
                 $current_translated = $translated_words[$i]->getWord();
 
                 if ($currentNode['class'] instanceof MetaContent) {
-                    $currentNode['node']->$property = htmlspecialchars($current_translated);
+                    $currentNode['node']->attr[$property] = htmlspecialchars($current_translated);
                 } else {
-                    $currentNode['node']->$property = $current_translated;
+                    $currentNode['node']->attr[$property] = $current_translated;
                 }
 
 
@@ -336,14 +329,13 @@ class Parser
         for ($j = 0; $j < count($jsons); $j++) {
             $jsonArray = $jsons[$j]['json'];
             $node = $jsons[$j]['node'];
-            foreach ($this->getMicroData() as $key) {
-                $path = explode(">", $key);
-                $hasV = $this->getValue($jsonArray, $path);
 
-                if (isset($hasV)) {
-                    $this->setValues($jsonArray, $path, $translated_words, $index);
-                }
+            $hasV = $this->getValue($jsonArray, ['description']);
+
+            if (isset($hasV)) {
+                $this->setValues($jsonArray, ['description'], $translated_words, $index);
             }
+
             $node->innertext = json_encode($jsonArray, JSON_PRETTY_PRINT);
         }
     }
@@ -400,11 +392,11 @@ class Parser
     /**
      * @param $data
      * @param $path
-     * @param array $translatedwords
+     * @param WordCollection $words
      * @param int $index
      * @return null|void
      */
-    public function setValues(&$data, $path, $translatedwords, &$index)
+    public function setValues(&$data, $path, WordCollection $words, &$index)
     {
         $temp = &$data;
         foreach ($path as $key) {
@@ -417,10 +409,10 @@ class Parser
 
         if (is_array($temp)) {
             foreach ($temp as $key => &$val) {
-                $this->setValues($val, null, $translatedwords, $index);
+                $this->setValues($val, null, $words, $index);
             }
         } else {
-            $temp = $translatedwords[$index]->getWord();
+            $temp = $words[$index]->getWord();
             $index++;
         }
 
