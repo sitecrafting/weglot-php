@@ -16,3 +16,7 @@ composer.lock
 ##> phpmetrics ##
 phpmetrics/
 ##< phpmetrics ##
+
+##> dotenv ##
+.env
+##< dotenv
