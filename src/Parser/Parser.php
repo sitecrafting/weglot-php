@@ -50,6 +50,11 @@ class Parser
     protected $languageTo;
 
     /**
+     * @var WordCollection
+     */
+    protected $words;
+
+    /**
      * Parser constructor.
      * @param Client $client
      * @param string $language_from
@@ -64,7 +69,8 @@ class Parser
             ->setLanguageFrom($language_from)
             ->setLanguageTo($language_to)
             ->setConfigProvider($config)
-            ->setExcludeBlocks($excludeBlocks);
+            ->setExcludeBlocks($excludeBlocks)
+            ->setWords(new WordCollection());
     }
 
     /**
@@ -163,6 +169,25 @@ class Parser
     }
 
     /**
+     * @param WordCollection $wordCollection
+     * @return $this
+     */
+    public function setWords(WordCollection $wordCollection)
+    {
+        $this->words = $wordCollection;
+
+        return $this;
+    }
+
+    /**
+     * @return WordCollection
+     */
+    public function getWords()
+    {
+        return $this->words;
+    }
+
+    /**
      * @param string $source
      * @return string
      */
@@ -184,11 +209,11 @@ class Parser
 
         $this->filterExcludeBlocks($dom);
 
-        $checker = new DomChecker($dom);
-        list($words, $nodes) = $checker->handle();
+        $checker = new DomChecker($this, $dom);
+        $nodes = $checker->handle();
 
-        $checker = new JsonLdChecker($dom, $words);
-        list($words, $jsons) = $checker->handle();
+        $checker = new JsonLdChecker($this, $dom);
+        $jsons = $checker->handle();
 
         // Translate endpoint parameters
         $params = [
@@ -203,11 +228,7 @@ class Parser
 
         try {
             $translate = new TranslateEntry($params);
-            $input = $translate->getInputWords();
-
-            foreach ($words as $word) {
-                $input->addOne(new WordEntry($word['w'], $word['t']));
-            }
+            $translate->setInputWords($this->getWords());
         } catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -221,7 +242,7 @@ class Parser
             die($e->getMessage());
         }
 
-        $this->applyToDom($translated, $nodes, $words, $jsons);
+        $this->applyToDom($translated, $nodes, $jsons);
         return $dom->save();
     }
 
@@ -293,11 +314,11 @@ class Parser
     /**
      * @param TranslateEntry $translateEntry
      * @param array $nodes
-     * @param array $words
      * @param array $jsons
      */
-    protected function applyToDom(TranslateEntry $translateEntry, array $nodes, array $words, array $jsons)
+    protected function applyToDom(TranslateEntry $translateEntry, array $nodes, array $jsons)
     {
+        $words = $this->getWords();
         $translated_words = $translateEntry->getOutputWords();
 
         for ($i = 0; $i < count($nodes); ++$i) {
@@ -308,17 +329,16 @@ class Parser
                 $current_translated = $translated_words[$i]->getWord();
 
                 if ($currentNode['class'] instanceof MetaContent) {
-                    $currentNode['node']->attr[$property] = htmlspecialchars($current_translated);
+                    $currentNode['node']->$property = htmlspecialchars($current_translated);
                 } else {
-                    $currentNode['node']->attr[$property] = $current_translated;
+                    $currentNode['node']->$property = $current_translated;
                 }
-
 
                 if ($currentNode['class'] instanceof ImageSource) {
                     $currentNode['node']->src = $current_translated;
                     if ($currentNode['node']->hasAttribute('srcset') &&
                         $currentNode['node']->srcset != '' &&
-                        $current_translated != $words[$i]['w']) {
+                        $current_translated != $words[$i]->getWord()) {
                         $currentNode['node']->srcset = '';
                     }
                 }

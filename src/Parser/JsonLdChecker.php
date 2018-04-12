@@ -8,75 +8,15 @@
 
 namespace Weglot\Parser;
 
-use SimpleHtmlDom\simple_html_dom;
-use SimpleHtmlDom\simple_html_dom_node;
-use Weglot\Parser\Util\Text;
+use Weglot\Client\Api\Enum\WordType;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
+use Weglot\Client\Api\WordEntry;
 
-class JsonLdChecker
+class JsonLdChecker extends AbstractChecker
 {
-
-    /**
-     * @var simple_html_dom
-     */
-    protected $dom;
-
-    /**
-     * @var array
-     */
-    protected $words;
-
-    /**
-     * JsonChecker constructor.
-     * @param simple_html_dom $dom
-     * @param array $words
-     */
-    public function __construct(simple_html_dom $dom, array $words)
-    {
-        $this
-            ->setDom($dom)
-            ->setWords($words);
-    }
-
-    /**
-     * @param simple_html_dom $dom
-     * @return $this
-     */
-    public function setDom(simple_html_dom $dom)
-    {
-        $this->dom = $dom;
-
-        return $this;
-    }
-
-    /**
-     * @return simple_html_dom
-     */
-    public function getDom()
-    {
-        return $this->dom;
-    }
-
-    /**
-     * @param $words
-     * @return $this
-     */
-    public function setWords($words)
-    {
-        $this->words = $words;
-
-        return $this;
-    }
-
     /**
      * @return array
-     */
-    public function getWords()
-    {
-        return $this->words;
-    }
-
-    /**
-     * @return array
+     * @throws InvalidWordTypeException
      */
     public function handle()
     {
@@ -103,10 +43,7 @@ class JsonLdChecker
             }
         }
 
-        return [
-            $this->words,
-            $jsons
-        ];
+        return $jsons;
     }
 
     /**
@@ -129,7 +66,8 @@ class JsonLdChecker
 
     /**
      * @param $value
-     * @param int $nbJsonStrings
+     * @param $nbJsonStrings
+     * @throws InvalidWordTypeException
      */
     public function addValues($value, &$nbJsonStrings)
     {
@@ -138,10 +76,7 @@ class JsonLdChecker
                 $this->addValues($val, $nbJsonStrings);
             }
         } else {
-            $this->words[] = [
-                't' => 1,
-                'w' => $value,
-            ];
+            $this->getParser()->getWords()->addOne(new WordEntry($value, WordType::TEXT));
             $nbJsonStrings++;
         }
     }

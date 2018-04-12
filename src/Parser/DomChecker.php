@@ -8,51 +8,19 @@
 
 namespace Weglot\Parser;
 
-use SimpleHtmlDom\simple_html_dom;
 use SimpleHtmlDom\simple_html_dom_node;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
+use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\Util\Text;
 
-class DomChecker
+class DomChecker extends AbstractChecker
 {
     const CHECKERS_NAMESPACE = '\\Weglot\\Parser\\Check\\';
-
-    /**
-     * @var simple_html_dom
-     */
-    protected $dom;
 
     /**
      * @var array
      */
     protected $discoverCaching;
-
-    /**
-     * DomChecker constructor.
-     * @param simple_html_dom $dom
-     */
-    public function __construct(simple_html_dom $dom)
-    {
-        $this->setDom($dom);
-    }
-
-    /**
-     * @param simple_html_dom $dom
-     * @return $this
-     */
-    public function setDom(simple_html_dom $dom)
-    {
-        $this->dom = $dom;
-
-        return $this;
-    }
-
-    /**
-     * @return simple_html_dom
-     */
-    public function getDom()
-    {
-        return $this->dom;
-    }
 
     /**
      * @return $this
@@ -107,6 +75,7 @@ class DomChecker
 
     /**
      * @return array
+     * @throws InvalidWordTypeException
      */
     public function handle()
     {
@@ -122,10 +91,7 @@ class DomChecker
                 $instance = new $class($node, $property);
 
                 if ($instance->handle()) {
-                    $words[] = [
-                        't' => $wordType,
-                        'w' => $node->$property,
-                    ];
+                    $this->getParser()->getWords()->addOne(new WordEntry($node->$property, $wordType));
 
                     $nodes[] = [
                         'node' => $node,
@@ -136,9 +102,6 @@ class DomChecker
             }
         }
 
-        return [
-            $words,
-            $nodes
-        ];
+        return $nodes;
     }
 }
