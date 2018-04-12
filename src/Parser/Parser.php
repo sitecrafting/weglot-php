@@ -3,6 +3,7 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
@@ -184,28 +185,32 @@ class Parser
         $words = [];
         $nodes = [];
 
-        foreach ($this->domCheckMapping() as $key => $elem) {
-            foreach ($dom->find($key) as $k => $row) {
-                foreach ($elem as $element) {
-                    $property = $element['property'];
-                    $t = $element['t'];
-                    $type = $element['type'];
+        $discoverCaching = [];
 
-                    $class = '\\Weglot\\Parser\\Check\\' .ucfirst($type);
-                    $instance = new $class($row, $property);
+        foreach ($this->domCheckMapping() as $element) {
+            if (!isset($discoverCaching[$element['dom']])) {
+                $discoverCaching[$element['dom']] = $dom->find($element['dom']);
+            }
 
-                    if ($instance->handle()) {
-                        $words[] = [
-                            't' => $t,
-                            'w' => $row->$property,
-                        ];
+            foreach ($discoverCaching[$element['dom']] as $k => $node) {
+                $t = $element['t'];
+                $property = $element['property'];
+                $type = $element['type'];
 
-                        $nodes[] = [
-                            'node' => $row,
-                            'type' => $type,
-                            'property' => $property,
-                        ];
-                    }
+                $class = '\\Weglot\\Parser\\Check\\' .ucfirst($type);
+                $instance = new $class($node, $property);
+
+                if ($instance->handle()) {
+                    $words[] = [
+                        't' => $t,
+                        'w' => $node->$property,
+                    ];
+
+                    $nodes[] = [
+                        'node' => $node,
+                        'type' => $type,
+                        'property' => $property,
+                    ];
                 }
             }
         }
@@ -324,130 +329,120 @@ class Parser
     protected function domCheckMapping()
     {
         return [
-            'text' => [
-                [
-                    'property' => 'outertext',
-                    't' => 1,
-                    'type' => 'text',
-                ],
+            [
+                'dom' => 'text',
+                'type' => 'text',
+                'property' => 'outertext',
+                't' => WordType::TEXT,
             ],
-            "input[type='submit'],input[type='button']" => [
-                [
-                    'property' => 'value',
-                    't' => 2,
-                    'type' => 'button',
-                ],
-                [
-                    'property' => 'data-value',
-                    't' => 1,
-                    'type' => 'input_dv',
-                ],
-                [
-                    'property' => 'data-order_button_text',
-                    't' => 1,
-                    'type' => 'input_dobt',
-                ],
+            [
+                'dom' => 'input[type="submit"],input[type="button"]',
+                'type' => 'button',
+                'property' => 'value',
+                't' => WordType::VALUE,
             ],
-
-            "input[type='radio']" => [
-                [
-                    'property' => 'data-order_button_text',
-                    't' => 2,
-                    'type' => 'rad_obt',
-                ],
+            [
+                'dom' => 'input[type="submit"],input[type="button"]',
+                'type' => 'input_dv',
+                'property' => 'data-value',
+                't' => WordType::TEXT,
             ],
-
-
-            "td" => [
-                [
-                    'property' => 'data-title',
-                    't' => 2,
-                    'type' => 'td_dt',
-                ],
+            [
+                'dom' => 'input[type="submit"],input[type="button"]',
+                'type' => 'input_dobt',
+                'property' => 'data-order_button_text',
+                't' => WordType::TEXT,
             ],
-
-            "input[type=\'text\'],input[type=\'password\'],input[type=\'search\'],input[type=\'email\'],input:not([type]),textarea"
-            => [
-                [
-                    'property' => 'placeholder',
-                    't' => 3,
-                    'type' => 'placeholder',
-                ],
+            [
+                'dom' => 'input[type="radio"]',
+                'type' => 'rad_obt',
+                'property' => 'data-order_button_text',
+                't' => WordType::VALUE,
             ],
-
-            'meta[name="description"],meta[property="og:title"],meta[property="og:description"],meta[property="og:site_name"],meta[name="twitter:title"],meta[name="twitter:description"]'
-            => [
-                [
-                    'property' => 'content',
-                    't' => 4,
-                    'type' => 'meta_desc',
-                ],
+            [
+                'dom' => "td",
+                'type' => 'td_dt',
+                'property' => 'data-title',
+                't' => WordType::VALUE,
             ],
-
-            'iframe' => [
-                [
-                    'property' => 'src',
-                    't' => 5,
-                    'type' => 'iframe_src',
-                ],
+            [
+                'dom' => 'input[type="text"],input[type="password"],input[type="search"],input[type="email"],input:not([type]),textarea',
+                'type' => 'placeholder',
+                'property' => 'placeholder',
+                't' => WordType::PLACEHOLDER,
             ],
-
-            'img' => [
-                [
-                    'property' => 'src',
-                    't' => 6,
-                    'type' => 'img_src',
-                ],
-                [
-                    'property' => 'alt',
-                    't' => 7,
-                    'type' => 'img_alt',
-                ],
+            [
+                'dom' => 'meta[name="description"],meta[property="og:title"],meta[property="og:description"],meta[property="og:site_name"],meta[name="twitter:title"],meta[name="twitter:description"]',
+                'type' => 'meta_desc',
+                'property' => 'content',
+                't' => WordType::META_CONTENT,
             ],
-
-            'a' => [
-                [
-                    'property' => 'href',
-                    't' => 8,
-                    'type' => 'a_pdf',
-                ],
-                [
-                    'property' => 'title',
-                    't' => 1,
-                    'type' => 'a_title',
-                ],
-                [
-                    'property' => 'data-value',
-                    't' => 1,
-                    'type' => 'a_dv',
-                ],
-                [
-                    'property' => 'data-title',
-                    't' => 1,
-                    'type' => 'a_dt',
-                ],
-                [
-                    'property' => 'data-tooltip',
-                    't' => 1,
-                    'type' => 'a_dto',
-                ],
-                [
-                    'property' => 'data-hover',
-                    't' => 1,
-                    'type' => 'a_dho',
-                ],
-                [
-                    'property' => 'data-content',
-                    't' => 1,
-                    'type' => 'a_dco',
-                ],
-                [
-                    'property' => 'data-text',
-                    't' => 1,
-                    'type' => 'a_dte',
-                ],
+            [
+                'dom' => 'iframe',
+                'type' => 'iframe_src',
+                'property' => 'src',
+                't' => WordType::IFRAME_SRC
             ],
-
+            [
+                'dom' => 'img',
+                'property' => 'src',
+                't' => WordType::IMG_SRC,
+                'type' => 'img_src',
+            ],
+            [
+                'dom' => 'img',
+                'type' => 'img_alt',
+                'property' => 'alt',
+                't' => WordType::IMG_ALT,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_pdf',
+                'property' => 'href',
+                't' => WordType::PDF_HREF,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_title',
+                'property' => 'title',
+                't' => WordType::TEXT,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_dv',
+                'property' => 'data-value',
+                't' => WordType::TEXT,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_dt',
+                'property' => 'data-title',
+                't' => WordType::TEXT,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_dto',
+                'property' => 'data-tooltip',
+                't' => WordType::TEXT,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_dho',
+                'property' => 'data-hover',
+                't' => WordType::TEXT,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_dco',
+                'property' => 'data-content',
+                't' => WordType::TEXT,
+            ],
+            [
+                'dom' => 'a',
+                'type' => 'a_dte',
+                'property' => 'data-text',
+                't' => WordType::TEXT,
+            ]
         ];
     }
 
