@@ -6,12 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- examples:
+- examples & descriptions:
   - cached-client-translate
   - parsing-web-page
   - simple-client-languages
   - simple-client-status
   - simple-client-translate
+- adding LICENCE, CODE_OF_CONDUCT, CONTRIBUTING and github templates
 
 ## [0.1-beta] - 2018-04-11
 ### Added
