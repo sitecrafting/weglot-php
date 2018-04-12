@@ -8,6 +8,25 @@ use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
+use Weglot\Parser\Check\A_dco;
+use Weglot\Parser\Check\A_dho;
+use Weglot\Parser\Check\A_dt;
+use Weglot\Parser\Check\A_dte;
+use Weglot\Parser\Check\A_dto;
+use Weglot\Parser\Check\A_dv;
+use Weglot\Parser\Check\A_pdf;
+use Weglot\Parser\Check\A_title;
+use Weglot\Parser\Check\Button;
+use Weglot\Parser\Check\Iframe_src;
+use Weglot\Parser\Check\Img_alt;
+use Weglot\Parser\Check\Img_src;
+use Weglot\Parser\Check\Input_dobt;
+use Weglot\Parser\Check\Input_dv;
+use Weglot\Parser\Check\Meta_desc;
+use Weglot\Parser\Check\Placeholder;
+use Weglot\Parser\Check\Rad_obt;
+use Weglot\Parser\Check\Td_dt;
+use Weglot\Parser\Check\Text;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -193,22 +212,19 @@ class Parser
             }
 
             foreach ($discoverCaching[$element['dom']] as $k => $node) {
-                $t = $element['t'];
                 $property = $element['property'];
-                $type = $element['type'];
 
-                $class = '\\Weglot\\Parser\\Check\\' .ucfirst($type);
-                $instance = new $class($node, $property);
+                $instance = new $element['type']($node, $property);
 
                 if ($instance->handle()) {
                     $words[] = [
-                        't' => $t,
+                        't' => $element['t'],
                         'w' => $node->$property,
                     ];
 
                     $nodes[] = [
                         'node' => $node,
-                        'type' => $type,
+                        'type' => $element['type'],
                         'property' => $property,
                     ];
                 }
@@ -331,115 +347,115 @@ class Parser
         return [
             [
                 'dom' => 'text',
-                'type' => 'text',
+                'type' => Text::class,
                 'property' => 'outertext',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'input[type="submit"],input[type="button"]',
-                'type' => 'button',
+                'type' => Button::class,
                 'property' => 'value',
                 't' => WordType::VALUE,
             ],
             [
                 'dom' => 'input[type="submit"],input[type="button"]',
-                'type' => 'input_dv',
+                'type' => Input_dv::class,
                 'property' => 'data-value',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'input[type="submit"],input[type="button"]',
-                'type' => 'input_dobt',
+                'type' => Input_dobt::class,
                 'property' => 'data-order_button_text',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'input[type="radio"]',
-                'type' => 'rad_obt',
+                'type' => Rad_obt::class,
                 'property' => 'data-order_button_text',
                 't' => WordType::VALUE,
             ],
             [
                 'dom' => "td",
-                'type' => 'td_dt',
+                'type' => Td_dt::class,
                 'property' => 'data-title',
                 't' => WordType::VALUE,
             ],
             [
                 'dom' => 'input[type="text"],input[type="password"],input[type="search"],input[type="email"],input:not([type]),textarea',
-                'type' => 'placeholder',
+                'type' => Placeholder::class,
                 'property' => 'placeholder',
                 't' => WordType::PLACEHOLDER,
             ],
             [
                 'dom' => 'meta[name="description"],meta[property="og:title"],meta[property="og:description"],meta[property="og:site_name"],meta[name="twitter:title"],meta[name="twitter:description"]',
-                'type' => 'meta_desc',
+                'type' => Meta_desc::class,
                 'property' => 'content',
                 't' => WordType::META_CONTENT,
             ],
             [
                 'dom' => 'iframe',
-                'type' => 'iframe_src',
+                'type' => Iframe_src::class,
                 'property' => 'src',
                 't' => WordType::IFRAME_SRC
             ],
             [
                 'dom' => 'img',
+                'type' => Img_src::class,
                 'property' => 'src',
                 't' => WordType::IMG_SRC,
-                'type' => 'img_src',
             ],
             [
                 'dom' => 'img',
-                'type' => 'img_alt',
+                'type' => Img_alt::class,
                 'property' => 'alt',
                 't' => WordType::IMG_ALT,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_pdf',
+                'type' => A_pdf::class,
                 'property' => 'href',
                 't' => WordType::PDF_HREF,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_title',
+                'type' => A_title::class,
                 'property' => 'title',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_dv',
+                'type' => A_dv::class,
                 'property' => 'data-value',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_dt',
+                'type' => A_dt::class,
                 'property' => 'data-title',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_dto',
+                'type' => A_dto::class,
                 'property' => 'data-tooltip',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_dho',
+                'type' => A_dho::class,
                 'property' => 'data-hover',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_dco',
+                'type' => A_dco::class,
                 'property' => 'data-content',
                 't' => WordType::TEXT,
             ],
             [
                 'dom' => 'a',
-                'type' => 'a_dte',
+                'type' => A_dte::class,
                 'property' => 'data-text',
                 't' => WordType::TEXT,
             ]
@@ -480,25 +496,26 @@ class Parser
         $translated_words = $translateEntry->getOutputWords();
 
         for ($i = 0; $i < count($nodes); ++$i) {
-            $property = $nodes[$i]['property'];
-            $type = $nodes[$i]['type'];
+            $currentNode = $nodes[$i];
+            $property = $currentNode['property'];
+            $type = $currentNode['type'];
 
             if ($translated_words[$i] !== null) {
                 $current_translated = $translated_words[$i]->getWord();
 
-                if ($type == "meta_desc") {
-                    $nodes[$i]['node']->$property = htmlspecialchars($current_translated);
+                if ($type instanceof Meta_desc) {
+                    $currentNode['node']->$property = htmlspecialchars($current_translated);
                 } else {
-                    $nodes[$i]['node']->$property = $current_translated;
+                    $currentNode['node']->$property = $current_translated;
                 }
 
 
-                if ($nodes[$i]['type'] == 'img_src') {
-                    $nodes[$i]['node']->src = $current_translated;
-                    if ($nodes[$i]['node']->hasAttribute('srcset') &&
-                        $nodes[$i]['node']->srcset != '' &&
+                if ($type instanceof Img_src) {
+                    $currentNode['node']->src = $current_translated;
+                    if ($currentNode['node']->hasAttribute('srcset') &&
+                        $currentNode['node']->srcset != '' &&
                         $current_translated != $words[$i]['w']) {
-                        $nodes[$i]['node']->srcset = '';
+                        $currentNode['node']->srcset = '';
                     }
                 }
             }
