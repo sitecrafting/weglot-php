@@ -187,7 +187,7 @@ class Parser
         $checker = new DomChecker($dom);
         list($words, $nodes) = $checker->handle();
 
-        $checker = new JsonChecker($dom, $words);
+        $checker = new JsonLdChecker($dom, $words);
         list($words, $jsons) = $checker->handle();
 
         // Translate endpoint parameters

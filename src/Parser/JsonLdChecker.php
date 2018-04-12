@@ -12,7 +12,7 @@ use SimpleHtmlDom\simple_html_dom;
 use SimpleHtmlDom\simple_html_dom_node;
 use Weglot\Parser\Util\Text;
 
-class JsonChecker
+class JsonLdChecker
 {
 
     /**
@@ -129,7 +129,6 @@ class JsonChecker
 
     /**
      * @param $value
-     * @param array $words
      * @param int $nbJsonStrings
      */
     public function addValues($value, &$nbJsonStrings)
