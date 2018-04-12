@@ -44,12 +44,6 @@ class Server
                             Text::contains($userAgent, 'SemrushBot'));
 
         $detectedBot = BotType::OTHER;
-        $otherBotAgents = [
-            'bing' => BotType::BING,
-            'yahoo' => BotType::YAHOO,
-            'Baidu' => BotType::BAIDU,
-            'Yandex' => BotType::YANDEX
-        ];
 
         if ($userAgent !== null) {
             if (!$checkBotAgent) {
@@ -58,7 +52,7 @@ class Server
                 if ($checkBotGoogle) {
                     $detectedBot = BotType::GOOGLE;
                 }
-                foreach ($otherBotAgents as $agent => $agentBot) {
+                foreach (self::otherBotAgents() as $agent => $agentBot) {
                     if (!$checkBotGoogle && Text::contains($userAgent, $agent)) {
                         $detectedBot = $agentBot;
                         break;
@@ -68,6 +62,19 @@ class Server
         }
 
         return $detectedBot;
+    }
+
+    /**
+     * @return array
+     */
+    private static function otherBotAgents()
+    {
+        return [
+            'bing' => BotType::BING,
+            'yahoo' => BotType::YAHOO,
+            'Baidu' => BotType::BAIDU,
+            'Yandex' => BotType::YANDEX
+        ];
     }
 
     /**
