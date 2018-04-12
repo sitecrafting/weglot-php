@@ -1,125 +1,75 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: bleduc
+ * Date: 12/04/2018
+ * Time: 17:10
+ */
 
 namespace Weglot\Parser\Check;
 
-use SimpleHtmlDom\simple_html_dom_node;
-use Weglot\Client\Api\Enum\WordType;
+use SimpleHtmlDom\simple_html_dom;
 use Weglot\Parser\Parser;
-use Weglot\Parser\Util\Text;
 
-/**
- * Class AbstractChecker
- * @package Weglot\Parser\Check
- */
 abstract class AbstractChecker
 {
     /**
-     * DOM node to match
-     *
-     * @var string
+     * @var Parser
      */
-    const DOM = '';
+    protected $parser;
 
     /**
-     * DOM property to get
-     *
-     * @var string
+     * @var simple_html_dom
      */
-    const PROPERTY = '';
+    protected $dom;
 
     /**
-     * Type of content returned by DOM property
-     *
-     * @var string
+     * DomChecker constructor.
+     * @param Parser $parser
+     * @param simple_html_dom $dom
      */
-    const WORD_TYPE = WordType::GENERIC;
-
-    /**
-     * @var simple_html_dom_node
-     */
-    protected $node;
-
-    /**
-     * @var string
-     */
-    protected $property;
-
-    /**
-     * AbstractChecker constructor.
-     * @param simple_html_dom_node $node
-     * @param string $property
-     */
-    public function __construct(simple_html_dom_node $node, $property)
+    public function __construct(Parser $parser, simple_html_dom $dom)
     {
         $this
-            ->setNode($node)
-            ->setProperty($property);
+            ->setParser($parser)
+            ->setDom($dom);
     }
 
     /**
-     * @param simple_html_dom_node $node
+     * @param Parser $parser
      * @return $this
      */
-    public function setNode(simple_html_dom_node $node)
+    public function setParser(Parser $parser)
     {
-        $this->node = $node;
+        $this->parser = $parser;
 
         return $this;
     }
 
     /**
-     * @return simple_html_dom_node
+     * @return Parser
      */
-    public function getNode()
+    public function getParser()
     {
-        return $this->node;
+        return $this->parser;
     }
 
     /**
-     * @param string $property
+     * @param simple_html_dom $dom
      * @return $this
      */
-    public function setProperty($property)
+    public function setDom(simple_html_dom $dom)
     {
-        $this->property = $property;
+        $this->dom = $dom;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return simple_html_dom
      */
-    public function getProperty()
+    public function getDom()
     {
-        return $this->property;
-    }
-
-    /**
-     * @return bool
-     */
-    public function handle()
-    {
-        return $this->defaultCheck() && $this->check();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function defaultCheck()
-    {
-        $property = $this->property;
-
-        return (
-            Text::fullTrim($this->node->$property) != '' &&
-            !$this->node->hasAncestorAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)
-        );
-    }
-
-    /**
-     * @return bool
-     */
-    protected function check()
-    {
-        return true;
+        return $this->dom;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Weglot\Parser\Check;
+namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
@@ -9,7 +9,7 @@ use Weglot\Parser\Util\Text as TextUtil;
  * Class Placeholder
  * @package Weglot\Parser\Check
  */
-class Placeholder extends AbstractChecker
+class Placeholder extends AbstractDomChecker
 {
     /**
      * {@inheritdoc}

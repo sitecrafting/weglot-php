@@ -1,24 +1,24 @@
 <?php
 
-namespace Weglot\Parser\Check;
+namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class A_dho
+ * Class Input_dv
  * @package Weglot\Parser\Check
  */
-class LinkDataHover extends AbstractChecker
+class InputButtonDataValue extends AbstractDomChecker
 {
     /**
      * {@inheritdoc}
      */
-    const DOM = 'a';
+    const DOM = 'input[type="submit"],input[type="button"]';
 
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'data-hover';
+    const PROPERTY = 'data-value';
 
     /**
      * {@inheritdoc}

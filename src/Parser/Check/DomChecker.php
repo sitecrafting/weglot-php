@@ -6,7 +6,7 @@
  * Time: 15:45
  */
 
-namespace Weglot\Parser;
+namespace Weglot\Parser\Check;
 
 use SimpleHtmlDom\simple_html_dom_node;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
@@ -15,7 +15,7 @@ use Weglot\Parser\Util\Text;
 
 class DomChecker extends AbstractChecker
 {
-    const CHECKERS_NAMESPACE = '\\Weglot\\Parser\\Check\\';
+    const CHECKERS_NAMESPACE = '\\Weglot\\Parser\\Check\\Dom\\';
 
     /**
      * @var array
@@ -52,7 +52,7 @@ class DomChecker extends AbstractChecker
     {
         $this->resetDiscoverCaching();
 
-        $files = array_diff(scandir(__DIR__. '/Check'), ['AbstractChecker.php', '..', '.']);
+        $files = array_diff(scandir(__DIR__ . '/Dom'), ['AbstractChecker.php', '..', '.']);
         return array_map(function ($filename) {
             return Text::removeFileExtension($filename);
         }, $files);
@@ -79,7 +79,6 @@ class DomChecker extends AbstractChecker
      */
     public function handle()
     {
-        $words = [];
         $nodes = [];
         $checkers = $this->getCheckers();
 

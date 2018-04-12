@@ -5,11 +5,12 @@ namespace Weglot\Parser;
 use SimpleHtmlDom\simple_html_dom;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
-use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
-use Weglot\Parser\Check\ImageSource;
-use Weglot\Parser\Check\MetaContent;
+use Weglot\Parser\Check\Dom\ImageSource;
+use Weglot\Parser\Check\Dom\MetaContent;
+use Weglot\Parser\Check\DomChecker;
+use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
 

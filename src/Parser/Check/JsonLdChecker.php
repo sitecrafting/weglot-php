@@ -6,7 +6,7 @@
  * Time: 15:45
  */
 
-namespace Weglot\Parser;
+namespace Weglot\Parser\Check;
 
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;

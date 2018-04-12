@@ -1,27 +1,27 @@
 <?php
 
-namespace Weglot\Parser\Check;
+namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class Img_alt
+ * Class A_dco
  * @package Weglot\Parser\Check
  */
-class ImageAlt extends AbstractChecker
+class LinkDataContent extends AbstractDomChecker
 {
     /**
      * {@inheritdoc}
      */
-    const DOM = 'img';
+    const DOM = 'a';
 
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'alt';
+    const PROPERTY = 'data-content';
 
     /**
      * {@inheritdoc}
      */
-    const WORD_TYPE = WordType::IMG_ALT;
+    const WORD_TYPE = WordType::TEXT;
 }

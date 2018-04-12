@@ -1,14 +1,14 @@
 <?php
 
-namespace Weglot\Parser\Check;
+namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class A_dte
+ * Class A_dv
  * @package Weglot\Parser\Check
  */
-class LinkDataText extends AbstractChecker
+class LinkDataValue extends AbstractDomChecker
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class LinkDataText extends AbstractChecker
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'data-text';
+    const PROPERTY = 'data-value';
 
     /**
      * {@inheritdoc}

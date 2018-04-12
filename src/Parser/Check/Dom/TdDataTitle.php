@@ -1,24 +1,24 @@
 <?php
 
-namespace Weglot\Parser\Check;
+namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class Rad_obt
+ * Class Td_dt
  * @package Weglot\Parser\Check
  */
-class InputRadioOrderText extends AbstractChecker
+class TdDataTitle extends AbstractDomChecker
 {
     /**
      * {@inheritdoc}
      */
-    const DOM = 'input[type="radio"]';
+    const DOM = 'td';
 
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'data-order_button_text';
+    const PROPERTY = 'data-title';
 
     /**
      * {@inheritdoc}

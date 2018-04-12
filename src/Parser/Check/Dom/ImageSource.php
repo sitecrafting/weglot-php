@@ -1,6 +1,6 @@
 <?php
 
-namespace Weglot\Parser\Check;
+namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 
@@ -8,7 +8,7 @@ use Weglot\Client\Api\Enum\WordType;
  * Class Img_src
  * @package Weglot\Parser\Check
  */
-class ImageSource extends AbstractChecker
+class ImageSource extends AbstractDomChecker
 {
     /**
      * {@inheritdoc}

@@ -6,12 +6,12 @@
  * Time: 11:36
  */
 
-namespace Weglot\Parser\Check;
+namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
-class Button extends AbstractChecker
+class Button extends AbstractDomChecker
 {
     /**
      * {@inheritdoc}
