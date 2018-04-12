@@ -15,7 +15,7 @@ This library allows you to quickly and easily use the Weglot API via PHP.
 - Weglot API Key, starting at [free level](https://dashboard.weglot.com/register)
 
 ## Installation
-You can install the bindings via [Composer](https://getcomposer.org/). Run the following command:
+You can install the library via [Composer](https://getcomposer.org/). Run the following command:
 
 ```bash
 composer require weglot/weglot-php
