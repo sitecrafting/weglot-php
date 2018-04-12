@@ -9,6 +9,7 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Parser\Util\Text;
 
 class DomChecker
 {
@@ -50,7 +51,7 @@ class DomChecker
     {
         $files = array_diff(scandir(__DIR__. '/Check'), ['AbstractChecker.php', '..', '.']);
         return array_map(function ($filename) {
-            return preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename);
+            return Text::removeFileExtension($filename);
         }, $files);
     }
 
