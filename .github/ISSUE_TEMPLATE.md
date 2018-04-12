@@ -8,10 +8,8 @@
 
 **How to reproduce it (some code is appreciated)**:
 
-
 **Anything else we need to know?**:
 
 **Environment**:
 - Library version 
 - PHP version 
-- Description 
