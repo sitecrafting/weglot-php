@@ -36,7 +36,7 @@ curl_close($ch);
 
 // Client
 $client = new Client(getenv('WG_API_KEY'));
-$parser = new Parser($client, 'fi', 'en', $config);
+$parser = new Parser($client, 'en', 'de', $config);
 
 // Run the Parser
 $translatedContent = $parser->translate($content);
