@@ -21,7 +21,7 @@ class Client implements ClientCachingInterface
      *
      * @var string
      */
-    const VERSION = '0.1-beta';
+    const VERSION = '0.1-beta2';
 
     /**
      * Weglot API Key
