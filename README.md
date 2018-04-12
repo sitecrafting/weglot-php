@@ -10,11 +10,9 @@
 ## Overview
 This library allows you to quickly and easily use the Weglot API via PHP.
 
-This library represents the beginning of a new path for Weglot. We want this library to be community driven and Weglot led. We need your help to realize this goal. To help make sure we are building the right things in the right order, we ask that you create issues and pull requests or simply upvote or comment on existing issues or pull requests.
-
 ## Requirements
 - PHP version 5.5 and later
-- Weglot service, starting at [free level](https://dashboard.weglot.com/register)
+- Weglot API Key, starting at [free level](https://dashboard.weglot.com/register)
 
 ## Installation
 You can install the bindings via [Composer](https://getcomposer.org/). Run the following command:
