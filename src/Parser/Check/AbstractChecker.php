@@ -89,7 +89,7 @@ abstract class AbstractChecker
 
         return (
             Text::fullTrim($this->node->$property) != '' &&
-            !$this->hasAncestorAttribute($this->node, Parser::ATTRIBUTE_NO_TRANSLATE)
+            !$this->node->hasAncestorAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)
         );
     }
 
@@ -97,29 +97,4 @@ abstract class AbstractChecker
      * @return bool
      */
     abstract protected function check();
-
-    /**
-     * @TODO: move this function to weglot/simplehtmldom library
-     *
-     * @param simple_html_dom_node $node
-     * @param string $attribute
-     * @return bool
-     */
-    private function hasAncestorAttribute(simple_html_dom_node $node, $attribute)
-    {
-        $currentNode = $node;
-
-        if (isset($currentNode->$attribute)) {
-            return true;
-        }
-
-        while ($currentNode->parent() && $currentNode->parent()->tag != 'html') {
-            if (isset($currentNode->parent()->$attribute)) {
-                return true;
-            } else {
-                $currentNode = $currentNode->parent();
-            }
-        }
-        return false;
-    }
 }
