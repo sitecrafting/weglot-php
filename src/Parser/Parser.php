@@ -3,30 +3,12 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
-use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
-use Weglot\Parser\Check\A_dco;
-use Weglot\Parser\Check\A_dho;
-use Weglot\Parser\Check\A_dt;
-use Weglot\Parser\Check\A_dte;
-use Weglot\Parser\Check\A_dto;
-use Weglot\Parser\Check\A_dv;
-use Weglot\Parser\Check\A_pdf;
-use Weglot\Parser\Check\A_title;
-use Weglot\Parser\Check\Button;
-use Weglot\Parser\Check\Iframe_src;
-use Weglot\Parser\Check\Img_alt;
 use Weglot\Parser\Check\Img_src;
-use Weglot\Parser\Check\Input_dobt;
-use Weglot\Parser\Check\Input_dv;
 use Weglot\Parser\Check\Meta_desc;
-use Weglot\Parser\Check\Placeholder;
-use Weglot\Parser\Check\Rad_obt;
-use Weglot\Parser\Check\Td_dt;
-use Weglot\Parser\Check\Text;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -203,33 +185,8 @@ class Parser
 
         $words = [];
         $nodes = [];
-
-        $discoverCaching = [];
-
-        foreach ($this->domCheckMapping() as $element) {
-            if (!isset($discoverCaching[$element['dom']])) {
-                $discoverCaching[$element['dom']] = $dom->find($element['dom']);
-            }
-
-            foreach ($discoverCaching[$element['dom']] as $k => $node) {
-                $property = $element['property'];
-
-                $instance = new $element['class']($node, $property);
-
-                if ($instance->handle()) {
-                    $words[] = [
-                        't' => $element['t'],
-                        'w' => $node->$property,
-                    ];
-
-                    $nodes[] = [
-                        'node' => $node,
-                        'class' => $element['class'],
-                        'property' => $property,
-                    ];
-                }
-            }
-        }
+        $checker = new DomChecker($dom);
+        $checker->handle($words, $nodes);
 
         $jsons = [];
         $nbJsonStrings = 0;
@@ -337,129 +294,6 @@ class Parser
                 $row->$attribute = '';
             }
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function domCheckMapping()
-    {
-        return [
-            [
-                'dom' => 'text',
-                'class' => Text::class,
-                'property' => 'outertext',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'input[type="submit"],input[type="button"]',
-                'class' => Button::class,
-                'property' => 'value',
-                't' => WordType::VALUE,
-            ],
-            [
-                'dom' => 'input[type="submit"],input[type="button"]',
-                'class' => Input_dv::class,
-                'property' => 'data-value',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'input[type="submit"],input[type="button"]',
-                'class' => Input_dobt::class,
-                'property' => 'data-order_button_text',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'input[type="radio"]',
-                'class' => Rad_obt::class,
-                'property' => 'data-order_button_text',
-                't' => WordType::VALUE,
-            ],
-            [
-                'dom' => "td",
-                'class' => Td_dt::class,
-                'property' => 'data-title',
-                't' => WordType::VALUE,
-            ],
-            [
-                'dom' => 'input[type="text"],input[type="password"],input[type="search"],input[type="email"],input:not([type]),textarea',
-                'class' => Placeholder::class,
-                'property' => 'placeholder',
-                't' => WordType::PLACEHOLDER,
-            ],
-            [
-                'dom' => 'meta[name="description"],meta[property="og:title"],meta[property="og:description"],meta[property="og:site_name"],meta[name="twitter:title"],meta[name="twitter:description"]',
-                'class' => Meta_desc::class,
-                'property' => 'content',
-                't' => WordType::META_CONTENT,
-            ],
-            [
-                'dom' => 'iframe',
-                'class' => Iframe_src::class,
-                'property' => 'src',
-                't' => WordType::IFRAME_SRC
-            ],
-            [
-                'dom' => 'img',
-                'class' => Img_src::class,
-                'property' => 'src',
-                't' => WordType::IMG_SRC,
-            ],
-            [
-                'dom' => 'img',
-                'class' => Img_alt::class,
-                'property' => 'alt',
-                't' => WordType::IMG_ALT,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_pdf::class,
-                'property' => 'href',
-                't' => WordType::PDF_HREF,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_title::class,
-                'property' => 'title',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_dv::class,
-                'property' => 'data-value',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_dt::class,
-                'property' => 'data-title',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_dto::class,
-                'property' => 'data-tooltip',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_dho::class,
-                'property' => 'data-hover',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_dco::class,
-                'property' => 'data-content',
-                't' => WordType::TEXT,
-            ],
-            [
-                'dom' => 'a',
-                'class' => A_dte::class,
-                'property' => 'data-text',
-                't' => WordType::TEXT,
-            ]
-        ];
     }
 
     /**

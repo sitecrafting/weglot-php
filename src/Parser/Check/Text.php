@@ -2,6 +2,7 @@
 
 namespace Weglot\Parser\Check;
 
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 /**
@@ -10,6 +11,21 @@ use Weglot\Parser\Util\Text as TextUtil;
  */
 class Text extends AbstractChecker
 {
+    /**
+     * {@inheritdoc}
+     */
+    const DOM = 'text';
+
+    /**
+     * {@inheritdoc}
+     */
+    const PROPERTY = 'outertext';
+
+    /**
+     * {@inheritdoc}
+     */
+    const WORD_TYPE = WordType::VALUE;
+
     /**
      * {@inheritdoc}
      */

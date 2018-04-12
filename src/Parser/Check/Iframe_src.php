@@ -2,6 +2,7 @@
 
 namespace Weglot\Parser\Check;
 
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 /**
@@ -10,6 +11,21 @@ use Weglot\Parser\Util\Text as TextUtil;
  */
 class Iframe_src extends AbstractChecker
 {
+    /**
+     * {@inheritdoc}
+     */
+    const DOM = 'iframe';
+
+    /**
+     * {@inheritdoc}
+     */
+    const PROPERTY = 'src';
+
+    /**
+     * {@inheritdoc}
+     */
+    const WORD_TYPE = WordType::IFRAME_SRC;
+
     /**
      * {@inheritdoc}
      */

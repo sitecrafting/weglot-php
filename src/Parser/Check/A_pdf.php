@@ -2,6 +2,7 @@
 
 namespace Weglot\Parser\Check;
 
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 /**
@@ -10,6 +11,24 @@ use Weglot\Parser\Util\Text as TextUtil;
  */
 class A_pdf extends AbstractChecker
 {
+    /**
+     * {@inheritdoc}
+     */
+    const DOM = 'a';
+
+    /**
+     * {@inheritdoc}
+     */
+    const PROPERTY = 'href';
+
+    /**
+     * {@inheritdoc}
+     */
+    const WORD_TYPE = WordType::PDF_HREF;
+
+    /**
+     * @var array
+     */
     protected $extensions = [
         'pdf',
         'rar',

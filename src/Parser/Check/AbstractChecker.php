@@ -3,6 +3,7 @@
 namespace Weglot\Parser\Check;
 
 use SimpleHtmlDom\simple_html_dom_node;
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Parser;
 use Weglot\Parser\Util\Text;
 
@@ -12,6 +13,27 @@ use Weglot\Parser\Util\Text;
  */
 abstract class AbstractChecker
 {
+    /**
+     * DOM node to match
+     *
+     * @var string
+     */
+    const DOM = '';
+
+    /**
+     * DOM property to get
+     *
+     * @var string
+     */
+    const PROPERTY = '';
+
+    /**
+     * Type of content returned by DOM property
+     *
+     * @var string
+     */
+    const WORD_TYPE = WordType::GENERIC;
+
     /**
      * @var simple_html_dom_node
      */

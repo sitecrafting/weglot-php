@@ -8,10 +8,26 @@
 
 namespace Weglot\Parser\Check;
 
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 class Button extends AbstractChecker
 {
+    /**
+     * {@inheritdoc}
+     */
+    const DOM = 'input[type="submit"],input[type="button"]';
+
+    /**
+     * {@inheritdoc}
+     */
+    const PROPERTY = 'value';
+
+    /**
+     * {@inheritdoc}
+     */
+    const WORD_TYPE = WordType::VALUE;
+
     /**
      * {@inheritdoc}
      */

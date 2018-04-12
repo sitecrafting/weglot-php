@@ -2,6 +2,7 @@
 
 namespace Weglot\Parser\Check;
 
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 /**
@@ -10,6 +11,21 @@ use Weglot\Parser\Util\Text as TextUtil;
  */
 class Meta_desc extends AbstractChecker
 {
+    /**
+     * {@inheritdoc}
+     */
+    const DOM = 'meta[name="description"],meta[property="og:title"],meta[property="og:description"],meta[property="og:site_name"],meta[name="twitter:title"],meta[name="twitter:description"]';
+
+    /**
+     * {@inheritdoc}
+     */
+    const PROPERTY = 'content';
+
+    /**
+     * {@inheritdoc}
+     */
+    const WORD_TYPE = WordType::META_CONTENT;
+
     /**
      * {@inheritdoc}
      */
