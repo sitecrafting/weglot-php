@@ -72,4 +72,9 @@ abstract class AbstractChecker
     {
         return $this->dom;
     }
+
+    /**
+     * @return mixed
+     */
+    abstract public function handle();
 }
