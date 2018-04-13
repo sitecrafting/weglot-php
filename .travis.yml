@@ -22,7 +22,7 @@ matrix:
 # Encrypted variables
 env:
   matrix:
-    secure: "jJeXW5O7rBysw8hs3pPiCrWh1o1Xh4GKQM9Xnpc/50B9u9qtCCjQkbd1kXQn7zNRsTl3muLKZDMtMiTqrN34zvIemgde09Ujmh6q7ylHMAOwrlABvqj3utnOUIIzHbHVnf/ul1dH8vIv3PR+v6ezMVm3h6ecBU49vfm2qg8VK0NLpBmxOaa4stHOsDYHlsGoXVSIty/Ss1PKUFAvzv0/vWPaaJKdLmkKvuWg3ARFJRephhqIaWt7x6FQHe9Ma7AnmT6mSC2DOEGADd5msPEbBKGqczHTOONRd/xiYgz2WOxObxvBoN3SDHwLf/Q1Dhx6K6OsPY0wueAnZeURsIlyevCgVgPd+yhnH4yBN7Gmo80jeYbXIJchTuNnDGWiWTywWK1cTTF3TkbfnmArIeH/dZXrsHjX5JnOHmuV+cIZRd+qftfUaJBgouDeabLz6OHfs4kemo4097Lxc85iCEPqDr/w+ZE1gTi4durOnRaorPoahwSQsIYmqcFWOGtjAC3ga2nrLGvQ8oAnfiSF5b+wYQJb5qFUW6u8R71ZDy2rjvZ2qtFjhmGiOOI5qN78P5sPXRRPQkITkyRZ00NArzpjXg6qz04HbzR2hVnUiwHpuop+Gj7uvnLrmt9Vftv/6ifYD348WhYfBq9ggqZIMAVrquvYmTb9SOt+knp8oTomjPQ="
+    secure: boP/x3oNeb/ykVxCzIMLrJO3GjdaU6cQjzkVfHH+K7tQDiLRE21C1V9dUqIVhnvWphCk4iU5QmDAIUBbFo7UKO8saHVotgKnBRNd1tvC649F+S2szP+N5nUNOSALWZYTABLRG6aOWBOOjaAWvevjONxbx3SDs1pLFTE1pIUZ8ft6I0GLQQKY3T7oIQN15h72tIIHpmbfavrWYquh5F5LXLvZsW+o4k/O+aQu9zeC2NSxY9bLB4XdgL2vwyOUS93hYDftALCqHEY0wZxTB5QfpfF9Soovey1HUMwmDS0fVil0iHVHmynN0YbpTE27FqUMeklxdUq2i/+a0X2oF4NjNx0CYMcPEeVV2FMEgFQ1zjmc6ADuZaTf4QeSTMhK2ZrBmj1pzwMbh3Pn+LfWm3Y5kEx3MjIT1L+h2NvwXtB1J62wLgx7kCzmsJ5eyJJyrHgimIC9/l8l+AeTayhv0CdPERFnreGgBJn7Nfqx2d3IWq3TJMEPY166KROgjlrYdUcy671sE3qqASiCpgdEyll6060n/QAqG7VclGiMf5OeJwbq/NkXiunIaWwWE1BORFNH1e+u4uuC3D2WxkHryUt57TZz2oaugnN8lo3doJUDG73881GmG65oNjECK7E4uc41KaKrSBTdidOqOxikUWuZDZrV4mQPrYW+0DskSe43Icg=
 
 # We don't want to run linux commands as super user
 # false means Travis will run this in a container
@@ -46,7 +46,7 @@ before_script:
 # To manage coverage for CodeClimate
 after_script:
 - mv tests/_output/coverage.xml clover.xml
-- ./cc-test-reporter after-build --coverage-input-type clover --id $COVERAGE_ID --exit-code $TRAVIS_TEST_RESULT
+- ./cc-test-reporter after-build --coverage-input-type clover --id ae26e8839888ccd9d1ee6c13f1b556d5ed91530083dd9cd8a01526f483f1200d --exit-code $TRAVIS_TEST_RESULT
 
 # Run main commands
 script:
