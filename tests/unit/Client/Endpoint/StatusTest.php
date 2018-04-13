@@ -3,7 +3,7 @@
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Status;
 
-class ClientEndpointStatusTest extends \Codeception\Test\Unit
+class StatusTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
