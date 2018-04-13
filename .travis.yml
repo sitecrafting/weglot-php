@@ -45,12 +45,6 @@ before_script:
 script:
   - composer test
 
-# Tell Travis CI to monitor only 'master' branch
-branches:
-  only:
-    - master
-    - develop
-
 # Cache folder, you can delete cache from Travis CI web interface
 cache:
     directories:
