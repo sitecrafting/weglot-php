@@ -5,6 +5,7 @@ namespace Weglot\Parser\Formatter;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Parser\Parser;
+use Weglot\Parser\Util\JsonLd;
 
 /**
  * Class JsonLdFormatter
@@ -56,63 +57,16 @@ class JsonLdFormatter extends AbstractFormatter
         $translated_words = $this->getTranslated()->getOutputWords();
 
         for ($j = 0; $j < count($jsons); $j++) {
-            $jsonArray = $jsons[$j]['json'];
+            $data = $jsons[$j]['json'];
             $node = $jsons[$j]['node'];
 
-            $hasV = $this->getValue($jsonArray, ['description']);
+            $value = JsonLd::get($data, 'description');
 
-            if (isset($hasV)) {
-                $this->setValues($jsonArray, ['description'], $translated_words);
+            if ($value !== null) {
+                $data = JsonLd::set($translated_words, $data, 'description', $this->nodesCount);
             }
 
-            $node->innertext = json_encode($jsonArray, JSON_PRETTY_PRINT);
+            $node->innertext = json_encode($data, JSON_PRETTY_PRINT);
         }
-    }
-
-    /**
-     * @param array $data
-     * @param $path
-     * @return null
-     */
-    private function getValue($data, $path)
-    {
-        $temp = $data;
-        foreach ($path as $key) {
-            if (array_key_exists($key, $temp)) {
-                $temp = $temp[$key];
-            } else {
-                return null;
-            }
-        }
-        return $temp;
-    }
-
-    /**
-     * @param $data
-     * @param $path
-     * @param WordCollection $words
-     * @return null|void
-     */
-    private function setValues(&$data, $path, WordCollection $words)
-    {
-        $temp = &$data;
-        foreach ($path as $key) {
-            if (array_key_exists($key, $temp)) {
-                $temp = &$temp[$key];
-            } else {
-                return null;
-            }
-        }
-
-        if (is_array($temp)) {
-            foreach ($temp as $key => &$val) {
-                $this->setValues($val, null, $words);
-            }
-        } else {
-            $temp = $words[$this->getNodesCount()]->getWord();
-            $this->setNodesCount($this->getNodesCount() + 1);
-        }
-
-        return;
     }
 }
