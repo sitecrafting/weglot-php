@@ -34,6 +34,6 @@
     "vlucas/phpdotenv": "^2.4"
   },
   "scripts": {
-    "test": "./vendor/bin/codecept run --no-interaction"
+    "test": "./vendor/bin/codecept run unit --coverage --coverage-xml --no-interaction"
   }
 }
