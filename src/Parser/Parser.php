@@ -60,17 +60,13 @@ class Parser
     /**
      * Parser constructor.
      * @param Client $client
-     * @param string $language_from
-     * @param string $language_to
      * @param ConfigProviderInterface $config
      * @param array $excludeBlocks
      */
-    public function __construct(Client $client, $language_from, $language_to, ConfigProviderInterface $config, array $excludeBlocks = [])
+    public function __construct(Client $client, ConfigProviderInterface $config, array $excludeBlocks = [])
     {
         $this
             ->setClient($client)
-            ->setLanguageFrom($language_from)
-            ->setLanguageTo($language_to)
             ->setConfigProvider($config)
             ->setExcludeBlocks($excludeBlocks)
             ->setWords(new WordCollection());
@@ -191,12 +187,19 @@ class Parser
     }
 
     /**
-     * @param $source
+     * @param string $source
+     * @param string $languageFrom
+     * @param string $languageTo
      * @return string
      * @throws InvalidWordTypeException
      */
-    public function translate($source)
+    public function translate($source, $languageFrom, $languageTo)
     {
+        // setters
+        $this
+            ->setLanguageFrom($languageFrom)
+            ->setLanguageTo($languageTo);
+
         if ($this->client->apiKeyCheck()) {
             $ignoredNodesFormatter = new IgnoredNodes($source);
             $source = $ignoredNodesFormatter->getSource();
