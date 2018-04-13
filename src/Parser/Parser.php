@@ -8,8 +8,6 @@ use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
-use Weglot\Parser\Check\Dom\ImageSource;
-use Weglot\Parser\Check\Dom\MetaContent;
 use Weglot\Parser\Check\DomChecker;
 use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
@@ -203,7 +201,7 @@ class Parser
             ->setLanguageFrom($languageFrom)
             ->setLanguageTo($languageTo);
 
-        if ($this->client->apiKeyCheck()) {
+        if ($this->client->getProfile()->getIgnoredNodes()) {
             $ignoredNodesFormatter = new IgnoredNodes($source);
             $source = $ignoredNodesFormatter->getSource();
         }

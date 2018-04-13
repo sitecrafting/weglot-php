@@ -45,6 +45,11 @@ class Client implements ClientCachingInterface
     protected $connector;
 
     /**
+     * @var Profile
+     */
+    protected $profile;
+
+    /**
      * Client constructor.
      * @param string    $apiKey     your Weglot API key
      * @param array     $options    an array of options, currently only "host" is implemented
@@ -53,6 +58,7 @@ class Client implements ClientCachingInterface
     {
         $this->apiKey = $apiKey;
         $this->setOptions($options);
+        $this->profile = new Profile($apiKey);
     }
 
     /**
@@ -119,6 +125,14 @@ class Client implements ClientCachingInterface
     public function getConnector()
     {
         return $this->connector;
+    }
+
+    /**
+     * @return Profile
+     */
+    public function getProfile()
+    {
+        return $this->profile;
     }
 
     /**
