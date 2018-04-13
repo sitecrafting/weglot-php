@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - CodeClimate configuration
 - Travis configuration
+- Manage API versions (through Profile class)
 
 ### Changed
 - Refactoring for `Parser`
