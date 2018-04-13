@@ -208,15 +208,8 @@ class Parser
             $source = $ignoredNodesFormatter->getSource();
         }
 
-        $dom = \SimpleHtmlDom\str_get_html(
-            $source,
-            true,
-            true,
-            DEFAULT_TARGET_CHARSET,
-            false,
-            DEFAULT_BR_TEXT,
-            DEFAULT_SPAN_TEXT
-        );
+        // simple_html_dom
+        $dom = $this->getSimpleDom($source);
 
         // exclude blocks
         $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
@@ -225,6 +218,20 @@ class Parser
         // checkers
         list($nodes, $jsons) = $this->checkers($dom);
 
+        // api communication
+        $translated = $this->apiTranslate($dom);
+
+        // formatters
+        $this->formatters($translated, $nodes, $jsons);
+        return $dom->save();
+    }
+
+    /**
+     * @param simple_html_dom $dom
+     * @return TranslateEntry
+     */
+    protected function apiTranslate(simple_html_dom $dom)
+    {
         // Translate endpoint parameters
         $params = $this->defaultParams();
 
@@ -249,9 +256,24 @@ class Parser
             die($e->getMessage());
         }
 
-        // formatters
-        $this->formatters($translated, $nodes, $jsons);
-        return $dom->save();
+        return $translated;
+    }
+
+    /**
+     * @param string $source
+     * @return simple_html_dom
+     */
+    protected function getSimpleDom($source)
+    {
+        return \SimpleHtmlDom\str_get_html(
+            $source,
+            true,
+            true,
+            DEFAULT_TARGET_CHARSET,
+            false,
+            DEFAULT_BR_TEXT,
+            DEFAULT_SPAN_TEXT
+        );
     }
 
     /**
