@@ -5,8 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- CodeClimate configuration
 
-## [0.1-beta2] - 2018-04-12
+### Changed
+- Refactoring for `Parser`
+
+## [0.1-beta.2] - 2018-04-12
 ### Added
 - examples & descriptions:
   - cached-client-translate
@@ -16,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - simple-client-translate
 - adding README, LICENCE, CODE_OF_CONDUCT, CONTRIBUTING and github templates
 
-## [0.1-beta] - 2018-04-11
+## [0.1-beta.1] - 2018-04-11
 ### Added
 - first Client version
 - first endpoints:
