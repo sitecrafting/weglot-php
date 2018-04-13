@@ -2,7 +2,7 @@
   "name": "weglot/weglot-php",
   "description": "PHP library for the Weglot API",
   "type": "library",
-  "licence": "MIT",
+  "license": "MIT",
   "authors": [
     {
       "name": "Baptiste Leduc",
