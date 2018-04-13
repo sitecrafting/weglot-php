@@ -5,6 +5,7 @@ namespace Weglot\Client;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
+use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Caching\ClientCachingInterface;
 use Weglot\Client\Caching\ClientCachingTrait;
 
@@ -143,7 +144,7 @@ class Client implements ClientCachingInterface
      * @param array $body       Body content of the request as array
      * @param bool $asArray     To know if we return an array or ResponseInterface
      * @return array|ResponseInterface
-     * @throws GuzzleException
+     * @throws ApiError
      */
     public function makeRequest($method, $endpoint, $body = [], $asArray = true)
     {
@@ -155,10 +156,14 @@ class Client implements ClientCachingInterface
             }
         }
 
-        $response = $this->connector->request($method, $endpoint, [
-            'json' => $body
-        ]);
-        $array = json_decode($response->getBody()->getContents(), true);
+        try {
+            $response = $this->connector->request($method, $endpoint, [
+                'json' => $body
+            ]);
+            $array = json_decode($response->getBody()->getContents(), true);
+        } catch (GuzzleException $e) {
+            throw new ApiError($e->getMessage(), $body);
+        }
 
         if ($this->cacheEnabled()) {
             $this->cacheCommitItem($cacheKey, $array);

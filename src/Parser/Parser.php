@@ -3,7 +3,10 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
+use Weglot\Client\Api\Exception\MissingRequiredParamException;
+use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
@@ -188,11 +191,15 @@ class Parser
     }
 
     /**
-     * @param string $source
-     * @param string $languageFrom
-     * @param string $languageTo
-     * @return string
+     * @param $source
+     * @param $languageFrom
+     * @param $languageTo
+     * @return mixed
+     * @throws GuzzleException
+     * @throws InputAndOutputCountMatchException
      * @throws InvalidWordTypeException
+     * @throws MissingRequiredParamException
+     * @throws MissingWordsOutputException
      */
     public function translate($source, $languageFrom, $languageTo)
     {
@@ -227,6 +234,11 @@ class Parser
     /**
      * @param simple_html_dom $dom
      * @return TranslateEntry
+     * @throws GuzzleException
+     * @throws InvalidWordTypeException
+     * @throws InputAndOutputCountMatchException
+     * @throws MissingRequiredParamException
+     * @throws MissingWordsOutputException
      */
     protected function apiTranslate(simple_html_dom $dom)
     {
@@ -246,13 +258,7 @@ class Parser
         }
         $translate = new Translate($translate, $this->client);
 
-        try {
-            $translated = $translate->handle();
-        } catch (\Exception $e) {
-            die($e->getMessage());
-        } catch (GuzzleException $e) {
-            die($e->getMessage());
-        }
+        $translated = $translate->handle();
 
         return $translated;
     }

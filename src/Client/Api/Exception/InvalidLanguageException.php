@@ -2,16 +2,20 @@
 
 namespace Weglot\Client\Api\Exception;
 
-use Throwable;
-
 /**
  * Class InvalidLanguageException
  * @package Weglot\Client\Api\Exception
  */
-class InvalidLanguageException extends \Exception
+class InvalidLanguageException extends AbstractException
 {
-    public function __construct($message = 'The given language is invalid', $code = 400, Throwable $previous = null)
+    /**
+     * InvalidLanguageException constructor.
+     */
+    public function __construct()
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'The given language is invalid.',
+            WeglotCode::PARAMETERS
+        );
     }
 }
