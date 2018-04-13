@@ -34,10 +34,19 @@ install:
 
 # Prepare test environment
 before_script:
+  ## downloading last codeclimate test report
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+  # creating .env file
   - cp .env.dist .env
   # pass environment variables in travis to the app
   - sed -i "8s/.*/WG_API_KEY=$WG_API_KEY/" .env
-  - cat .env
+
+# To manage coverage for CodeClimate
+after_script:
+- mv tests/_output/coverage.xml clover.xml
+- ./cc-test-reporter after-build --coverage-input-type clover --id 5ace1dbc9b8070586d002f42 --exit-code $TRAVIS_TEST_RESULT
 
 # Run main commands
 script:
