@@ -14,7 +14,9 @@ use Weglot\Parser\Check\DomChecker;
 use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Weglot\Parser\Formatter\DomFormatter;
 use Weglot\Parser\Formatter\IgnoredNodes;
+use Weglot\Parser\Formatter\JsonLdFormatter;
 
 /**
  * Class Parser
@@ -292,124 +294,10 @@ class Parser
      */
     protected function applyToDom(TranslateEntry $translateEntry, array $nodes, array $jsons)
     {
-        $words = $this->getWords();
-        $translated_words = $translateEntry->getOutputWords();
+        $formatter = new DomFormatter($this, $translateEntry);
+        $formatter->handle($nodes);
 
-        for ($i = 0; $i < count($nodes); ++$i) {
-            $currentNode = $nodes[$i];
-            $property = $currentNode['property'];
-
-            if ($translated_words[$i] !== null) {
-                $current_translated = $translated_words[$i]->getWord();
-
-                if ($currentNode['class'] instanceof MetaContent) {
-                    $currentNode['node']->$property = htmlspecialchars($current_translated);
-                } else {
-                    $currentNode['node']->$property = $current_translated;
-                }
-
-                if ($currentNode['class'] instanceof ImageSource) {
-                    $currentNode['node']->src = $current_translated;
-                    if ($currentNode['node']->hasAttribute('srcset') &&
-                        $currentNode['node']->srcset != '' &&
-                        $current_translated != $words[$i]->getWord()) {
-                        $currentNode['node']->srcset = '';
-                    }
-                }
-            }
-        }
-
-        $index = count($nodes);
-        for ($j = 0; $j < count($jsons); $j++) {
-            $jsonArray = $jsons[$j]['json'];
-            $node = $jsons[$j]['node'];
-
-            $hasV = $this->getValue($jsonArray, ['description']);
-
-            if (isset($hasV)) {
-                $this->setValues($jsonArray, ['description'], $translated_words, $index);
-            }
-
-            $node->innertext = json_encode($jsonArray, JSON_PRETTY_PRINT);
-        }
-    }
-
-    /**
-     * ----------------------------------------------------------------------------------------------------------------
-     *
-     * Not refactored
-     *
-     * ----------------------------------------------------------------------------------------------------------------
-     */
-
-    /**
-     * @param array $data
-     * @param $path
-     * @return null
-     */
-    public function getValue($data, $path)
-    {
-        $temp = $data;
-        foreach ($path as $key) {
-            if (array_key_exists($key, $temp)) {
-                $temp = $temp[$key];
-            } else {
-                return null;
-            }
-        }
-        return $temp;
-    }
-
-    /**
-     * @param $value
-     * @param array $words
-     * @param int $nbJsonStrings
-     */
-    public function addValues($value, &$words, &$nbJsonStrings)
-    {
-        if (is_array($value)) {
-            foreach ($value as $key => $val) {
-                $this->addValues($val, $words, $nbJsonStrings);
-            }
-        } else {
-            array_push(
-                $words,
-                [
-                    't' => 1,
-                    'w' => $value,
-                ]
-            );
-            $nbJsonStrings++;
-        }
-    }
-
-    /**
-     * @param $data
-     * @param $path
-     * @param WordCollection $words
-     * @param int $index
-     * @return null|void
-     */
-    public function setValues(&$data, $path, WordCollection $words, &$index)
-    {
-        $temp = &$data;
-        foreach ($path as $key) {
-            if (array_key_exists($key, $temp)) {
-                $temp = &$temp[$key];
-            } else {
-                return null;
-            }
-        }
-
-        if (is_array($temp)) {
-            foreach ($temp as $key => &$val) {
-                $this->setValues($val, null, $words, $index);
-            }
-        } else {
-            $temp = $words[$index]->getWord();
-            $index++;
-        }
-
-        return;
+        $formatter = new JsonLdFormatter($this, $translateEntry, count($nodes));
+        $formatter->handle($jsons);
     }
 }
