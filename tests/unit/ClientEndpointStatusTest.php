@@ -20,10 +20,7 @@ class ClientEndpointStatusTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
-        echo '<pre>';
-        echo getenv('WG_API_KEY');
-        exit;
-        $this->client = new Client($_ENV['WG_API_KEY']);
+        $this->client = new Client(getenv('WG_API_KEY'));
     }
 
     // tests
