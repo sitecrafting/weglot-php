@@ -15,6 +15,7 @@ use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Weglot\Parser\Formatter\DomFormatter;
+use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
 use Weglot\Parser\Formatter\IgnoredNodes;
 use Weglot\Parser\Formatter\JsonLdFormatter;
 
@@ -217,19 +218,15 @@ class Parser
             DEFAULT_SPAN_TEXT
         );
 
-        $this->filterExcludeBlocks($dom);
+        // exclude blocks
+        $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
+        $dom = $excludeBlocks->getDom();
 
-        $checker = new DomChecker($this, $dom);
-        $nodes = $checker->handle();
-
-        $checker = new JsonLdChecker($this, $dom);
-        $jsons = $checker->handle();
+        // checkers
+        list($nodes, $jsons) = $this->checkers($dom);
 
         // Translate endpoint parameters
-        $params = [
-            'language_from' => $this->getLanguageFrom(),
-            'language_to' => $this->getLanguageTo()
-        ];
+        $params = $this->defaultParams();
 
         if ($this->getConfigProvider()->getAutoDiscoverTitle()) {
             $params['title'] = $this->getTitle($dom);
@@ -252,24 +249,20 @@ class Parser
             die($e->getMessage());
         }
 
-        $this->applyToDom($translated, $nodes, $jsons);
+        // formatters
+        $this->formatters($translated, $nodes, $jsons);
         return $dom->save();
     }
 
     /**
-     * Add ATTRIBUTE_NO_TRANSLATE to dom elements that don't
-     * wanna be translated.
-     *
-     * @param simple_html_dom $dom
+     * @return array
      */
-    protected function filterExcludeBlocks(simple_html_dom &$dom)
+    public function defaultParams()
     {
-        foreach ($this->excludeBlocks as $exception) {
-            foreach ($dom->find($exception) as $k => $row) {
-                $attribute = self::ATTRIBUTE_NO_TRANSLATE;
-                $row->$attribute = '';
-            }
-        }
+        return [
+            'language_from' => $this->getLanguageFrom(),
+            'language_to' => $this->getLanguageTo()
+        ];
     }
 
     /**
@@ -288,11 +281,30 @@ class Parser
     }
 
     /**
+     * @param simple_html_dom $dom
+     * @return array
+     * @throws InvalidWordTypeException
+     */
+    protected function checkers($dom)
+    {
+        $checker = new DomChecker($this, $dom);
+        $nodes = $checker->handle();
+
+        $checker = new JsonLdChecker($this, $dom);
+        $jsons = $checker->handle();
+
+        return [
+            $nodes,
+            $jsons
+        ];
+    }
+
+    /**
      * @param TranslateEntry $translateEntry
      * @param array $nodes
      * @param array $jsons
      */
-    protected function applyToDom(TranslateEntry $translateEntry, array $nodes, array $jsons)
+    protected function formatters(TranslateEntry $translateEntry, array $nodes, array $jsons)
     {
         $formatter = new DomFormatter($this, $translateEntry);
         $formatter->handle($nodes);
