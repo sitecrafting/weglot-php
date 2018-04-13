@@ -1,0 +1,47 @@
+# Tell Travis CI we are using PHP
+language: php
+
+# The platforms you wants to test on
+dist: trusty
+os:
+  - linux
+
+# Define the php versions against we want to test our code
+php:
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: 5.5
+
+# We don't want to run linux commands as super user
+# false means Travis will run this in a container
+sudo: false
+
+# Disable x-debug to speed up things
+before_install: phpenv config-rm xdebug.ini
+
+# Install packages those will be required during build
+install:
+  - composer install --no-interaction
+
+# Run main commands
+script:
+  - composer test
+
+# Tell Travis CI to monitor only 'master' branch
+branches:
+  only:
+    - master
+    - develop
+
+# Cache folder, you can delete cache from Travis CI web interface
+cache:
+    directories:
+        - vendor
+        - $HOME/.composer/cache
