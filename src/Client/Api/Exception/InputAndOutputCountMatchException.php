@@ -2,16 +2,22 @@
 
 namespace Weglot\Client\Api\Exception;
 
-use Throwable;
-
 /**
  * Class InputAndOutputCountMatchException
  * @package Weglot\Client\Api\Exception
  */
-class InputAndOutputCountMatchException extends \Exception
+class InputAndOutputCountMatchException extends AbstractException
 {
-    public function __construct($message = "Input and ouput words count doesn't match.", $code = 400, Throwable $previous = null)
+    /**
+     * InputAndOutputCountMatchException constructor.
+     * @param array $jsonBody
+     */
+    public function __construct(array $jsonBody)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Input and ouput words count doesn\'t match.',
+            WeglotCode::PARAMETERS,
+            $jsonBody
+        );
     }
 }
