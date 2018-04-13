@@ -28,5 +28,8 @@
     "psr-4": {
       "Weglot\\": "src/"
     }
+  },
+  "require-dev": {
+    "codeception/codeception": "^2.4"
   }
 }
