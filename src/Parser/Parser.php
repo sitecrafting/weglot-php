@@ -3,12 +3,22 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Client\Api\Exception\ApiError;
+use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
+use Weglot\Client\Api\Exception\MissingRequiredParamException;
+use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
-use Weglot\Client\Api\WordEntry;
+use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
+use Weglot\Parser\Check\DomChecker;
+use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
-use GuzzleHttp\Exception\GuzzleException;
+use Weglot\Parser\Formatter\DomFormatter;
+use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
+use Weglot\Parser\Formatter\IgnoredNodes;
+use Weglot\Parser\Formatter\JsonLdFormatter;
 
 /**
  * Class Parser
@@ -47,21 +57,23 @@ class Parser
     protected $languageTo;
 
     /**
+     * @var WordCollection
+     */
+    protected $words;
+
+    /**
      * Parser constructor.
      * @param Client $client
-     * @param string $language_from
-     * @param string $language_to
      * @param ConfigProviderInterface $config
      * @param array $excludeBlocks
      */
-    public function __construct(Client $client, $language_from, $language_to, ConfigProviderInterface $config, array $excludeBlocks = [])
+    public function __construct(Client $client, ConfigProviderInterface $config, array $excludeBlocks = [])
     {
         $this
             ->setClient($client)
-            ->setLanguageFrom($language_from)
-            ->setLanguageTo($language_to)
             ->setConfigProvider($config)
-            ->setExcludeBlocks($excludeBlocks);
+            ->setExcludeBlocks($excludeBlocks)
+            ->setWords(new WordCollection());
     }
 
     /**
@@ -160,84 +172,78 @@ class Parser
     }
 
     /**
-     * @param string $source
-     * @return string
+     * @param WordCollection $wordCollection
+     * @return $this
      */
-    public function translate($source)
+    public function setWords(WordCollection $wordCollection)
     {
-        if ($this->client->apiKeyCheck()) {
-            $source = $this->ignoreNodes($source);
+        $this->words = $wordCollection;
+
+        return $this;
+    }
+
+    /**
+     * @return WordCollection
+     */
+    public function getWords()
+    {
+        return $this->words;
+    }
+
+    /**
+     * @param string $source
+     * @param string $languageFrom
+     * @param string $languageTo
+     * @return string
+     * @throws ApiError
+     * @throws InputAndOutputCountMatchException
+     * @throws InvalidWordTypeException
+     * @throws MissingRequiredParamException
+     * @throws MissingWordsOutputException
+     */
+    public function translate($source, $languageFrom, $languageTo)
+    {
+        // setters
+        $this
+            ->setLanguageFrom($languageFrom)
+            ->setLanguageTo($languageTo);
+
+        if ($this->client->getProfile()->getIgnoredNodes()) {
+            $ignoredNodesFormatter = new IgnoredNodes($source);
+            $source = $ignoredNodesFormatter->getSource();
         }
 
-        $dom = \SimpleHtmlDom\str_get_html(
-            $source,
-            true,
-            true,
-            DEFAULT_TARGET_CHARSET,
-            false,
-            DEFAULT_BR_TEXT,
-            DEFAULT_SPAN_TEXT
-        );
+        // simple_html_dom
+        $dom = $this->getSimpleDom($source);
 
-        $this->filterExcludeBlocks($dom);
+        // exclude blocks
+        $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
+        $dom = $excludeBlocks->getDom();
 
-        $words = [];
-        $nodes = [];
+        // checkers
+        list($nodes, $jsons) = $this->checkers($dom);
 
-        foreach ($this->domCheckMapping() as $key => $elem) {
-            foreach ($dom->find($key) as $k => $row) {
-                foreach ($elem as $element) {
-                    $property = $element['property'];
-                    $t = $element['t'];
-                    $type = $element['type'];
+        // api communication
+        $translated = $this->apiTranslate($dom);
 
-                    $class = '\\Weglot\\Parser\\Check\\' .ucfirst($type);
-                    $instance = new $class($row, $property);
+        // formatters
+        $this->formatters($translated, $nodes, $jsons);
+        return $dom->save();
+    }
 
-                    if ($instance->handle()) {
-                        $words[] = [
-                            't' => $t,
-                            'w' => $row->$property,
-                        ];
-
-                        $nodes[] = [
-                            'node' => $row,
-                            'type' => $type,
-                            'property' => $property,
-                        ];
-                    }
-                }
-            }
-        }
-
-        $jsons = [];
-        $nbJsonStrings = 0;
-
-        foreach ($dom->find('script[type="application/ld+json"]') as $k => $row) {
-            $mustAddjson = false;
-            $json = json_decode($row->innertext, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                foreach ($this->getMicroData() as $key) {
-                    $path = explode(">", $key);
-                    $value = $this->getValue($json, $path);
-
-                    if (isset($value)) {
-                        $mustAddjson = true;
-                        $this->addValues($value, $words, $nbJsonStrings);
-                    }
-                }
-
-                if ($mustAddjson) {
-                    array_push($jsons, ['node' => $row, 'json' => $json]);
-                }
-            }
-        }
-
+    /**
+     * @param simple_html_dom $dom
+     * @return TranslateEntry
+     * @throws InputAndOutputCountMatchException
+     * @throws InvalidWordTypeException
+     * @throws MissingRequiredParamException
+     * @throws MissingWordsOutputException
+     * @throws ApiError
+     */
+    protected function apiTranslate(simple_html_dom $dom)
+    {
         // Translate endpoint parameters
-        $params = [
-            'language_from' => $this->getLanguageFrom(),
-            'language_to' => $this->getLanguageTo()
-        ];
+        $params = $this->defaultParams();
 
         if ($this->getConfigProvider()->getAutoDiscoverTitle()) {
             $params['title'] = $this->getTitle($dom);
@@ -246,208 +252,42 @@ class Parser
 
         try {
             $translate = new TranslateEntry($params);
-            $input = $translate->getInputWords();
-
-            foreach ($words as $word) {
-                $input->addOne(new WordEntry($word['w'], $word['t']));
-            }
+            $translate->setInputWords($this->getWords());
         } catch (\Exception $e) {
             die($e->getMessage());
         }
         $translate = new Translate($translate, $this->client);
 
-        try {
-            $translated = $translate->handle();
-        } catch (\Exception $e) {
-            die($e->getMessage());
-        } catch (GuzzleException $e) {
-            die($e->getMessage());
-        }
+        $translated = $translate->handle();
 
-        $this->applyToDom($translated, $nodes, $words, $jsons);
-        return $dom->save();
+        return $translated;
     }
 
     /**
-     * Convert < & > for some dom tags to let them able
-     * to go through API calls.
-     *
      * @param string $source
-     * @return string
+     * @return simple_html_dom
      */
-    protected function ignoreNodes($source)
+    protected function getSimpleDom($source)
     {
-        $nodes_to_ignore = [
-            ['<strong>', '</strong>'],
-            ['<em>', '</em>'],
-            ['<abbr>', '</abbr>'],
-            ['<acronym>', '</acronym>'],
-            ['<b>', '</b>'],
-            ['<bdo>', '</bdo>'],
-            ['<big>', '</big>'],
-            ['<cite>', '</cite>'],
-            ['<kbd>', '</kbd>'],
-            ['<q>', '</q>'],
-            ['<small>', '</small>'],
-            ['<sub>', '</sub>'],
-            ['<sup>', '</sup>'],
-        ];
-
-        foreach ($nodes_to_ignore as $ignore) {
-            $pattern = '#' . $ignore[0] . '([^>]*)?' . $ignore[1] . '#';
-            $replace = htmlentities($ignore[0]) . '$1' . htmlentities($ignore[1]);
-            $source = preg_replace($pattern, $replace, $source);
-        }
-
-        return $source;
-    }
-
-    /**
-     * Add ATTRIBUTE_NO_TRANSLATE to dom elements that don't
-     * wanna be translated.
-     *
-     * @param simple_html_dom $dom
-     */
-    protected function filterExcludeBlocks(simple_html_dom &$dom)
-    {
-        foreach ($this->excludeBlocks as $exception) {
-            foreach ($dom->find($exception) as $k => $row) {
-                $attribute = self::ATTRIBUTE_NO_TRANSLATE;
-                $row->$attribute = '';
-            }
-        }
+        return \SimpleHtmlDom\str_get_html(
+            $source,
+            true,
+            true,
+            DEFAULT_TARGET_CHARSET,
+            false,
+            DEFAULT_BR_TEXT,
+            DEFAULT_SPAN_TEXT
+        );
     }
 
     /**
      * @return array
      */
-    protected function domCheckMapping()
+    public function defaultParams()
     {
         return [
-            'text' => [
-                [
-                    'property' => 'outertext',
-                    't' => 1,
-                    'type' => 'text',
-                ],
-            ],
-            "input[type='submit'],input[type='button']" => [
-                [
-                    'property' => 'value',
-                    't' => 2,
-                    'type' => 'button',
-                ],
-                [
-                    'property' => 'data-value',
-                    't' => 1,
-                    'type' => 'input_dv',
-                ],
-                [
-                    'property' => 'data-order_button_text',
-                    't' => 1,
-                    'type' => 'input_dobt',
-                ],
-            ],
-
-            "input[type='radio']" => [
-                [
-                    'property' => 'data-order_button_text',
-                    't' => 2,
-                    'type' => 'rad_obt',
-                ],
-            ],
-
-
-            "td" => [
-                [
-                    'property' => 'data-title',
-                    't' => 2,
-                    'type' => 'td_dt',
-                ],
-            ],
-
-            "input[type=\'text\'],input[type=\'password\'],input[type=\'search\'],input[type=\'email\'],input:not([type]),textarea"
-            => [
-                [
-                    'property' => 'placeholder',
-                    't' => 3,
-                    'type' => 'placeholder',
-                ],
-            ],
-
-            'meta[name="description"],meta[property="og:title"],meta[property="og:description"],meta[property="og:site_name"],meta[name="twitter:title"],meta[name="twitter:description"]'
-            => [
-                [
-                    'property' => 'content',
-                    't' => 4,
-                    'type' => 'meta_desc',
-                ],
-            ],
-
-            'iframe' => [
-                [
-                    'property' => 'src',
-                    't' => 5,
-                    'type' => 'iframe_src',
-                ],
-            ],
-
-            'img' => [
-                [
-                    'property' => 'src',
-                    't' => 6,
-                    'type' => 'img_src',
-                ],
-                [
-                    'property' => 'alt',
-                    't' => 7,
-                    'type' => 'img_alt',
-                ],
-            ],
-
-            'a' => [
-                [
-                    'property' => 'href',
-                    't' => 8,
-                    'type' => 'a_pdf',
-                ],
-                [
-                    'property' => 'title',
-                    't' => 1,
-                    'type' => 'a_title',
-                ],
-                [
-                    'property' => 'data-value',
-                    't' => 1,
-                    'type' => 'a_dv',
-                ],
-                [
-                    'property' => 'data-title',
-                    't' => 1,
-                    'type' => 'a_dt',
-                ],
-                [
-                    'property' => 'data-tooltip',
-                    't' => 1,
-                    'type' => 'a_dto',
-                ],
-                [
-                    'property' => 'data-hover',
-                    't' => 1,
-                    'type' => 'a_dho',
-                ],
-                [
-                    'property' => 'data-content',
-                    't' => 1,
-                    'type' => 'a_dco',
-                ],
-                [
-                    'property' => 'data-text',
-                    't' => 1,
-                    'type' => 'a_dte',
-                ],
-            ],
-
+            'language_from' => $this->getLanguageFrom(),
+            'language_to' => $this->getLanguageTo()
         ];
     }
 
@@ -467,140 +307,35 @@ class Parser
     }
 
     /**
+     * @param simple_html_dom $dom
      * @return array
+     * @throws InvalidWordTypeException
      */
-    protected function getMicroData()
+    protected function checkers($dom)
     {
-        return ["description"];
+        $checker = new DomChecker($this, $dom);
+        $nodes = $checker->handle();
+
+        $checker = new JsonLdChecker($this, $dom);
+        $jsons = $checker->handle();
+
+        return [
+            $nodes,
+            $jsons
+        ];
     }
 
     /**
      * @param TranslateEntry $translateEntry
      * @param array $nodes
-     * @param array $words
      * @param array $jsons
      */
-    protected function applyToDom(TranslateEntry $translateEntry, array $nodes, array $words, array $jsons)
+    protected function formatters(TranslateEntry $translateEntry, array $nodes, array $jsons)
     {
-        $translated_words = $translateEntry->getOutputWords();
+        $formatter = new DomFormatter($this, $translateEntry);
+        $formatter->handle($nodes);
 
-        for ($i = 0; $i < count($nodes); ++$i) {
-            $property = $nodes[$i]['property'];
-            $type = $nodes[$i]['type'];
-
-            if ($translated_words[$i] !== null) {
-                $current_translated = $translated_words[$i]->getWord();
-
-                if ($type == "meta_desc") {
-                    $nodes[$i]['node']->$property = htmlspecialchars($current_translated);
-                } else {
-                    $nodes[$i]['node']->$property = $current_translated;
-                }
-
-
-                if ($nodes[$i]['type'] == 'img_src') {
-                    $nodes[$i]['node']->src = $current_translated;
-                    if ($nodes[$i]['node']->hasAttribute('srcset') &&
-                        $nodes[$i]['node']->srcset != '' &&
-                        $current_translated != $words[$i]['w']) {
-                        $nodes[$i]['node']->srcset = '';
-                    }
-                }
-            }
-        }
-
-        $index = count($nodes);
-        for ($j = 0; $j < count($jsons); $j++) {
-            $jsonArray = $jsons[$j]['json'];
-            $node = $jsons[$j]['node'];
-            foreach ($this->getMicroData() as $key) {
-                $path = explode(">", $key);
-                $hasV = $this->getValue($jsonArray, $path);
-
-                if (isset($hasV)) {
-                    $this->setValues($jsonArray, $path, $translated_words, $index);
-                }
-            }
-            $node->innertext = json_encode($jsonArray, JSON_PRETTY_PRINT);
-        }
-    }
-
-    /**
-     * ----------------------------------------------------------------------------------------------------------------
-     *
-     * Not refactored
-     *
-     * ----------------------------------------------------------------------------------------------------------------
-     */
-
-    /**
-     * @param array $data
-     * @param $path
-     * @return null
-     */
-    public function getValue($data, $path)
-    {
-        $temp = $data;
-        foreach ($path as $key) {
-            if (array_key_exists($key, $temp)) {
-                $temp = $temp[$key];
-            } else {
-                return null;
-            }
-        }
-        return $temp;
-    }
-
-    /**
-     * @param $value
-     * @param array $words
-     * @param int $nbJsonStrings
-     */
-    public function addValues($value, &$words, &$nbJsonStrings)
-    {
-        if (is_array($value)) {
-            foreach ($value as $key => $val) {
-                $this->addValues($val, $words, $nbJsonStrings);
-            }
-        } else {
-            array_push(
-                $words,
-                [
-                    't' => 1,
-                    'w' => $value,
-                ]
-            );
-            $nbJsonStrings++;
-        }
-    }
-
-    /**
-     * @param $data
-     * @param $path
-     * @param array $translatedwords
-     * @param int $index
-     * @return null|void
-     */
-    public function setValues(&$data, $path, $translatedwords, &$index)
-    {
-        $temp = &$data;
-        foreach ($path as $key) {
-            if (array_key_exists($key, $temp)) {
-                $temp = &$temp[$key];
-            } else {
-                return null;
-            }
-        }
-
-        if (is_array($temp)) {
-            foreach ($temp as $key => &$val) {
-                $this->setValues($val, null, $translatedwords, $index);
-            }
-        } else {
-            $temp = $translatedwords[$index]->getWord();
-            $index++;
-        }
-
-        return;
+        $formatter = new JsonLdFormatter($this, $translateEntry, count($nodes));
+        $formatter->handle($jsons);
     }
 }

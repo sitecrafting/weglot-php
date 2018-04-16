@@ -26,4 +26,13 @@ class Text
     {
         return strpos($haystack, $search) !== false;
     }
+
+    /**
+     * @param string $filename
+     * @return string
+     */
+    public static function removeFileExtension($filename)
+    {
+        return preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename);
+    }
 }

@@ -69,10 +69,10 @@ class Translate
         $translate = new TranslateEntry($params);
 
         if (!isset($response['to_words'])) {
-            throw new MissingWordsOutputException();
+            throw new MissingWordsOutputException($response);
         }
         if (count($response['from_words']) !== count($response['to_words'])) {
-            throw new InputAndOutputCountMatchException();
+            throw new InputAndOutputCountMatchException($response);
         }
 
         foreach ($response['from_words'] as $word) {

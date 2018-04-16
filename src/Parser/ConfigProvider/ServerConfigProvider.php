@@ -17,7 +17,7 @@ class ServerConfigProvider extends AbstractConfigProvider
     public function __construct($title = null)
     {
         list($url, $bot) = $this->loadFromServer();
-        parent::__construct($title, $url, $bot);
+        parent::__construct($url, $bot, $title);
     }
 
     /**

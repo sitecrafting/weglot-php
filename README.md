@@ -3,7 +3,7 @@
 
 <!-- tags -->
 [![Latest Stable Version](https://poser.pugx.org/weglot/weglot-php/v/stable)](https://packagist.org/packages/weglot/weglot-php)
-[![BuildStatus](https://travis-ci.org/weglot/weglot-php.svg?branch=master)](https://travis-ci.org/weglot/weglot-php)
+[![BuildStatus](https://travis-ci.org/weglot/weglot-php.svg?branch=develop)](https://travis-ci.org/weglot/weglot-php)
 [![Code Climate](https://codeclimate.com/github/weglot/weglot-php/badges/gpa.svg)](https://codeclimate.com/github/weglot/weglot-php)
 [![License](https://poser.pugx.org/weglot/weglot-php/license)](https://packagist.org/packages/weglot/weglot-php)
 
@@ -15,7 +15,7 @@ This library allows you to quickly and easily use the Weglot API via PHP.
 - Weglot API Key, starting at [free level](https://dashboard.weglot.com/register)
 
 ## Installation
-You can install the bindings via [Composer](https://getcomposer.org/). Run the following command:
+You can install the library via [Composer](https://getcomposer.org/). Run the following command:
 
 ```bash
 composer require weglot/weglot-php

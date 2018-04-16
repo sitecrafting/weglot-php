@@ -5,6 +5,7 @@ namespace Weglot\Client;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
+use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Caching\ClientCachingInterface;
 use Weglot\Client\Caching\ClientCachingTrait;
 
@@ -21,7 +22,7 @@ class Client implements ClientCachingInterface
      *
      * @var string
      */
-    const VERSION = '0.1-beta2';
+    const VERSION = '0.1';
 
     /**
      * Weglot API Key
@@ -45,6 +46,11 @@ class Client implements ClientCachingInterface
     protected $connector;
 
     /**
+     * @var Profile
+     */
+    protected $profile;
+
+    /**
      * Client constructor.
      * @param string    $apiKey     your Weglot API key
      * @param array     $options    an array of options, currently only "host" is implemented
@@ -53,14 +59,7 @@ class Client implements ClientCachingInterface
     {
         $this->apiKey = $apiKey;
         $this->setOptions($options);
-    }
-
-    /**
-     * @return bool
-     */
-    public function apiKeyCheck()
-    {
-        return (strlen($this->apiKey) === 36);
+        $this->profile = new Profile($apiKey);
     }
 
     /**
@@ -122,6 +121,14 @@ class Client implements ClientCachingInterface
     }
 
     /**
+     * @return Profile
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
      * Make the API call and return the response.
      *
      * @param string $method    Method to use for given endpoint
@@ -129,7 +136,7 @@ class Client implements ClientCachingInterface
      * @param array $body       Body content of the request as array
      * @param bool $asArray     To know if we return an array or ResponseInterface
      * @return array|ResponseInterface
-     * @throws GuzzleException
+     * @throws ApiError
      */
     public function makeRequest($method, $endpoint, $body = [], $asArray = true)
     {
@@ -141,10 +148,14 @@ class Client implements ClientCachingInterface
             }
         }
 
-        $response = $this->connector->request($method, $endpoint, [
-            'json' => $body
-        ]);
-        $array = json_decode($response->getBody()->getContents(), true);
+        try {
+            $response = $this->connector->request($method, $endpoint, [
+                'json' => $body
+            ]);
+            $array = json_decode($response->getBody()->getContents(), true);
+        } catch (GuzzleException $e) {
+            throw new ApiError($e->getMessage(), $body);
+        }
 
         if ($this->cacheEnabled()) {
             $this->cacheCommitItem($cacheKey, $array);

@@ -13,6 +13,11 @@ use JsonSerializable;
  */
 abstract class AbstractCollection implements Countable, Iterator, ArrayAccess, JsonSerializable, AbstractCollectionInterface
 {
+    use AbstractCollectionCountable;
+    use AbstractCollectionArrayAccess;
+    use AbstractCollectionSerializable;
+    use AbstractCollectionIterator;
+
     /**
      * @var AbstractCollectionEntry[]
      */
@@ -40,100 +45,5 @@ abstract class AbstractCollection implements Countable, Iterator, ArrayAccess, J
         }
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function current()
-    {
-        return current($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function next()
-    {
-        return next($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function key()
-    {
-        return key($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function valid()
-    {
-        return key($this->collection) !== null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rewind()
-    {
-        return reset($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function jsonSerialize()
-    {
-        $words = [];
-        foreach ($this->collection as $entry) {
-            $words[] = $entry->jsonSerialize();
-        }
-
-        return $words;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetExists($offset)
-    {
-        return isset($this->collection[$offset]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetGet($offset)
-    {
-        return isset($this->collection[$offset]) ? $this->collection[$offset] : null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetSet($offset, $value)
-    {
-        if (isset($this->collection[$offset]) && $value instanceof AbstractCollectionEntry) {
-            $this->collection[$offset] = $value;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->collection[$offset]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function count()
-    {
-        return count($this->collection);
     }
 }

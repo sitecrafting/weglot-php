@@ -2,6 +2,7 @@
 
 namespace Weglot\Client\Endpoint;
 
+use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
@@ -9,7 +10,6 @@ use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Factory\Translate as TranslateFactory;
-use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Translate
@@ -57,11 +57,11 @@ class Translate extends Endpoint
 
     /**
      * @return TranslateEntry
-     * @throws GuzzleException
+     * @throws InputAndOutputCountMatchException
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
-     * @throws InputAndOutputCountMatchException
+     * @throws ApiError
      */
     public function handle()
     {
