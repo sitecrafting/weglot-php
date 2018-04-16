@@ -52,7 +52,8 @@ abstract class Endpoint
      */
     public function getPath()
     {
-        return self::ENDPOINT;
+        $parentClass = get_called_class();
+        return $parentClass::ENDPOINT;
     }
 
     /**
