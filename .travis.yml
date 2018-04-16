@@ -19,6 +19,10 @@ matrix:
   allow_failures:
     - php: 5.5
 
+# Setting up redis server
+services:
+  - redis-server
+
 # Encrypted variables
 env:
   global:
