@@ -24,7 +24,7 @@ class StatusTest extends \Codeception\Test\Unit
     }
 
     // tests
-    public function testSomeFeature()
+    public function testApiConnection()
     {
         $status = new Status($this->client);
         $this->assertTrue($status->handle(), 'API not reachable');
