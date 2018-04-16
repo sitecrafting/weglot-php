@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Travis configuration
 - Manage API versions (through Profile class)
 - Error abstraction
+- Unit testing
 
 ### Changed
 - Refactoring for `Parser`
+- Languages endpoint: now giving full list
 
 ## [0.1-beta.2] - 2018-04-12
 ### Added

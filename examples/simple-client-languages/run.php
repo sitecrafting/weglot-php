@@ -12,15 +12,10 @@ $dotenv->load();
 
 // Client
 $client = new Client(getenv('WG_API_KEY'));
-$languages = new Languages('fi', $client);
+$languages = new Languages($client);
 
 // Run API :)
-try {
-    $object = $languages->handle();
-} catch (InvalidLanguageException $e) {
-    // requested language doesn't match
-    die($e->getMessage());
-}
+$object = $languages->handle();
 
 // dumping returned object
-var_dump($object);
+var_dump($object->getCode('fi'));

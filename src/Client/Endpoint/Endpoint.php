@@ -3,6 +3,7 @@
 namespace Weglot\Client\Endpoint;
 
 use Psr\Http\Message\ResponseInterface;
+use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -51,7 +52,8 @@ abstract class Endpoint
      */
     public function getPath()
     {
-        return self::ENDPOINT;
+        $parentClass = get_called_class();
+        return $parentClass::ENDPOINT;
     }
 
     /**
@@ -60,11 +62,11 @@ abstract class Endpoint
     abstract public function handle();
 
     /**
-     * @param array $body       Content of your request
-     * @param bool $ignoreCache To ignore cache, false by default
+     * @param array $body
+     * @param bool $ignoreCache
      * @param bool $asArray
      * @return array|ResponseInterface
-     * @throws GuzzleException
+     * @throws ApiError
      */
     protected function request(array $body = [], $ignoreCache = false, $asArray = true)
     {
