@@ -63,14 +63,6 @@ class Client implements ClientCachingInterface
     }
 
     /**
-     * @return bool
-     */
-    public function apiKeyCheck()
-    {
-        return (strlen($this->apiKey) === 36);
-    }
-
-    /**
      * Creating Guzzle HTTP connector based on $options
      */
     protected function setupConnector()
