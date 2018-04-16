@@ -31,7 +31,8 @@
   },
   "require-dev": {
     "codeception/codeception": "^2.4",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "cache/predis-adapter": "^1.0"
   },
   "scripts": {
     "test": "./vendor/bin/codecept run unit --coverage --coverage-xml --no-interaction"
