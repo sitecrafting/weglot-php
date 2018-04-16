@@ -3,6 +3,7 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
@@ -234,11 +235,11 @@ class Parser
     /**
      * @param simple_html_dom $dom
      * @return TranslateEntry
-     * @throws GuzzleException
-     * @throws InvalidWordTypeException
      * @throws InputAndOutputCountMatchException
+     * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
+     * @throws ApiError
      */
     protected function apiTranslate(simple_html_dom $dom)
     {
