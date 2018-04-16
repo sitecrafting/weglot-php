@@ -1,16 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 12/04/2018
- * Time: 17:10
- */
 
 namespace Weglot\Parser\Check;
 
 use SimpleHtmlDom\simple_html_dom;
 use Weglot\Parser\Parser;
 
+/**
+ * Class AbstractChecker
+ * @package Weglot\Parser\Check
+ */
 abstract class AbstractChecker
 {
     /**

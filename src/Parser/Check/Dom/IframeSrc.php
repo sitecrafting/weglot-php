@@ -6,8 +6,8 @@ use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 /**
- * Class Iframe_src
- * @package Weglot\Parser\Check
+ * Class IframeSrc
+ * @package Weglot\Parser\Check\Dom
  */
 class IframeSrc extends AbstractDomChecker
 {

@@ -7,7 +7,7 @@ use Weglot\Parser\Util\Text as TextUtil;
 
 /**
  * Class Placeholder
- * @package Weglot\Parser\Check
+ * @package Weglot\Parser\Check\Dom
  */
 class Placeholder extends AbstractDomChecker
 {

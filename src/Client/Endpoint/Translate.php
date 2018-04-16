@@ -10,7 +10,6 @@ use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Factory\Translate as TranslateFactory;
-use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Translate

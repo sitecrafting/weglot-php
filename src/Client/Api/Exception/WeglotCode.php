@@ -2,6 +2,10 @@
 
 namespace Weglot\Client\Api\Exception;
 
+/**
+ * Class WeglotCode
+ * @package Weglot\Client\Api\Exception
+ */
 abstract class WeglotCode
 {
     const GENERIC = 0;

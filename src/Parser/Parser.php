@@ -15,7 +15,6 @@ use Weglot\Client\Endpoint\Translate;
 use Weglot\Parser\Check\DomChecker;
 use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use Weglot\Parser\Formatter\DomFormatter;
 use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
 use Weglot\Parser\Formatter\IgnoredNodes;

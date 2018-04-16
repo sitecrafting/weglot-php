@@ -4,6 +4,10 @@ namespace Weglot\Client\Api\Exception;
 
 use Exception;
 
+/**
+ * Class AbstractException
+ * @package Weglot\Client\Api\Exception
+ */
 abstract class AbstractException extends Exception
 {
     /**

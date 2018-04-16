@@ -5,8 +5,8 @@ namespace Weglot\Parser\Check\Dom;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class A_dto
- * @package Weglot\Parser\Check
+ * Class LinkDataTooltip
+ * @package Weglot\Parser\Check\Dom
  */
 class LinkDataTooltip extends AbstractDomChecker
 {

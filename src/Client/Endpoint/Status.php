@@ -2,7 +2,6 @@
 
 namespace Weglot\Client\Endpoint;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Weglot\Client\Api\Exception\ApiError;
 
 /**

@@ -1,18 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 12/04/2018
- * Time: 15:45
- */
 
 namespace Weglot\Parser\Check;
 
-use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\Util\JsonLd;
 
+/**
+ * Class JsonLdChecker
+ * @package Weglot\Parser\Check
+ */
 class JsonLdChecker extends AbstractChecker
 {
     /**

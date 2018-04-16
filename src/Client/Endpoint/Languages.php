@@ -2,10 +2,7 @@
 
 namespace Weglot\Client\Endpoint;
 
-use Weglot\Client\Api\Exception\InvalidLanguageException;
 use Weglot\Client\Api\LanguageCollection;
-use Weglot\Client\Api\LanguageEntry;
-use Weglot\Client\Client;
 use Weglot\Client\Factory\Languages as LanguagesFactory;
 
 /**

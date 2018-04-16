@@ -5,7 +5,6 @@ namespace Weglot\Client\Endpoint;
 use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Client;
-use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Endpoint

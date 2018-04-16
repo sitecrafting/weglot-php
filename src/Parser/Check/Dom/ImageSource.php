@@ -5,8 +5,8 @@ namespace Weglot\Parser\Check\Dom;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class Img_src
- * @package Weglot\Parser\Check
+ * Class ImageSource
+ * @package Weglot\Parser\Check\Dom
  */
 class ImageSource extends AbstractDomChecker
 {

@@ -6,8 +6,8 @@ use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 /**
- * Class A_pdf
- * @package Weglot\Parser\Check
+ * Class LinkHref
+ * @package Weglot\Parser\Check\Dom
  */
 class LinkHref extends AbstractDomChecker
 {
