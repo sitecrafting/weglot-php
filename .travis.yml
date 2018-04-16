@@ -21,6 +21,8 @@ matrix:
 
 # Encrypted variables
 env:
+  global:
+    - CC_TEST_REPORTER_ID=ae26e8839888ccd9d1ee6c13f1b556d5ed91530083dd9cd8a01526f483f1200d
   matrix:
     secure: boP/x3oNeb/ykVxCzIMLrJO3GjdaU6cQjzkVfHH+K7tQDiLRE21C1V9dUqIVhnvWphCk4iU5QmDAIUBbFo7UKO8saHVotgKnBRNd1tvC649F+S2szP+N5nUNOSALWZYTABLRG6aOWBOOjaAWvevjONxbx3SDs1pLFTE1pIUZ8ft6I0GLQQKY3T7oIQN15h72tIIHpmbfavrWYquh5F5LXLvZsW+o4k/O+aQu9zeC2NSxY9bLB4XdgL2vwyOUS93hYDftALCqHEY0wZxTB5QfpfF9Soovey1HUMwmDS0fVil0iHVHmynN0YbpTE27FqUMeklxdUq2i/+a0X2oF4NjNx0CYMcPEeVV2FMEgFQ1zjmc6ADuZaTf4QeSTMhK2ZrBmj1pzwMbh3Pn+LfWm3Y5kEx3MjIT1L+h2NvwXtB1J62wLgx7kCzmsJ5eyJJyrHgimIC9/l8l+AeTayhv0CdPERFnreGgBJn7Nfqx2d3IWq3TJMEPY166KROgjlrYdUcy671sE3qqASiCpgdEyll6060n/QAqG7VclGiMf5OeJwbq/NkXiunIaWwWE1BORFNH1e+u4uuC3D2WxkHryUt57TZz2oaugnN8lo3doJUDG73881GmG65oNjECK7E4uc41KaKrSBTdidOqOxikUWuZDZrV4mQPrYW+0DskSe43Icg=
 
@@ -34,19 +36,19 @@ install:
 
 # Prepare test environment
 before_script:
-  ## downloading last codeclimate test report
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
   # creating .env file
   - cp .env.dist .env
   # pass environment variables in travis to the app
   - sed -i "8s/.*/WG_API_KEY=$WG_API_KEY/" .env
+  ## downloading last codeclimate test report
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 # To manage coverage for CodeClimate
 after_script:
 - mv tests/_output/coverage.xml clover.xml
-- ./cc-test-reporter after-build --coverage-input-type clover --id $COVERAGE_ID --exit-code $TRAVIS_TEST_RESULT
+- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 # Run main commands
 script:
