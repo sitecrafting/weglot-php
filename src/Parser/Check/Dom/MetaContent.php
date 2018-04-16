@@ -6,8 +6,8 @@ use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
 /**
- * Class Meta_desc
- * @package Weglot\Parser\Check
+ * Class MetaContent
+ * @package Weglot\Parser\Check\Dom
  */
 class MetaContent extends AbstractDomChecker
 {

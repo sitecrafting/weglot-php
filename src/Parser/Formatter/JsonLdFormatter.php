@@ -3,7 +3,6 @@
 namespace Weglot\Parser\Formatter;
 
 use Weglot\Client\Api\TranslateEntry;
-use Weglot\Client\Api\WordCollection;
 use Weglot\Parser\Parser;
 use Weglot\Parser\Util\JsonLd;
 

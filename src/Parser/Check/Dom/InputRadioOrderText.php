@@ -5,8 +5,8 @@ namespace Weglot\Parser\Check\Dom;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class Rad_obt
- * @package Weglot\Parser\Check
+ * Class InputRadioOrderText
+ * @package Weglot\Parser\Check\Dom
  */
 class InputRadioOrderText extends AbstractDomChecker
 {

@@ -1,13 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 12/04/2018
- * Time: 17:59
- */
 
 namespace Weglot\Parser\Formatter;
 
+/**
+ * Class IgnoredNodes
+ * @package Weglot\Parser\Formatter
+ */
 class IgnoredNodes
 {
     /**

@@ -5,8 +5,8 @@ namespace Weglot\Parser\Check\Dom;
 use Weglot\Client\Api\Enum\WordType;
 
 /**
- * Class Input_dv
- * @package Weglot\Parser\Check
+ * Class InputButtonDataValue
+ * @package Weglot\Parser\Check\Dom
  */
 class InputButtonDataValue extends AbstractDomChecker
 {

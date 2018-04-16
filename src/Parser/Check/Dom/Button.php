@@ -1,16 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 10/04/2018
- * Time: 11:36
- */
 
 namespace Weglot\Parser\Check\Dom;
 
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Util\Text as TextUtil;
 
+/**
+ * Class Button
+ * @package Weglot\Parser\Check\Dom
+ */
 class Button extends AbstractDomChecker
 {
     /**
