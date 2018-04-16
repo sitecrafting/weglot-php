@@ -11,9 +11,14 @@ class StatusTest extends \Codeception\Test\Unit
     protected $tester;
 
     /**
-     * @var \Weglot\Client\Client
+     * @var Client
      */
     protected $client;
+
+    /**
+     * @var Status
+     */
+    protected $status;
 
     /**
      * Init client
@@ -21,12 +26,17 @@ class StatusTest extends \Codeception\Test\Unit
     protected function _before()
     {
         $this->client = new Client(getenv('WG_API_KEY'));
+        $this->status = new Status($this->client);
     }
 
     // tests
-    public function testApiConnection()
+    public function testEndpoint()
     {
-        $status = new Status($this->client);
-        $this->assertTrue($status->handle(), 'API not reachable');
+        $this->assertTrue($this->status->handle(), 'API not reachable');
+    }
+
+    public function testPath()
+    {
+        $this->assertEquals('/status', $this->status->getPath());
     }
 }
