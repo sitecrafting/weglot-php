@@ -3,6 +3,7 @@
 namespace Weglot\Client\Endpoint;
 
 use GuzzleHttp\Exception\GuzzleException;
+use Weglot\Client\Api\Exception\ApiError;
 
 /**
  * Class Status
@@ -15,7 +16,7 @@ class Status extends Endpoint
 
     /**
      * @return bool
-     * @throws GuzzleException
+     * @throws ApiError
      */
     public function handle()
     {
