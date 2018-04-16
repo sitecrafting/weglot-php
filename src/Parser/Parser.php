@@ -192,11 +192,11 @@ class Parser
     }
 
     /**
-     * @param $source
-     * @param $languageFrom
-     * @param $languageTo
-     * @return mixed
-     * @throws GuzzleException
+     * @param string $source
+     * @param string $languageFrom
+     * @param string $languageTo
+     * @return string
+     * @throws ApiError
      * @throws InputAndOutputCountMatchException
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
