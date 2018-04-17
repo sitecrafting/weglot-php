@@ -1,6 +1,8 @@
 <!-- logo -->
 <img src="https://cdn.weglot.com/logo/logo-hor.png" height="40" />
 
+# PHP library
+
 <!-- tags -->
 [![Latest Stable Version](https://poser.pugx.org/weglot/weglot-php/v/stable)](https://packagist.org/packages/weglot/weglot-php)
 [![BuildStatus](https://travis-ci.org/weglot/weglot-php.svg?branch=develop)](https://travis-ci.org/weglot/weglot-php)
