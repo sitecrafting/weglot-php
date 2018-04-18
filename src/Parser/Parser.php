@@ -191,15 +191,10 @@ class Parser
     }
 
     /**
-     * @param string $source
-     * @param string $languageFrom
-     * @param string $languageTo
+     * @param $source
+     * @param $languageFrom
+     * @param $languageTo
      * @return string
-     * @throws ApiError
-     * @throws InputAndOutputCountMatchException
-     * @throws InvalidWordTypeException
-     * @throws MissingRequiredParamException
-     * @throws MissingWordsOutputException
      */
     public function translate($source, $languageFrom, $languageTo)
     {
@@ -234,11 +229,6 @@ class Parser
     /**
      * @param simple_html_dom $dom
      * @return TranslateEntry
-     * @throws InputAndOutputCountMatchException
-     * @throws InvalidWordTypeException
-     * @throws MissingRequiredParamException
-     * @throws MissingWordsOutputException
-     * @throws ApiError
      */
     protected function apiTranslate(simple_html_dom $dom)
     {
@@ -309,7 +299,6 @@ class Parser
     /**
      * @param simple_html_dom $dom
      * @return array
-     * @throws InvalidWordTypeException
      */
     protected function checkers($dom)
     {
