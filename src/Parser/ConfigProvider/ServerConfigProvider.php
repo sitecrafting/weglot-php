@@ -2,6 +2,7 @@
 
 namespace Weglot\Parser\ConfigProvider;
 
+use Weglot\Client\Api\Enum\BotType;
 use Weglot\Parser\Util\Server;
 
 /**
@@ -16,18 +17,16 @@ class ServerConfigProvider extends AbstractConfigProvider
      */
     public function __construct($title = null)
     {
-        list($url, $bot) = $this->loadFromServer();
-        parent::__construct($url, $bot, $title);
+        parent::__construct('', BotType::HUMAN, $title);
     }
 
     /**
-     * @return array
+     * Is used to load server data, you have to run it manually !
      */
-    protected function loadFromServer()
+    public function loadFromServer()
     {
-        return [
-            Server::fullUrl($_SERVER),
-            Server::detectBot($_SERVER)
-        ];
+        $this
+            ->setUrl(Server::fullUrl($_SERVER))
+            ->setBot(Server::detectBot($_SERVER));
     }
 }
