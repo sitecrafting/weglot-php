@@ -3,11 +3,6 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
-use Weglot\Client\Api\Exception\ApiError;
-use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
-use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Client\Api\Exception\MissingRequiredParamException;
-use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
@@ -15,6 +10,7 @@ use Weglot\Client\Endpoint\Translate;
 use Weglot\Parser\Check\DomChecker;
 use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
+use Weglot\Parser\ConfigProvider\ServerConfigProvider;
 use Weglot\Parser\Formatter\DomFormatter;
 use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
 use Weglot\Parser\Formatter\IgnoredNodes;
@@ -244,6 +240,11 @@ class Parser
     {
         // Translate endpoint parameters
         $params = $this->defaultParams();
+
+        // if data is coming from $_SERVER, load it ...
+        if ($this->getConfigProvider() instanceof ServerConfigProvider) {
+            $this->getConfigProvider()->loadFromServer();
+        }
 
         if ($this->getConfigProvider()->getAutoDiscoverTitle()) {
             $params['title'] = $this->getTitle($dom);
