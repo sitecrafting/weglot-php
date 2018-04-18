@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.1] - 2018-04-18
+### Fixed
+- ServerConfigProvider behavior changed: we do not load $_SERVER in __construct, it can disturb symfony service loading
+
 ## [0.1] - 2018-04-16
 ### Added
 - CodeClimate configuration
