@@ -32,7 +32,7 @@ abstract class AbstractDomChecker
      *
      * @var string
      */
-    const WORD_TYPE = WordType::GENERIC;
+    const WORD_TYPE = WordType::TEXT;
 
     /**
      * @var simple_html_dom_node

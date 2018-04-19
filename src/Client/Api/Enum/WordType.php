@@ -10,7 +10,7 @@ namespace Weglot\Client\Api\Enum;
  */
 abstract class WordType
 {
-    const GENERIC = 0;
+    const OTHER = 0;
     const TEXT = 1;
     const VALUE = 2;
     const PLACEHOLDER = 3;
