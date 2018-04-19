@@ -10,7 +10,7 @@
 [![License](https://poser.pugx.org/weglot/weglot-php/license)](https://packagist.org/packages/weglot/weglot-php)
 
 ## Overview
-This library allows you to quickly and easily use the Weglot API via PHP.
+This library allows you to quickly and easily use the Weglot API via PHP. It handle all communication with Weglot API and gives you a [fully functional Parser](#getting-started) to handle HTML pages easely.
 
 ## Requirements
 - PHP version 5.5 and later
@@ -31,25 +31,27 @@ require_once __DIR__. '/vendor/autoload.php';
 
 ## Getting Started
 
-Simple usage looks like:
+Simple usage of `Parser`:
 
 ```php
-$translate = new \Weglot\Client\Api\TranslateEntry([
-    'language_from' => 'en',
-    'language_to' => 'fi',
-    'title' => 'Lorem ipsum dolor sit amet',
-    'request_url' => 'https://foo.bar/baz',
-    'bot' => BotType::HUMAN
-])->getInputWords()
-    ->addOne(new \Weglot\Client\Api\WordEntry('This is a blue car', WordType::TEXT))
-    ->addOne(new \Weglot\Client\Api\WordEntry('This is a black car', WordType::TEXT));
+// Url to parse
+$url = 'https://foo.bar/baz';
 
-$client = new \Weglot\Client\Client('YOUR_WEGLOT_API_KEY');
-$translate = new \Weglot\Client\Endpoint\Translate($translate, $client);
-$object = $translate->handle();
+// Config with $_SERVER variables
+$config = new ServerConfigProvider();
 
-var_dump($object);
+// Fetching url content
+$content = '...';
+
+// Client
+$client = new Client(getenv('WG_API_KEY'));
+$parser = new Parser($client, $config);
+
+// Run the Parser
+$translatedContent = $parser->translate($content, 'en', 'de');
 ```
+
+For more details, check at [corresponding example](./examples/parsing-web-page/run.php) or at [documentation](https://weglot.github.io/weglot-documentation/#parser).
 
 ## Examples
 
@@ -59,7 +61,7 @@ You can take a look at: [examples](./examples) folder. You'll find a short READM
 
 ## Documentation
 
-Soon (tm)
+You can find a documentation for our libraries at: https://weglot.github.io/weglot-documentation/
 
 ## About
 `weglot-php` is guided and supported by the Weglot Developer Team.
