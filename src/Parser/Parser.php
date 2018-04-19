@@ -3,6 +3,11 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Client\Api\Exception\ApiError;
+use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
+use Weglot\Client\Api\Exception\MissingRequiredParamException;
+use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
@@ -190,7 +195,12 @@ class Parser
      * @param $source
      * @param $languageFrom
      * @param $languageTo
-     * @return string
+     * @return mixed
+     * @throws ApiError
+     * @throws InputAndOutputCountMatchException
+     * @throws InvalidWordTypeException
+     * @throws MissingRequiredParamException
+     * @throws MissingWordsOutputException
      */
     public function translate($source, $languageFrom, $languageTo)
     {
@@ -208,8 +218,10 @@ class Parser
         $dom = $this->getSimpleDom($source);
 
         // exclude blocks
-        $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
-        $dom = $excludeBlocks->getDom();
+        if (!empty($this->excludeBlocks)) {
+            $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
+            $dom = $excludeBlocks->getDom();
+        }
 
         // checkers
         list($nodes, $jsons) = $this->checkers($dom);
@@ -225,6 +237,11 @@ class Parser
     /**
      * @param simple_html_dom $dom
      * @return TranslateEntry
+     * @throws ApiError
+     * @throws InputAndOutputCountMatchException
+     * @throws InvalidWordTypeException
+     * @throws MissingRequiredParamException
+     * @throws MissingWordsOutputException
      */
     protected function apiTranslate(simple_html_dom $dom)
     {
@@ -298,8 +315,9 @@ class Parser
     }
 
     /**
-     * @param simple_html_dom $dom
+     * @param $dom
      * @return array
+     * @throws InvalidWordTypeException
      */
     protected function checkers($dom)
     {
