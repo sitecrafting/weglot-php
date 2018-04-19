@@ -7,6 +7,7 @@ use Weglot\Parser\Parser;
 use Weglot\Parser\ConfigProvider\ServerConfigProvider;
 use Weglot\Parser\ConfigProvider\ManualConfigProvider;
 use Weglot\Client\Api\Enum\BotType;
+use Weglot\Parser\Util\Site;
 
 // DotEnv
 $dotenv = new \Dotenv\Dotenv(__DIR__);
@@ -27,19 +28,12 @@ $config = new ServerConfigProvider();
 // Config manually
 $config = new ManualConfigProvider($url, BotType::HUMAN);
 
-// Fetching url content
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-$content = curl_exec($ch);
-curl_close($ch);
-
 // Client
 $client = new Client(getenv('WG_API_KEY'));
 $parser = new Parser($client, $config);
 
 // Run the Parser
-$translatedContent = $parser->translate($content, 'en', 'de');
+$translatedContent = $parser->translate(Site::get($url), 'en', 'de');
 
 // dumping returned object
 echo $translatedContent;

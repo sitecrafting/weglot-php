@@ -20,6 +20,7 @@ use Weglot\Parser\Formatter\DomFormatter;
 use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
 use Weglot\Parser\Formatter\IgnoredNodes;
 use Weglot\Parser\Formatter\JsonLdFormatter;
+use Weglot\Parser\Util\Site;
 
 /**
  * Class Parser
@@ -192,10 +193,10 @@ class Parser
     }
 
     /**
-     * @param $source
-     * @param $languageFrom
-     * @param $languageTo
-     * @return mixed
+     * @param string $source
+     * @param string $languageFrom
+     * @param string $languageTo
+     * @return string
      * @throws ApiError
      * @throws InputAndOutputCountMatchException
      * @throws InvalidWordTypeException
@@ -232,6 +233,23 @@ class Parser
         // formatters
         $this->formatters($translated, $nodes, $jsons);
         return $dom->save();
+    }
+
+    /**
+     * @param string $url
+     * @param string $languageFrom
+     * @param string $languageTo
+     * @return string
+     * @throws ApiError
+     * @throws InputAndOutputCountMatchException
+     * @throws InvalidWordTypeException
+     * @throws MissingRequiredParamException
+     * @throws MissingWordsOutputException
+     */
+    public function translateFromUrl($url, $languageFrom, $languageTo)
+    {
+        $source = Site::get($url);
+        return $this->translate($source, $languageFrom, $languageTo);
     }
 
     /**

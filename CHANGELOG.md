@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Util to fetch Site contents through `Site::get`
+
 ### Changed
 - Parser: excludeBlocks formatter is started only if we have excludeBlocks
 - readme: updated getting started to use Parser example, and adding documentation
