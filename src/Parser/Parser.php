@@ -218,8 +218,10 @@ class Parser
         $dom = $this->getSimpleDom($source);
 
         // exclude blocks
-        $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
-        $dom = $excludeBlocks->getDom();
+        if (!empty($this->excludeBlocks)) {
+            $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
+            $dom = $excludeBlocks->getDom();
+        }
 
         // checkers
         list($nodes, $jsons) = $this->checkers($dom);
