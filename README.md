@@ -10,7 +10,7 @@
 [![License](https://poser.pugx.org/weglot/weglot-php/license)](https://packagist.org/packages/weglot/weglot-php)
 
 ## Overview
-This library allows you to quickly and easily use the Weglot API via PHP. It handle all communication with Weglot API and gives you a [fully functional Parser](#getting-started) to handle HTML pages easely.
+This library allows you to quickly and easily use the Weglot API via PHP. It handle all communication with Weglot API and gives you a [fully functional Parser](#getting-started) to handle HTML pages easily.
 
 ## Requirements
 - PHP version 5.5 and later
