@@ -80,6 +80,22 @@ class Client implements ClientCachingInterface
     }
 
     /**
+     * @return string
+     */
+    protected function makeUserAgent()
+    {
+        $curlVersion = curl_version();
+
+        $userAgentArray = [
+            'curl' =>  $curlVersion['version'],
+            'ssl' => $curlVersion['ssl_version'],
+            'weglot' => self::VERSION
+        ];
+
+        return implode(' / ', $userAgentArray);
+    }
+
+    /**
      * Default options values
      *
      * @return array
@@ -88,7 +104,7 @@ class Client implements ClientCachingInterface
     {
         return [
             'host'  => 'https://api.weglot.com',
-            'user-agent' => 'Weglot/' .self::VERSION
+            'user-agent' => $this->makeUserAgent()
         ];
     }
 
