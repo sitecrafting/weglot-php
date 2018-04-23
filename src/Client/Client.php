@@ -87,9 +87,9 @@ class Client implements ClientCachingInterface
         $curlVersion = curl_version();
 
         $userAgentArray = [
-            'curl' =>  $curlVersion['version'],
+            'curl' =>  'cURL\\' .$curlVersion['version'],
             'ssl' => $curlVersion['ssl_version'],
-            'weglot' => self::VERSION
+            'weglot' => 'Weglot\\' .self::VERSION
         ];
 
         return implode(' / ', $userAgentArray);
