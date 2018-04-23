@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Util to fetch Site contents through `Site::get`
+- cURL & OpenSSL versions inside user-agent for debugging purposes
 
 ### Changed
 - Parser: excludeBlocks formatter is started only if we have excludeBlocks
