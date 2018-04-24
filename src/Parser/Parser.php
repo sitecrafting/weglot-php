@@ -13,6 +13,7 @@ use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
 use Weglot\Parser\Check\DomChecker;
+use Weglot\Parser\Check\DomCheckerProvider;
 use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\ConfigProvider\ServerConfigProvider;
@@ -64,6 +65,11 @@ class Parser
     protected $words;
 
     /**
+     * @var DomCheckerProvider
+     */
+    protected $domCheckerProvider;
+
+    /**
      * Parser constructor.
      * @param Client $client
      * @param ConfigProviderInterface $config
@@ -75,7 +81,8 @@ class Parser
             ->setClient($client)
             ->setConfigProvider($config)
             ->setExcludeBlocks($excludeBlocks)
-            ->setWords(new WordCollection());
+            ->setWords(new WordCollection())
+            ->setDomCheckerProvider(new DomCheckerProvider($this));
     }
 
     /**
@@ -190,6 +197,24 @@ class Parser
     public function getWords()
     {
         return $this->words;
+    }
+
+    /**
+     * @param DomCheckerProvider $domCheckerProvider
+     * @return $this
+     */
+    public function setDomCheckerProvider(DomCheckerProvider $domCheckerProvider)
+    {
+        $this->domCheckerProvider = $domCheckerProvider;
+        return $this;
+    }
+
+    /**
+     * @return DomCheckerProvider
+     */
+    public function getDomCheckerProvider()
+    {
+        return $this->domCheckerProvider;
     }
 
     /**
@@ -339,8 +364,7 @@ class Parser
      */
     protected function checkers($dom)
     {
-        $checker = new DomChecker($this, $dom);
-        $nodes = $checker->handle();
+        $nodes = $this->getDomCheckerProvider()->handle($dom);
 
         $checker = new JsonLdChecker($this, $dom);
         $jsons = $checker->handle();

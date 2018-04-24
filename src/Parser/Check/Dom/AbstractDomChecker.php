@@ -122,4 +122,18 @@ abstract class AbstractDomChecker
     {
         return true;
     }
+
+    /**
+     * @return array
+     */
+    public static function toArray()
+    {
+        $class = get_called_class();
+
+        return [
+            $class::DOM,
+            $class::PROPERTY,
+            $class::WORD_TYPE
+        ];
+    }
 }
