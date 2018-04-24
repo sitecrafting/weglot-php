@@ -64,31 +64,33 @@ class Translate extends Endpoint
     protected function beforeRequest(TranslateEntry $translateEntry)
     {
         $words = $translateEntry->getInputWords()->jsonSerialize();
-        $requestWords = [];
-        $cachedWords = [];
-        $fullWords = [];
+        $requestWords = $cachedWords = $fullWords = [];
 
         // fetch words to check if anything hit the cache
         foreach ($words as $key => $word) {
             $cacheKey = $this->getCache()->generateKey($word);
             $cachedWord = $this->getCache()->get($cacheKey);
+
+            // default behavior > sending word to request
+            $where = 'request';
+            $next = count($requestWords);
+            $element = $word;
+            $array = &$requestWords;
+
+            // cached behavior > word is present in cache !
             if ($cachedWord->isHit()) {
-                $nextCached = count($cachedWords);
-
-                $cachedWords[$nextCached] = $cachedWord->get();
-                $fullWords[$key] = [
-                    'where' => 'cached',
-                    'place' => $nextCached
-                ];
-            } else {
-                $nextRequest = count($requestWords);
-
-                $requestWords[] = $word;
-                $fullWords[$key] = [
-                    'where' => 'request',
-                    'place' => $nextRequest
-                ];
+                $where = 'cached';
+                $next = count($cachedWords);
+                $element = $cachedWord->get();
+                $array = &$cachedWords;
             }
+
+            // apply choosed behavior
+            $array[$next] = $element;
+            $fullWords[$key] = [
+                'where' => $where,
+                'place' => $next
+            ];
         }
 
         return [
