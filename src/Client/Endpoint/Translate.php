@@ -63,6 +63,7 @@ class Translate extends Endpoint
      */
     protected function beforeRequest(TranslateEntry $translateEntry)
     {
+        // init
         $words = $translateEntry->getInputWords()->jsonSerialize();
         $requestWords = $cachedWords = $fullWords = [];
 
@@ -108,45 +109,41 @@ class Translate extends Endpoint
      */
     protected function afterRequest(array $response, array $beforeRequestResult)
     {
-        $requestWords = $beforeRequestResult[0];
-        $cachedWords = $beforeRequestResult[1];
-        $fullWords = $beforeRequestResult[2];
+        // init
+        list($requestWords, $cachedWords, $fullWords) = $beforeRequestResult;
+        $fromWords = $toWords = [];
 
-        $fromWords = [];
-        $toWords = [];
-
-        // fetch all words in one array )
+        // fetch all words in one array
         foreach ($fullWords as $key => $details) {
-            switch ($details['where']) {
-                case 'cached':
-                    $fromWords[$key] = $cachedWords[$details['place']]['from'];
-                    $toWords[$key] = $cachedWords[$details['place']]['to'];
-                    break;
-                case 'request':
-                    $word = $requestWords[$details['place']];
-                    $from = $response['from_words'][$details['place']];
-                    $to = $response['to_words'][$details['place']];
-
-                    // caching requested word
-                    $cacheKey = $this->getCache()->generateKey($word);
-                    $cachedWord = $this->getCache()->get($cacheKey);
-                    $cachedWord->set([
-                        'from' => $from,
-                        'to' => $to
-                    ]);
-                    $cachedWord->expiresAfter($this->getCache()->getExpire());
-                    $this->getCache()->save($cachedWord);
-
-                    $fromWords[$key] = $from;
-                    $toWords[$key] = $to;
-                    break;
+            // if current word was in cache, just retrieve it
+            if ($details['where'] === 'cached') {
+                $fromWords[$key] = $cachedWords[$details['place']]['from'];
+                $toWords[$key] = $cachedWords[$details['place']]['to'];
+                continue;
             }
+
+            // word was requested, let's retrieve data from response
+            $word = $requestWords[$details['place']];
+            $from = $response['from_words'][$details['place']];
+            $to = $response['to_words'][$details['place']];
+
+            // caching requested word
+            $cachedWord = $this->getCache()->getWithGenerate($word);
+            $cachedWord->set([
+                'from' => $from,
+                'to' => $to
+            ]);
+            $this->getCache()->save($cachedWord);
+
+            // then re-inject word inside
+            $fromWords[$key] = $from;
+            $toWords[$key] = $to;
         }
 
-        return [
-            $fromWords,
-            $toWords
-        ];
+        $response['from_words'] = $fromWords;
+        $response['to_words'] = $toWords;
+
+        return $response;
     }
 
     /**
@@ -174,9 +171,7 @@ class Translate extends Endpoint
         $response = $this->request($asArray);
 
         if ($this->getCache()->enabled()) {
-            list($fromWords, $toWords) = $this->afterRequest($response, $beforeRequest);
-            $response['from_words'] = $fromWords;
-            $response['to_words'] = $toWords;
+            $response = $this->afterRequest($response, $beforeRequest);
         }
 
         $factory = new TranslateFactory($response);

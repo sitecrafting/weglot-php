@@ -113,6 +113,7 @@ class Cache implements CacheInterface
      */
     public function save(CacheItemInterface $item)
     {
+        $item->expiresAfter($this->getExpire());
         return $this->getItemPool()->save($item);
     }
 }
