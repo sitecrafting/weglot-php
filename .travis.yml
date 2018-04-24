@@ -58,8 +58,7 @@ after_script:
 
 # Run main commands
 script:
-  - echo TRAVIS_PHP_VERSION
-  - if [ $TRAVIS_PHP_VERSION = "5.5.38" ]; then composer test-5.5; else composer test; fi
+  - if [ $TRAVIS_PHP_VERSION = "5.5" ]; then composer test-5.5; else composer test; fi
 
 # Cache folder, you can delete cache from Travis CI web interface
 cache:
