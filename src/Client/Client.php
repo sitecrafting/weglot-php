@@ -156,14 +156,6 @@ class Client implements ClientCachingInterface
      */
     public function makeRequest($method, $endpoint, $body = [], $asArray = true)
     {
-        if ($this->cacheEnabled()) {
-            $cacheKey = $this->getCacheGenerateKey($method, $endpoint, $body);
-
-            if ($this->cacheHasItem($cacheKey)) {
-                return $this->cacheGetItem($cacheKey);
-            }
-        }
-
         try {
             $response = $this->connector->request($method, $endpoint, [
                 'json' => $body
@@ -171,10 +163,6 @@ class Client implements ClientCachingInterface
             $array = json_decode($response->getBody()->getContents(), true);
         } catch (GuzzleException $e) {
             throw new ApiError($e->getMessage(), $body);
-        }
-
-        if ($this->cacheEnabled()) {
-            $this->cacheCommitItem($cacheKey, $array);
         }
 
         if ($asArray) {
