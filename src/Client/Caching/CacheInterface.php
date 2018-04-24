@@ -2,6 +2,7 @@
 
 namespace Weglot\Client\Caching;
 
+use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 /**
@@ -14,57 +15,48 @@ interface CacheInterface
      * @param null|CacheItemPoolInterface $cacheItemPool
      * @return $this
      */
-    public function setCacheItemPool($cacheItemPool);
+    public function setItemPool($cacheItemPool);
 
     /**
      * @return CacheItemPoolInterface
      */
-    public function getCacheItemPool();
+    public function getItemPool();
 
     /**
      * @param int $cacheExpire  Time in seconds before expire, default is 86400
      * @return $this
      */
-    public function setCacheExpire($cacheExpire);
+    public function setExpire($cacheExpire);
 
     /**
      * @return int
      */
-    public function getCacheExpire();
+    public function getExpire();
 
     /**
      * Check if cache is enabled
      *
      * @return bool
      */
-    public function cacheEnabled();
+    public function enabled();
 
     /**
      * Generate cache key based on sha1 hash
      *
-     * @param array $body       Body content of the request as array
+     * @param array $array  Body content of the request as array
      * @return string
      */
-    public function getCacheGenerateKey(array $body);
+    public function generateKey(array $array);
 
     /**
-     * Confirms if the cache contains specified cache item
-     *
      * @param string $key
+     * @return CacheItemInterface
+     */
+    public function get($key);
+
+    /**
+     * @param CacheItemInterface $item
      * @return bool
      */
-    public function cacheHasItem($key);
-
-    /**
-     * @param string $key
-     * @return mixed
-     */
-    public function cacheGetItem($key);
-
-    /**
-     * @param string $key
-     * @param mixed $value
-     * @return bool
-     */
-    public function cacheCommitItem($key, $value);
+    public function save(CacheItemInterface $item);
 }

@@ -4,8 +4,10 @@ namespace Weglot\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\ApiError;
+use Weglot\Client\Caching\Cache;
 
 /**
  * Class Client
@@ -47,6 +49,11 @@ class Client
     protected $profile;
 
     /**
+     * @var Cache
+     */
+    protected $cache;
+
+    /**
      * Client constructor.
      * @param string    $apiKey     your Weglot API key
      * @param array     $options    an array of options, currently only "host" is implemented
@@ -56,6 +63,7 @@ class Client
         $this->apiKey = $apiKey;
         $this->setOptions($options);
         $this->profile = new Profile($apiKey);
+        $this->cache = new Cache();
     }
 
     /**
@@ -138,6 +146,25 @@ class Client
     public function getProfile()
     {
         return $this->profile;
+    }
+
+    /**
+     * @return Cache
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @param null|CacheItemPoolInterface $cacheItemPool
+     * @return $this
+     */
+    public function setCacheItemPool($cacheItemPool)
+    {
+        $this->getCache()->setItemPool($cacheItemPool);
+
+        return $this;
     }
 
     /**
