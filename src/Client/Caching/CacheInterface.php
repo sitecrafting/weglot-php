@@ -5,10 +5,10 @@ namespace Weglot\Client\Caching;
 use Psr\Cache\CacheItemPoolInterface;
 
 /**
- * Interface ClientCachingInterface
+ * Interface CacheInterface
  * @package Weglot\Client\Caching
  */
-interface ClientCachingInterface
+interface CacheInterface
 {
     /**
      * @param null|CacheItemPoolInterface $cacheItemPool
@@ -42,12 +42,10 @@ interface ClientCachingInterface
     /**
      * Generate cache key based on sha1 hash
      *
-     * @param string $method    Method to use for given endpoint
-     * @param string $endpoint  Endpoint to hit on API
      * @param array $body       Body content of the request as array
      * @return string
      */
-    public function getCacheGenerateKey($method, $endpoint, array $body);
+    public function getCacheGenerateKey(array $body);
 
     /**
      * Confirms if the cache contains specified cache item

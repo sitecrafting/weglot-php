@@ -6,17 +6,13 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\ApiError;
-use Weglot\Client\Caching\ClientCachingInterface;
-use Weglot\Client\Caching\ClientCachingTrait;
 
 /**
  * Class Client
  * @package Weglot\Client
  */
-class Client implements ClientCachingInterface
+class Client
 {
-    use ClientCachingTrait;
-
     /**
      * Library version
      *
