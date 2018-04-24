@@ -163,9 +163,6 @@ class Translate extends Endpoint
         if ($this->getCache()->enabled()) {
             $beforeRequest = $this->beforeRequest($this->translateEntry);
             $asArray['words'] = $beforeRequest[0];
-
-            var_dump('request: ' .count($beforeRequest[0]));
-            var_dump('cached: ' .count($beforeRequest[1]));
         }
 
         $response = $this->request($asArray);
