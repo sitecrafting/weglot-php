@@ -68,22 +68,22 @@ class Translate extends Endpoint
 
         // fetch words to check if anything hit the cache
         foreach ($words as $key => $word) {
-            $cacheKey = $this->getCache()->generateKey($word);
-            $cachedWord = $this->getCache()->get($cacheKey);
+            $cachedWord = $this->getCache()->getWithGenerate($word);
 
             // default behavior > sending word to request
             $where = 'request';
-            $next = count($requestWords);
             $element = $word;
             $array = &$requestWords;
 
             // cached behavior > word is present in cache !
             if ($cachedWord->isHit()) {
                 $where = 'cached';
-                $next = count($cachedWords);
                 $element = $cachedWord->get();
                 $array = &$cachedWords;
             }
+
+            // get next element place
+            $next = count($array);
 
             // apply choosed behavior
             $array[$next] = $element;

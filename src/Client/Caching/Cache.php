@@ -97,6 +97,17 @@ class Cache implements CacheInterface
     }
 
     /**
+     * @param array $data
+     * @return CacheItemInterface
+     * @throws InvalidArgumentException
+     */
+    public function getWithGenerate(array $data)
+    {
+        $key = $this->generateKey($data);
+        return $this->get($key);
+    }
+
+    /**
      * @param CacheItemInterface $item
      * @return bool
      */
