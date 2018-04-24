@@ -37,6 +37,7 @@ sudo: false
 # Install packages those will be required during build
 install:
   - composer install --no-interaction
+  - if [ $TRAVIS_PHP_VERSION != "5.5" ]; then composer require cache/predis-adapter --dev; fi
 
 # Prepare test environment
 before_script:
