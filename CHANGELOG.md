@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Parser: excludeBlocks formatter is started only if we have excludeBlocks
 - readme: updated getting started to use Parser example, and adding documentation
+- Travis-CI: PHP 5.5 is no more in failures but don't run all caching tests
 
 ## [0.1.2] - 2018-04-19
 ### Fixed
