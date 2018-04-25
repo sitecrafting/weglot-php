@@ -35,6 +35,6 @@
   },
   "scripts": {
     "test": "./vendor/bin/codecept run unit --coverage --coverage-xml --no-interaction",
-    "test-5.5": "./vendor/bin/codecept run unit --coverage --coverage-xml --no-interaction  -g client -g parser"
+    "test-5.5": "./vendor/bin/codecept run unit --no-interaction  -g client -g parser"
   }
 }
