@@ -81,16 +81,4 @@ class ClientTest extends \Codeception\Test\Unit
         $response = $this->client->makeRequest('GET', '/status', [], false);
         $this->assertTrue($response->getStatusCode() === 200);
     }
-
-    public function testMakeRequestThrowGuzzleException()
-    {
-        if (version_compare(phpversion(), '5.5', '>')) {
-            $this->expectException(\Weglot\Client\Api\Exception\ApiError::class);
-
-            $this->client->setOptions([
-                'host'  => 'https://foo.bar.baz',
-            ]);
-            $response = $this->client->makeRequest('GET', '/status', []);
-        }
-    }
 }
