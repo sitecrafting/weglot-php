@@ -4,7 +4,9 @@ namespace Weglot\Client\Endpoint;
 
 use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\ApiError;
+use Weglot\Client\Caching\CacheInterface;
 use Weglot\Client\Client;
+use Weglot\Client\Caching\Cache;
 
 /**
  * Class Endpoint
@@ -47,6 +49,14 @@ abstract class Endpoint
     }
 
     /**
+     * @return CacheInterface
+     */
+    public function getCache()
+    {
+        return $this->getClient()->getCache();
+    }
+
+    /**
      * @return string
      */
     public function getPath()
@@ -67,19 +77,10 @@ abstract class Endpoint
      * @return array|ResponseInterface
      * @throws ApiError
      */
-    protected function request(array $body = [], $ignoreCache = false, $asArray = true)
+    protected function request(array $body = [], $asArray = true)
     {
-        if ($ignoreCache) {
-            $oldCacheItemPool = $this->getClient()->getCacheItemPool();
-            $this->getClient()->setCacheItemPool(null);
-        }
-
         $parentClass = get_called_class();
         $response = $this->getClient()->makeRequest($parentClass::METHOD, $parentClass::ENDPOINT, $body, $asArray);
-
-        if ($ignoreCache) {
-            $this->getClient()->setCacheItemPool($oldCacheItemPool);
-        }
 
         return $response;
     }

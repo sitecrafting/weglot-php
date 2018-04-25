@@ -48,70 +48,37 @@ class ClientCachingTest extends \Codeception\Test\Unit
 
     public function testItemPool()
     {
-        $this->assertTrue($this->client->getCacheItemPool() instanceof PredisCachePool);
+        $this->assertTrue($this->client->getCache()->getItemPool() instanceof PredisCachePool);
     }
 
     public function testExpire()
     {
-        $this->assertEquals(86400, $this->client->getCacheExpire());
+        $this->assertEquals(604800, $this->client->getCache()->getExpire());
 
-        $this->client->setCacheExpire(240);
-        $this->assertEquals(240, $this->client->getCacheExpire());
+        $this->client->getCache()->setExpire(240);
+        $this->assertEquals(240, $this->client->getCache()->getExpire());
     }
 
     public function testGenerateKey()
     {
-        $cacheKey = $this->client->getCacheGenerateKey('GET', '/translate', []);
-        $this->assertEquals('wg_55b05c964ee9dd0c93ad585f44eb30043e2b303c', $cacheKey);
-    }
-
-    public function testHasItem()
-    {
-        $key = 'hasItem';
-
-        $this->assertFalse($this->client->cacheHasItem($key));
-        $this->_setValueForKey($key);
-        $this->assertTrue($this->client->cacheHasItem($key));
+        $cacheKey = $this->client->getCache()->generateKey([
+            'method' => 'GET',
+            'endpoint' => '/translate',
+            'content' => []
+        ]);
+        $this->assertEquals('wg_8bdaed005c88bda03e938c3de08da157ecbe5dfa', $cacheKey);
     }
 
     public function testGetItem()
     {
         $key = 'getItem';
+        $item = $this->client->getCache()->get($key);
 
-        $this->assertNull($this->client->cacheGetItem($key));
-        $this->_setValueForKey($key);
-        $this->assertEquals('some value', $this->client->cacheGetItem($key));
-    }
+        $this->assertNull($item->get());
 
-    public function testCommitItem()
-    {
-        $key = 'commitItem';
+        $item->set('some value');
+        $this->client->getCache()->save($item);
 
-        $this->assertNull($this->client->cacheGetItem($key));
-        $this->client->cacheCommitItem($key, 'some value');
-        $this->assertEquals('some value', $this->client->cacheGetItem($key));
-    }
-
-    public function testMakeRequest()
-    {
-        // goes in cache
-        $response = $this->client->makeRequest('GET', '/status', []);
-        $this->assertEquals([], $response);
-
-        // use cache
-        $response = $this->client->makeRequest('GET', '/status', []);
-        $this->assertEquals([], $response);
-    }
-
-    /**
-     * @param $key
-     * @param string $value
-     * @throws \Psr\Cache\InvalidArgumentException
-     */
-    private function _setValueForKey($key, $value = 'some value')
-    {
-        $item = $this->client->getCacheItemPool()->getItem($key);
-        $item->set($value);
-        $this->client->getCacheItemPool()->save($item);
+        $this->assertEquals('some value', $this->client->getCache()->get($key)->get());
     }
 }
