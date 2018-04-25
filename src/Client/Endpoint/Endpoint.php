@@ -4,6 +4,7 @@ namespace Weglot\Client\Endpoint;
 
 use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\ApiError;
+use Weglot\Client\Caching\CacheInterface;
 use Weglot\Client\Client;
 use Weglot\Client\Caching\Cache;
 
@@ -48,7 +49,7 @@ abstract class Endpoint
     }
 
     /**
-     * @return Cache
+     * @return CacheInterface
      */
     public function getCache()
     {

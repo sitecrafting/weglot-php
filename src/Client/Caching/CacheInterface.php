@@ -55,6 +55,14 @@ interface CacheInterface
     public function get($key);
 
     /**
+     * Mix of generateKey & get functions
+     *
+     * @param array $data
+     * @return CacheItemInterface
+     */
+    public function getWithGenerate(array $data);
+
+    /**
      * @param CacheItemInterface $item
      * @return bool
      */

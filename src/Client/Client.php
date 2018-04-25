@@ -8,6 +8,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Caching\Cache;
+use Weglot\Client\Caching\CacheInterface;
 
 /**
  * Class Client
@@ -49,7 +50,7 @@ class Client
     protected $profile;
 
     /**
-     * @var Cache
+     * @var CacheInterface
      */
     protected $cache;
 
@@ -61,9 +62,11 @@ class Client
     public function __construct($apiKey, $options = [])
     {
         $this->apiKey = $apiKey;
-        $this->setOptions($options);
         $this->profile = new Profile($apiKey);
-        $this->cache = new Cache();
+        
+        $this
+            ->setOptions($options)
+            ->setCache();
     }
 
     /**
@@ -122,6 +125,7 @@ class Client
 
     /**
      * @param array $options
+     * @return $this
      */
     public function setOptions($options)
     {
@@ -130,6 +134,8 @@ class Client
 
         // then loading / reloading http connector
         $this->setupConnector();
+
+        return $this;
     }
 
     /**
@@ -146,6 +152,21 @@ class Client
     public function getProfile()
     {
         return $this->profile;
+    }
+
+    /**
+     * @param null|CacheInterface $cache
+     * @return $this
+     */
+    public function setCache($cache = null)
+    {
+        if ($cache === null) {
+            $cache = new Cache();
+        }
+
+        $this->cache = $cache;
+
+        return $this;
     }
 
     /**
