@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Parser: excludeBlocks formatter is started only if we have excludeBlocks
+- Parser: adding DomCheckerProvider to Parser. Like that people can add their own Checkers
 - readme: updated getting started to use Parser example, and adding documentation
 - Caching: Improving granularity, we use cache on Endpoints to be able to cache words by words and not the full request
 
