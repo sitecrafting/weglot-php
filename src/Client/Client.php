@@ -63,7 +63,7 @@ class Client
     {
         $this->apiKey = $apiKey;
         $this->profile = new Profile($apiKey);
-        
+
         $this
             ->setOptions($options)
             ->setCache();
@@ -160,7 +160,7 @@ class Client
      */
     public function setCache($cache = null)
     {
-        if ($cache === null) {
+        if ($cache === null || !($cache instanceof CacheInterface)) {
             $cache = new Cache();
         }
 
@@ -170,7 +170,7 @@ class Client
     }
 
     /**
-     * @return Cache
+     * @return CacheInterface
      */
     public function getCache()
     {
