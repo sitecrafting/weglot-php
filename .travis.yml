@@ -14,11 +14,6 @@ php:
   - 7.1
   - 7.2
 
-matrix:
-  fast_finish: true
-  allow_failures:
-    - php: 5.5
-
 # Setting up redis server
 services:
   - redis-server
@@ -37,6 +32,7 @@ sudo: false
 # Install packages those will be required during build
 install:
   - composer install --no-interaction
+  - if [ $TRAVIS_PHP_VERSION != "5.5" ]; then composer require cache/predis-adapter --dev; fi
 
 # Prepare test environment
 before_script:
@@ -51,12 +47,14 @@ before_script:
 
 # To manage coverage for CodeClimate
 after_script:
-- mv tests/_output/coverage.xml clover.xml
-- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - mv tests/_output/coverage.xml clover.xml
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+# $TRAVIS_PHP_VERSION
 
 # Run main commands
 script:
-  - composer test
+  - if [ $TRAVIS_PHP_VERSION = "5.5" ]; then composer test-5.5; else composer test; fi
 
 # Cache folder, you can delete cache from Travis CI web interface
 cache:

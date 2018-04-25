@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Parser: adding DomCheckerProvider to Parser. Like that people can add their own Checkers
 - README: updated getting started to use Parser example, and adding documentation
 - Caching: Improving granularity, we use cache on Endpoints to be able to cache words by words and not the full request
+- Travis-CI: PHP 5.5 is no more in failures but don't run all caching tests
 
 ## [0.1.2] - 2018-04-19
 ### Fixed
