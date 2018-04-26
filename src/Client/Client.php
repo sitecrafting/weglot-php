@@ -4,25 +4,24 @@ namespace Weglot\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Weglot\Client\Api\Exception\ApiError;
-use Weglot\Client\Caching\ClientCachingInterface;
-use Weglot\Client\Caching\ClientCachingTrait;
+use Weglot\Client\Caching\Cache;
+use Weglot\Client\Caching\CacheInterface;
 
 /**
  * Class Client
  * @package Weglot\Client
  */
-class Client implements ClientCachingInterface
+class Client
 {
-    use ClientCachingTrait;
-
     /**
      * Library version
      *
      * @var string
      */
-    const VERSION = '0.1';
+    const VERSION = '0.2';
 
     /**
      * Weglot API Key
@@ -51,6 +50,11 @@ class Client implements ClientCachingInterface
     protected $profile;
 
     /**
+     * @var CacheInterface
+     */
+    protected $cache;
+
+    /**
      * Client constructor.
      * @param string    $apiKey     your Weglot API key
      * @param array     $options    an array of options, currently only "host" is implemented
@@ -58,8 +62,11 @@ class Client implements ClientCachingInterface
     public function __construct($apiKey, $options = [])
     {
         $this->apiKey = $apiKey;
-        $this->setOptions($options);
         $this->profile = new Profile($apiKey);
+
+        $this
+            ->setOptions($options)
+            ->setCache();
     }
 
     /**
@@ -80,6 +87,22 @@ class Client implements ClientCachingInterface
     }
 
     /**
+     * @return string
+     */
+    protected function makeUserAgent()
+    {
+        $curlVersion = curl_version();
+
+        $userAgentArray = [
+            'curl' =>  'cURL\\' .$curlVersion['version'],
+            'ssl' => $curlVersion['ssl_version'],
+            'weglot' => 'Weglot\\' .self::VERSION
+        ];
+
+        return implode(' / ', $userAgentArray);
+    }
+
+    /**
      * Default options values
      *
      * @return array
@@ -88,7 +111,7 @@ class Client implements ClientCachingInterface
     {
         return [
             'host'  => 'https://api.weglot.com',
-            'user-agent' => 'Weglot/' .self::VERSION
+            'user-agent' => $this->makeUserAgent()
         ];
     }
 
@@ -102,6 +125,7 @@ class Client implements ClientCachingInterface
 
     /**
      * @param array $options
+     * @return $this
      */
     public function setOptions($options)
     {
@@ -110,6 +134,8 @@ class Client implements ClientCachingInterface
 
         // then loading / reloading http connector
         $this->setupConnector();
+
+        return $this;
     }
 
     /**
@@ -129,6 +155,40 @@ class Client implements ClientCachingInterface
     }
 
     /**
+     * @param null|CacheInterface $cache
+     * @return $this
+     */
+    public function setCache($cache = null)
+    {
+        if ($cache === null || !($cache instanceof CacheInterface)) {
+            $cache = new Cache();
+        }
+
+        $this->cache = $cache;
+
+        return $this;
+    }
+
+    /**
+     * @return CacheInterface
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @param null|CacheItemPoolInterface $cacheItemPool
+     * @return $this
+     */
+    public function setCacheItemPool($cacheItemPool)
+    {
+        $this->getCache()->setItemPool($cacheItemPool);
+
+        return $this;
+    }
+
+    /**
      * Make the API call and return the response.
      *
      * @param string $method    Method to use for given endpoint
@@ -140,14 +200,6 @@ class Client implements ClientCachingInterface
      */
     public function makeRequest($method, $endpoint, $body = [], $asArray = true)
     {
-        if ($this->cacheEnabled()) {
-            $cacheKey = $this->getCacheGenerateKey($method, $endpoint, $body);
-
-            if ($this->cacheHasItem($cacheKey)) {
-                return $this->cacheGetItem($cacheKey);
-            }
-        }
-
         try {
             $response = $this->connector->request($method, $endpoint, [
                 'json' => $body
@@ -155,10 +207,6 @@ class Client implements ClientCachingInterface
             $array = json_decode($response->getBody()->getContents(), true);
         } catch (GuzzleException $e) {
             throw new ApiError($e->getMessage(), $body);
-        }
-
-        if ($this->cacheEnabled()) {
-            $this->cacheCommitItem($cacheKey, $array);
         }
 
         if ($asArray) {

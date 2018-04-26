@@ -3,11 +3,17 @@
 namespace Weglot\Parser;
 
 use SimpleHtmlDom\simple_html_dom;
+use Weglot\Client\Api\Exception\ApiError;
+use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
+use Weglot\Client\Api\Exception\MissingRequiredParamException;
+use Weglot\Client\Api\Exception\MissingWordsOutputException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
 use Weglot\Parser\Check\DomChecker;
+use Weglot\Parser\Check\DomCheckerProvider;
 use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\ConfigProvider\ServerConfigProvider;
@@ -15,6 +21,7 @@ use Weglot\Parser\Formatter\DomFormatter;
 use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
 use Weglot\Parser\Formatter\IgnoredNodes;
 use Weglot\Parser\Formatter\JsonLdFormatter;
+use Weglot\Parser\Util\Site;
 
 /**
  * Class Parser
@@ -58,6 +65,11 @@ class Parser
     protected $words;
 
     /**
+     * @var DomCheckerProvider
+     */
+    protected $domCheckerProvider;
+
+    /**
      * Parser constructor.
      * @param Client $client
      * @param ConfigProviderInterface $config
@@ -69,7 +81,8 @@ class Parser
             ->setClient($client)
             ->setConfigProvider($config)
             ->setExcludeBlocks($excludeBlocks)
-            ->setWords(new WordCollection());
+            ->setWords(new WordCollection())
+            ->setDomCheckerProvider(new DomCheckerProvider($this));
     }
 
     /**
@@ -187,6 +200,24 @@ class Parser
     }
 
     /**
+     * @param DomCheckerProvider $domCheckerProvider
+     * @return $this
+     */
+    public function setDomCheckerProvider(DomCheckerProvider $domCheckerProvider)
+    {
+        $this->domCheckerProvider = $domCheckerProvider;
+        return $this;
+    }
+
+    /**
+     * @return DomCheckerProvider
+     */
+    public function getDomCheckerProvider()
+    {
+        return $this->domCheckerProvider;
+    }
+
+    /**
      * @param string $source
      * @param string $languageFrom
      * @param string $languageTo
@@ -196,6 +227,7 @@ class Parser
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function translate($source, $languageFrom, $languageTo)
     {
@@ -210,11 +242,19 @@ class Parser
         }
 
         // simple_html_dom
-        $dom = $this->getSimpleDom($source);
+        $dom = \SimpleHtmlDom\str_get_html(
+            $source,
+            true,
+            true,
+            DEFAULT_TARGET_CHARSET,
+            false
+        );
 
         // exclude blocks
-        $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
-        $dom = $excludeBlocks->getDom();
+        if (!empty($this->excludeBlocks)) {
+            $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
+            $dom = $excludeBlocks->getDom();
+        }
 
         // checkers
         list($nodes, $jsons) = $this->checkers($dom);
@@ -230,16 +270,20 @@ class Parser
     /**
      * @param simple_html_dom $dom
      * @return TranslateEntry
+     * @throws ApiError
      * @throws InputAndOutputCountMatchException
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
-     * @throws ApiError
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function apiTranslate(simple_html_dom $dom)
     {
         // Translate endpoint parameters
-        $params = $this->defaultParams();
+        $params = [
+            'language_from' => $this->getLanguageFrom(),
+            'language_to' => $this->getLanguageTo()
+        ];
 
         // if data is coming from $_SERVER, load it ...
         if ($this->getConfigProvider() instanceof ServerConfigProvider) {
@@ -265,34 +309,6 @@ class Parser
     }
 
     /**
-     * @param string $source
-     * @return simple_html_dom
-     */
-    protected function getSimpleDom($source)
-    {
-        return \SimpleHtmlDom\str_get_html(
-            $source,
-            true,
-            true,
-            DEFAULT_TARGET_CHARSET,
-            false,
-            DEFAULT_BR_TEXT,
-            DEFAULT_SPAN_TEXT
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function defaultParams()
-    {
-        return [
-            'language_from' => $this->getLanguageFrom(),
-            'language_to' => $this->getLanguageTo()
-        ];
-    }
-
-    /**
      * @param simple_html_dom $dom
      * @return string
      */
@@ -308,14 +324,13 @@ class Parser
     }
 
     /**
-     * @param simple_html_dom $dom
+     * @param $dom
      * @return array
      * @throws InvalidWordTypeException
      */
     protected function checkers($dom)
     {
-        $checker = new DomChecker($this, $dom);
-        $nodes = $checker->handle();
+        $nodes = $this->getDomCheckerProvider()->handle($dom);
 
         $checker = new JsonLdChecker($this, $dom);
         $jsons = $checker->handle();

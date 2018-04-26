@@ -19,7 +19,7 @@ class Status extends Endpoint
      */
     public function handle()
     {
-        $response = $this->request([], true, false);
+        $response = $this->request([], false);
 
         if ($response->getStatusCode() === 200) {
             return true;

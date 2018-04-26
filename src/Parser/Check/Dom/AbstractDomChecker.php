@@ -32,7 +32,7 @@ abstract class AbstractDomChecker
      *
      * @var string
      */
-    const WORD_TYPE = WordType::GENERIC;
+    const WORD_TYPE = WordType::TEXT;
 
     /**
      * @var simple_html_dom_node
@@ -121,5 +121,19 @@ abstract class AbstractDomChecker
     protected function check()
     {
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public static function toArray()
+    {
+        $class = get_called_class();
+
+        return [
+            $class::DOM,
+            $class::PROPERTY,
+            $class::WORD_TYPE
+        ];
     }
 }

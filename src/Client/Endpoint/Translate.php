@@ -7,6 +7,7 @@ use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
 use Weglot\Client\Api\Exception\MissingWordsOutputException;
+use Psr\Cache\InvalidArgumentException;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Client;
 use Weglot\Client\Factory\Translate as TranslateFactory;
@@ -56,17 +57,119 @@ class Translate extends Endpoint
     }
 
     /**
+     * @param TranslateEntry $translateEntry
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    protected function beforeRequest(TranslateEntry $translateEntry)
+    {
+        // init
+        $words = $translateEntry->getInputWords()->jsonSerialize();
+        $requestWords = $cachedWords = $fullWords = [];
+
+        // fetch words to check if anything hit the cache
+        foreach ($words as $key => $word) {
+            $cachedWord = $this->getCache()->getWithGenerate($word);
+
+            // default behavior > sending word to request
+            $where = 'request';
+            $element = $word;
+            $array = &$requestWords;
+
+            // cached behavior > word is present in cache !
+            if ($cachedWord->isHit()) {
+                $where = 'cached';
+                $element = $cachedWord->get();
+                $array = &$cachedWords;
+            }
+
+            // get next element place
+            $next = count($array);
+
+            // apply choosed behavior
+            $array[$next] = $element;
+            $fullWords[$key] = [
+                'where' => $where,
+                'place' => $next
+            ];
+        }
+
+        return [
+            $requestWords,
+            $cachedWords,
+            $fullWords
+        ];
+    }
+
+    /**
+     * @param array $response
+     * @param array $beforeRequestResult
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    protected function afterRequest(array $response, array $beforeRequestResult)
+    {
+        // init
+        list($requestWords, $cachedWords, $fullWords) = $beforeRequestResult;
+        $fromWords = $toWords = [];
+
+        // fetch all words in one array
+        foreach ($fullWords as $key => $details) {
+            // if current word was in cache, just retrieve it
+            if ($details['where'] === 'cached') {
+                $fromWords[$key] = $cachedWords[$details['place']]['from'];
+                $toWords[$key] = $cachedWords[$details['place']]['to'];
+                continue;
+            }
+
+            // word was requested, let's retrieve data from response
+            $word = $requestWords[$details['place']];
+            $from = $response['from_words'][$details['place']];
+            $to = $response['to_words'][$details['place']];
+
+            // caching requested word
+            $cachedWord = $this->getCache()->getWithGenerate($word);
+            $cachedWord->set([
+                'from' => $from,
+                'to' => $to
+            ]);
+            $this->getCache()->save($cachedWord);
+
+            // then re-inject word inside
+            $fromWords[$key] = $from;
+            $toWords[$key] = $to;
+        }
+
+        $response['from_words'] = $fromWords;
+        $response['to_words'] = $toWords;
+
+        return $response;
+    }
+
+    /**
      * @return TranslateEntry
+     * @throws ApiError
      * @throws InputAndOutputCountMatchException
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
-     * @throws ApiError
+     * @throws InvalidArgumentException
      */
     public function handle()
     {
+        $beforeRequest = [];
         $asArray = $this->translateEntry->jsonSerialize();
+
+        if ($this->getCache()->enabled()) {
+            $beforeRequest = $this->beforeRequest($this->translateEntry);
+            $asArray['words'] = $beforeRequest[0];
+        }
+
         $response = $this->request($asArray);
+
+        if ($this->getCache()->enabled()) {
+            $response = $this->afterRequest($response, $beforeRequest);
+        }
 
         $factory = new TranslateFactory($response);
         return $factory->handle();

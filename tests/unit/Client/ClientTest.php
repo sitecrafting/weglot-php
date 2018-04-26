@@ -28,7 +28,14 @@ class ClientTest extends \Codeception\Test\Unit
         $options = $this->client->getOptions();
 
         $this->assertEquals('https://api.weglot.com', $options['host']);
-        $this->assertEquals('Weglot/' .Client::VERSION, $options['user-agent']);
+
+        $curlVersion = curl_version();
+        $userAgent = implode(' / ', [
+            'curl' =>  'cURL\\' .$curlVersion['version'],
+            'ssl' => $curlVersion['ssl_version'],
+            'weglot' => 'Weglot\\' .Client::VERSION
+        ]);
+        $this->assertEquals($userAgent, $options['user-agent']);
     }
 
     public function testConnector()
@@ -38,7 +45,14 @@ class ClientTest extends \Codeception\Test\Unit
         $this->assertTrue($connector instanceof GuzzleHttp\Client);
         $this->assertEquals('api.weglot.com', $connector->getConfig('base_uri')->getHost());
         $this->assertEquals('application/json', $connector->getConfig('headers')['Content-Type']);
-        $this->assertEquals('Weglot/' .Client::VERSION, $connector->getConfig('headers')['User-Agent']);
+
+        $curlVersion = curl_version();
+        $userAgent = implode(' / ', [
+            'curl' =>  'cURL\\' .$curlVersion['version'],
+            'ssl' => $curlVersion['ssl_version'],
+            'weglot' => 'Weglot\\' .Client::VERSION
+        ]);
+        $this->assertEquals($userAgent, $connector->getConfig('headers')['User-Agent']);
     }
 
     public function testProfile()
@@ -66,15 +80,5 @@ class ClientTest extends \Codeception\Test\Unit
     {
         $response = $this->client->makeRequest('GET', '/status', [], false);
         $this->assertTrue($response->getStatusCode() === 200);
-    }
-
-    public function testMakeRequestThrowGuzzleException()
-    {
-        $this->expectException(\Weglot\Client\Api\Exception\ApiError::class);
-
-        $this->client->setOptions([
-            'host'  => 'https://foo.bar.baz',
-        ]);
-        $response = $this->client->makeRequest('GET', '/status', []);
     }
 }

@@ -20,7 +20,7 @@ class WordEntry extends AbstractCollectionEntry
     /**
      * @var int
      */
-    protected $type = WordType::GENERIC;
+    protected $type = WordType::TEXT;
 
     /**
      * WordEntry constructor.
@@ -28,7 +28,7 @@ class WordEntry extends AbstractCollectionEntry
      * @param int $type
      * @throws InvalidWordTypeException
      */
-    public function __construct($word, $type = WordType::GENERIC)
+    public function __construct($word, $type = WordType::TEXT)
     {
         $this->setWord($word)
             ->setType($type);
