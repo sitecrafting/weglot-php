@@ -42,26 +42,20 @@ class Server
                             Text::contains($userAgent, 'facebook') ||
                             Text::contains($userAgent, 'wprocketbot') ||
                             Text::contains($userAgent, 'SemrushBot'));
-
-        $detectedBot = BotType::OTHER;
-
-        if ($userAgent !== null) {
-            if (!$checkBotAgent) {
-                $detectedBot = BotType::HUMAN;
-            } else {
-                if ($checkBotGoogle) {
-                    $detectedBot = BotType::GOOGLE;
-                }
-                foreach (self::otherBotAgents() as $agent => $agentBot) {
-                    if (!$checkBotGoogle && Text::contains($userAgent, $agent)) {
-                        $detectedBot = $agentBot;
-                        break;
-                    }
-                }
+        
+        if ($userAgent !== null && !$checkBotAgent) {
+            return BotType::HUMAN;
+        }
+        if ($userAgent !== null && $checkBotAgent && $checkBotGoogle) {
+            return BotType::GOOGLE;
+        }
+        foreach (self::otherBotAgents() as $agent => $agentBot) {
+            if ($userAgent !== null && $checkBotAgent && !$checkBotGoogle && Text::contains($userAgent, $agent)) {
+                return $agentBot;
             }
         }
 
-        return $detectedBot;
+        return BotType::OTHER;
     }
 
     /**
