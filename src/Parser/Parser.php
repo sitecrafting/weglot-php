@@ -227,6 +227,7 @@ class Parser
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function translate($source, $languageFrom, $languageTo)
     {
@@ -241,7 +242,13 @@ class Parser
         }
 
         // simple_html_dom
-        $dom = $this->getSimpleDom($source);
+        $dom = \SimpleHtmlDom\str_get_html(
+            $source,
+            true,
+            true,
+            DEFAULT_TARGET_CHARSET,
+            false
+        );
 
         // exclude blocks
         if (!empty($this->excludeBlocks)) {
@@ -261,23 +268,6 @@ class Parser
     }
 
     /**
-     * @param string $url
-     * @param string $languageFrom
-     * @param string $languageTo
-     * @return string
-     * @throws ApiError
-     * @throws InputAndOutputCountMatchException
-     * @throws InvalidWordTypeException
-     * @throws MissingRequiredParamException
-     * @throws MissingWordsOutputException
-     */
-    public function translateFromUrl($url, $languageFrom, $languageTo)
-    {
-        $source = Site::get($url);
-        return $this->translate($source, $languageFrom, $languageTo);
-    }
-
-    /**
      * @param simple_html_dom $dom
      * @return TranslateEntry
      * @throws ApiError
@@ -285,11 +275,15 @@ class Parser
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function apiTranslate(simple_html_dom $dom)
     {
         // Translate endpoint parameters
-        $params = $this->defaultParams();
+        $params = [
+            'language_from' => $this->getLanguageFrom(),
+            'language_to' => $this->getLanguageTo()
+        ];
 
         // if data is coming from $_SERVER, load it ...
         if ($this->getConfigProvider() instanceof ServerConfigProvider) {
@@ -312,34 +306,6 @@ class Parser
         $translated = $translate->handle();
 
         return $translated;
-    }
-
-    /**
-     * @param string $source
-     * @return simple_html_dom
-     */
-    protected function getSimpleDom($source)
-    {
-        return \SimpleHtmlDom\str_get_html(
-            $source,
-            true,
-            true,
-            DEFAULT_TARGET_CHARSET,
-            false,
-            DEFAULT_BR_TEXT,
-            DEFAULT_SPAN_TEXT
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function defaultParams()
-    {
-        return [
-            'language_from' => $this->getLanguageFrom(),
-            'language_to' => $this->getLanguageTo()
-        ];
     }
 
     /**
