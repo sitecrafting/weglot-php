@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.1] - 2018-04-30
+### Fixed
+- Parser: Excluding php tags from text checker
+
 ## [0.2] - 2018-04-26
 ### Added
 - Util to fetch Site contents through `Site::get`
