@@ -35,6 +35,7 @@ class Text extends AbstractDomChecker
             && $this->node->parent()->tag != 'style'
             && !is_numeric(TextUtil::fullTrim($this->node->outertext))
             && !preg_match('/^\d+%$/', TextUtil::fullTrim($this->node->outertext))
-            && strpos($this->node->outertext, '[vc_') === false);
+            && strpos($this->node->outertext, '[vc_') === false
+            && strpos($this->node->outertext, '<?php') === false);
     }
 }
