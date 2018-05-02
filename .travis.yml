@@ -1,62 +1,46 @@
-# Tell Travis CI we are using PHP
 language: php
 
-# The platforms you wants to test on
-dist: trusty
-os:
-  - linux
-
-# Define the php versions against we want to test our code
-php:
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
-  - 7.2
-
-# Setting up redis server
 services:
   - redis-server
 
-# Encrypted variables
 env:
   global:
+    - TEST_COMMAND="composer test"
+    - TEST_FLAGS=""
+    - DEPENDENCIES="cache/predis-adapter"
     - secure: "cGAzQSqrK0lb8zuyvHZui+vlN3hBWt0E4Hbm7DgML/wCiVNRHKHtIPiV5eJ3PhV3hGiochJt650RIGZwiFsm9CE6nc9TSMw0o+B4EWwCMHJX5FCWFgbi7T/D148mJ08Ggyq3g5jII17cmofTczp+GKlRw9tSbyLmn4PeU6SNVQFMqWEkCscvQtmzsDGgyrfpJUwCGsIykljsV3QWahBUS6Cw95nNOFuGB2OEoQKn2w/rXsaPPgX8p2XI6FGxJsqK1GZEineeLuUqVCf/9t2/IZkO0z6iRl1MAxXlOH9HM/QLU/YK9yYdm/7z0fIdwp4XyRTTrq9hi7od2ZR/g26W7jYTaGBDJI5m5HErrxLtpNtadWcg1ayMHgnnjutXKw3Zz3j2azeAioS3vIwT9BBqGGVsac+TZA5U0Q/wMx8ZAztix4hVHcvqVz0YCqdNEfyy0O6Bdh18sSz7QTQiLcp/pxJ82IM4NVxF7mivR2/36Xw9GDZ0vAHDAn61VYEVU1ZrhKGbJh2absIE1+m8ptqx6sB2MYY5BAdFnXQsgXgJ/P0/3PETK2apwcNbpvTFb93A31EujM26igtiI9s/5k7qZ2S7NMIaSSq/kn4AvhYmRJzaLMXb3s8fsb5MazjoFm+x/NDhlSetRz3IQZodkfXBRpJVotooUAQnDnVUt2gNbCY="
     - secure: "PnYQP+zTa43kdgeZM39xfaK8ptIizrwKBRTJNyS+8jpZk+I73/S+mVBoF4W9pRMGk3cz02In3XWLI+rRAaAqEbSoY2H/HRkCG8u06sjz0qDiKX+dEjeCFzo9CYnCNsO7ESWvOlnFys2OztnB9tOTXuCKiA631dDBtsNN0F2p7sy68XOcHuuCqTHYrRUT/YAg0pQJUuDvk6PuIXdne/4xXhV9jSe6DYHujNKe9Dj04fh/o1oZGatK5h9VF5eDw4eClcrhziHd1xRYnW9aiB0Dz8x69b98d1Yx48wCWX2v4RJG9sbpJ1zCVTlcBnoV1F5nkhzxsktIvyZU+KzLr1mYN2rnl8hEFu2+0Q1iyyaW2wp9X36dJ6Qttqbt8amGfXlUygfjYM2srhdXuGEUALNfwyRCCNrVePOaSrkS3yOXWX1r4NiBRoBBzDRaaPspNwlOoSI/YJwKGuUxgz6IdHGwbVWFd7hJwuTULhBIOfVhay7KtNTDoEHqX9nNZs3L4IZTiKeb4KVh1MD3BscRfR2+G3w9o8OcWtlgCA1kKYPNP+Qdxb3y9HRSzmqwvZzfOPoCbqEvs3pKZaIHlPR+mH79ZBRelTyLenZ5EYQzcPQG2zNOBZdV/9pVj9gjub367i6U3/bd388BOfNoTFZp5CjYHs3EKZLFM1bh7JP+HyLTp7w="
 
-# We don't want to run linux commands as super user
-# false means Travis will run this in a container
-sudo: false
+matrix:
+  fast_finish: true
+  include:
+    - php: 5.5
+      env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
+    - php: 5.6
+    - php: 7.0
+    - php: 7.1
+    - php: 7.2
+      env: COVERAGE=true TEST_COMMAND="composer test-ci"
 
-# Install packages those will be required during build
 install:
   - composer install --no-interaction
-  - if [ $TRAVIS_PHP_VERSION != "5.5" ]; then composer require cache/predis-adapter --dev; fi
+  - if ! [ -z "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
-# Prepare test environment
 before_script:
-  # creating .env file
   - cp .env.dist .env
-  # pass environment variables in travis to the app
   - sed -i "8s/.*/WG_API_KEY=$WG_API_KEY/" .env
-  ## downloading last codeclimate test report
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+  - if [[ $COVERAGE = true ]]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
+  - if [[ $COVERAGE = true ]]; then chmod +x ./cc-test-reporter; fi
+  - if [[ $COVERAGE = true ]]; then ./cc-test-reporter before-build; fi
 
-# To manage coverage for CodeClimate
-after_script:
-  - mv tests/_output/coverage.xml clover.xml
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
-
-# $TRAVIS_PHP_VERSION
-
-# Run main commands
 script:
-  - if [ $TRAVIS_PHP_VERSION = "5.5" ]; then composer test-5.5; else composer test; fi
+  - composer validate --strict --no-check-lock
+  - $TEST_COMMAND $TEST_FLAGS
 
-# Cache folder, you can delete cache from Travis CI web interface
+after_script:
+  - if [[ $COVERAGE = true ]]; then mv tests/_output/coverage.xml clover.xml; fi
+  - if [[ $COVERAGE = true ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+
 cache:
-    directories:
-        - vendor
-        - $HOME/.composer/cache
+  directories:
+    - $HOME/.composer/cache
