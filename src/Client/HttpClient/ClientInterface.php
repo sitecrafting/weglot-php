@@ -12,6 +12,11 @@ interface ClientInterface
     public function addUserAgentInfo($service, $value);
 
     /**
+     * @return array
+     */
+    public function getUserAgentInfo();
+
+    /**
      * @param string $header
      * @return void
      */
