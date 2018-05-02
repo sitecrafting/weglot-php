@@ -64,6 +64,8 @@ class CurlClient implements ClientInterface
     {
         $this->defaultOptions = $defaultOptions;
         $this->defaultHeaders = $defaultHeaders;
+
+        $this->initUserAgentInfo();
     }
 
     /**
