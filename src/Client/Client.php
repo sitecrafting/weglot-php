@@ -204,7 +204,7 @@ class Client
         if ($asArray) {
             return $array;
         }
-        return $rawBody;
+        return [$rawBody, $httpStatusCode, $httpHeader];
     }
 
     /**
