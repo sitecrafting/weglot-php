@@ -7,10 +7,10 @@ namespace Weglot\Client\HttpClient;
 // constants do not abide by those rules.
 // Note the values 1 and 6 come from their position in the enum that
 // defines them in cURL's source code.
-if (!defined('CURL_SSLVERSION_TLSv1')) {
+if (!\defined('CURL_SSLVERSION_TLSv1')) {
     define('CURL_SSLVERSION_TLSv1', 1);
 }
-if (!defined('CURL_SSLVERSION_TLSv1_2')) {
+if (!\defined('CURL_SSLVERSION_TLSv1_2')) {
     define('CURL_SSLVERSION_TLSv1_2', 6);
 }
 // @codingStandardsIgnoreEnd
@@ -193,7 +193,7 @@ class CurlClient implements ClientInterface
         $options = $this->getDefaultOptions();
 
         // parameters
-        if (count($params) > 0) {
+        if (\count($params) > 0) {
             $encoded = http_build_query($params);
             $absUrl = $absUrl . '?' .$encoded;
         }
@@ -207,11 +207,11 @@ class CurlClient implements ClientInterface
         $headerCallback = function ($curl, $header_line) use (&$rheaders) {
             // Ignore the HTTP request line (HTTP/1.1 200 OK)
             if (strpos($header_line, ":") === false) {
-                return strlen($header_line);
+                return \strlen($header_line);
             }
             list($key, $value) = explode(":", trim($header_line), 2);
             $rheaders[trim($key)] = trim($value);
-            return strlen($header_line);
+            return \strlen($header_line);
         };
         $options[CURLOPT_HEADERFUNCTION] = $headerCallback;
 
@@ -314,7 +314,7 @@ class CurlClient implements ClientInterface
             if ($this->shouldRetry($errno, $rcode, $numRetries)) {
                 $numRetries += 1;
                 $sleepSeconds = $this->sleepTime($numRetries);
-                usleep(intval($sleepSeconds * 1000000));
+                usleep(\intval($sleepSeconds * 1000000));
             } else {
                 break;
             }

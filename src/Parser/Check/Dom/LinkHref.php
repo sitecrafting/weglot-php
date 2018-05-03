@@ -43,7 +43,7 @@ class LinkHref extends AbstractDomChecker
         $boolean = false;
 
         foreach ($this->extensions as $extension) {
-            $start = (strlen($extension) + 1) * -1;
+            $start = (\strlen($extension) + 1) * -1;
             $boolean = $boolean || (strtolower(substr(TextUtil::fullTrim($this->node->href), $start)) === ('.' .$extension));
         }
 

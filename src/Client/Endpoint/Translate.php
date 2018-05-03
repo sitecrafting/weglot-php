@@ -84,7 +84,7 @@ class Translate extends Endpoint
             }
 
             // get next element place
-            $next = count($array);
+            $next = \count($array);
 
             // apply choosed behavior
             $array[$next] = $element;

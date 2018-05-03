@@ -128,7 +128,7 @@ abstract class AbstractDomChecker
      */
     public static function toArray()
     {
-        $class = get_called_class();
+        $class = \get_called_class();
 
         return [
             $class::DOM,

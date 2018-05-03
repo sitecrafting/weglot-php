@@ -55,7 +55,7 @@ class JsonLdFormatter extends AbstractFormatter
     {
         $translated_words = $this->getTranslated()->getOutputWords();
 
-        for ($j = 0; $j < count($jsons); $j++) {
+        for ($j = 0; $j < \count($jsons); $j++) {
             $data = $jsons[$j]['json'];
             $node = $jsons[$j]['node'];
 
