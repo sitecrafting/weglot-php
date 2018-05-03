@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Client: Adding bundled CA cert for cURL
 ### Changed
 - Travis: Improving script (cleaner / easier to understand)
 - Client: Guzzle removed in favor of cURL implementation
