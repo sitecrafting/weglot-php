@@ -4,7 +4,7 @@ namespace Weglot\Parser\Formatter;
 
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Parser\Parser;
-use Weglot\Parser\Util\JsonLd;
+use Weglot\Util\JsonLd;
 
 /**
  * Class JsonLdFormatter
