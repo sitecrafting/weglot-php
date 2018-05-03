@@ -25,6 +25,7 @@ matrix:
       env: COVERAGE=true TEST_FLAGS="--coverage --coverage-xml"
 
 install:
+  - composer install --no-interaction
   - if ! [ -z "$DEPENDENCIES" ]; then composer require ${DEPENDENCIES}; fi;
 
 before_script:
