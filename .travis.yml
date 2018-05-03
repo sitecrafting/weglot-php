@@ -14,8 +14,12 @@ env:
 matrix:
   fast_finish: true
   include:
+    - php: 5.2
+      env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
+      dist: precise
     - php: 5.3
       env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
+      dist: precise
     - php: 5.4
       env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
     - php: 5.5
