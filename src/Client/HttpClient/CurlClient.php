@@ -192,11 +192,15 @@ class CurlClient implements ClientInterface
         $headers = $this->getDefaultHeaders();
         $options = $this->getDefaultOptions();
 
+        // parameters
+        if (count($params) > 0) {
+            $encoded = http_build_query($params);
+            $absUrl = $absUrl . '?' .$encoded;
+        }
+
         // generic processing
-        $absUrl = $this->processParameters($absUrl, $params);
         list($options, $headers) = $this->processMethod($method, $options, $headers, $body);
-        $headers = $this->processHeaders($headers);
-        $options = $this->processOptions($options, $absUrl, $headers);
+        $options = $this->processHeadersAndOptions($headers, $options, $absUrl);
 
         // Create a callback to capture HTTP headers for the response
         $rheaders = [];
@@ -248,26 +252,12 @@ class CurlClient implements ClientInterface
     }
 
     /**
-     * Adding parameters to $absUrl
-     *
-     * @param string $absUrl
-     * @param array $params
-     * @return string
-     */
-    private function processParameters($absUrl, array $params = [])
-    {
-        if (count($params) > 0) {
-            $encoded = http_build_query($params);
-            $absUrl = $absUrl . '?' .$encoded;
-        }
-        return $absUrl;
-    }
-
-    /**
      * @param array $headers
+     * @param array $options
+     * @param string $absUrl
      * @return array
      */
-    private function processHeaders(array $headers)
+    private function processHeadersAndOptions(array $headers, array $options, $absUrl)
     {
         // By default for large request body sizes (> 1024 bytes), cURL will
         // send a request without a body and with a `Expect: 100-continue`
@@ -286,17 +276,7 @@ class CurlClient implements ClientInterface
         // injecting user-agent in headers
         array_push($headers, 'User-Agent: ' . implode(' | ', $this->getUserAgentInfo()));
 
-        return $headers;
-    }
-
-    /**
-     * @param array $options
-     * @param string $absUrl
-     * @param array $headers
-     * @return array
-     */
-    private function processOptions(array $options, $absUrl, array $headers)
-    {
+        // options
         $options[CURLOPT_URL] = $absUrl;
         $options[CURLOPT_RETURNTRANSFER] = true;
         $options[CURLOPT_CONNECTTIMEOUT] = $this->getConnectTimeout();
