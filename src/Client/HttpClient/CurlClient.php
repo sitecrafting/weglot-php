@@ -345,21 +345,23 @@ class CurlClient implements ClientInterface
      */
     private function shouldRetry($errno, $rcode, $numRetries)
     {
+        // Don't make too much retries
         if ($numRetries >= $this->getMaxNetworkRetries()) {
             return false;
         }
+
         // Retry on timeout-related problems (either on open or read).
-        if ($errno === CURLE_OPERATION_TIMEOUTED) {
-            return true;
-        }
+        $timeoutRelated = ($errno === CURLE_OPERATION_TIMEOUTED);
+
         // Destination refused the connection, the connection was reset, or a
         // variety of other connection failures. This could occur from a single
         // saturated server, so retry in case it's intermittent.
-        if ($errno === CURLE_COULDNT_CONNECT) {
-            return true;
-        }
+        $refusedConnection = ($errno === CURLE_COULDNT_CONNECT);
+
         // 409 conflict
-        if ($rcode === 409) {
+        $conflict = ($rcode === 409);
+
+        if ($timeoutRelated || $refusedConnection || $conflict) {
             return true;
         }
         return false;
