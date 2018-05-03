@@ -5,7 +5,7 @@ services:
 
 env:
   global:
-    - TEST_COMMAND="composer test"
+    - TEST_COMMAND="./vendor/bin/codecept run unit --no-interaction"
     - TEST_FLAGS=""
     - DEPENDENCIES="cache/predis-adapter"
     - secure: "cGAzQSqrK0lb8zuyvHZui+vlN3hBWt0E4Hbm7DgML/wCiVNRHKHtIPiV5eJ3PhV3hGiochJt650RIGZwiFsm9CE6nc9TSMw0o+B4EWwCMHJX5FCWFgbi7T/D148mJ08Ggyq3g5jII17cmofTczp+GKlRw9tSbyLmn4PeU6SNVQFMqWEkCscvQtmzsDGgyrfpJUwCGsIykljsV3QWahBUS6Cw95nNOFuGB2OEoQKn2w/rXsaPPgX8p2XI6FGxJsqK1GZEineeLuUqVCf/9t2/IZkO0z6iRl1MAxXlOH9HM/QLU/YK9yYdm/7z0fIdwp4XyRTTrq9hi7od2ZR/g26W7jYTaGBDJI5m5HErrxLtpNtadWcg1ayMHgnnjutXKw3Zz3j2azeAioS3vIwT9BBqGGVsac+TZA5U0Q/wMx8ZAztix4hVHcvqVz0YCqdNEfyy0O6Bdh18sSz7QTQiLcp/pxJ82IM4NVxF7mivR2/36Xw9GDZ0vAHDAn61VYEVU1ZrhKGbJh2absIE1+m8ptqx6sB2MYY5BAdFnXQsgXgJ/P0/3PETK2apwcNbpvTFb93A31EujM26igtiI9s/5k7qZ2S7NMIaSSq/kn4AvhYmRJzaLMXb3s8fsb5MazjoFm+x/NDhlSetRz3IQZodkfXBRpJVotooUAQnDnVUt2gNbCY="
@@ -20,7 +20,7 @@ matrix:
     - php: 7.0
     - php: 7.1
     - php: 7.2
-      env: COVERAGE=true TEST_COMMAND="composer test-ci"
+      env: COVERAGE=true TEST_FLAGS="--coverage --coverage-xml"
 
 install:
   - composer install --no-interaction
