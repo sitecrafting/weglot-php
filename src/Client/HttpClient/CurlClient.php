@@ -326,8 +326,7 @@ class CurlClient implements ClientInterface
                 $msg = "Unexpected error communicating with Weglot.  "
                     . "If this problem persists,";
         }
-        $msg .= " let us know at support@weglot.com.";
-        $msg .= "\n\n(Network error [errno $errno]: $message)";
+        $msg .= " let us know at support@weglot.com.\n\n(Network error [errno $errno]: $message)";
         if ($numRetries > 0) {
             $msg .= "\n\nRequest was retried $numRetries times.";
         }
