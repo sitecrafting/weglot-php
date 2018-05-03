@@ -21,7 +21,6 @@ use Weglot\Parser\Formatter\DomFormatter;
 use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
 use Weglot\Parser\Formatter\IgnoredNodes;
 use Weglot\Parser\Formatter\JsonLdFormatter;
-use Weglot\Parser\Util\Site;
 
 /**
  * Class Parser

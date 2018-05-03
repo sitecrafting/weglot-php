@@ -19,7 +19,7 @@
     "email": "support@weglot.com"
   },
   "require": {
-    "php": ">=5.5",
+    "php": ">=5.4",
     "weglot/simplehtmldom": "^0.2",
     "psr/cache": "^1.0"
   },
@@ -29,7 +29,7 @@
     }
   },
   "require-dev": {
-    "codeception/codeception": "^2.4",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "codeception/codeception": "^2.4"
   }
 }
