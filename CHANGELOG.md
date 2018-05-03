@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Travis: Improving script (cleaner / easier to understand)
+- Client: Guzzle removed in favor of cURL implementation
 
 ## [0.2.1] - 2018-04-30
 ### Fixed
