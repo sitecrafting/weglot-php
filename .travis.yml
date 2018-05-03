@@ -14,11 +14,8 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 5.2
-      env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
-      dist: precise
     - php: 5.3
-      env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
+      env: TEST_FLAGS="-g client -g parser" DEPENDENCIES="codeception/codeception:^1.8"
       dist: precise
     - php: 5.4
       env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
@@ -31,7 +28,6 @@ matrix:
       env: COVERAGE=true TEST_FLAGS="--coverage --coverage-xml"
 
 install:
-  - composer install --no-interaction
   - if ! [ -z "$DEPENDENCIES" ]; then composer require ${DEPENDENCIES}; fi;
 
 before_script:
