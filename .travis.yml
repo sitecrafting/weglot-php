@@ -14,9 +14,6 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 5.3
-      env: TEST_FLAGS="-g client -g parser" DEPENDENCIES="codeception/codeception:^1.8"
-      dist: precise
     - php: 5.4
       env: TEST_FLAGS="-g client -g parser" DEPENDENCIES=""
     - php: 5.5

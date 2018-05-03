@@ -19,10 +19,10 @@
     "email": "support@weglot.com"
   },
   "require": {
-    "php": ">=5.3",
+    "php": ">=5.4",
     "weglot/simplehtmldom": "^0.2",
     "psr/cache": "^1.0",
-    "codeception/codeception": "^1.8"
+    "codeception/codeception": "^2.4"
   },
   "autoload": {
     "psr-4": {
