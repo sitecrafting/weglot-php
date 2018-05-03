@@ -282,7 +282,8 @@ class CurlClient implements ClientInterface
         $options[CURLOPT_CONNECTTIMEOUT] = $this->getConnectTimeout();
         $options[CURLOPT_TIMEOUT] = $this->getTimeout();
         $options[CURLOPT_HTTPHEADER] = $headers;
-        $options[CURLOPT_CAINFO] = realpath(__DIR__ . '/../../data/ca-certificates.crt');
+        $options[CURLOPT_SSL_VERIFYPEER] = true;
+        $options[CURLOPT_CAINFO] = __DIR__ . '/../../../data/ca-certificates.crt';
 
         return $options;
     }
