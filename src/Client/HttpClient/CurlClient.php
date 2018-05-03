@@ -242,6 +242,9 @@ class CurlClient implements ClientInterface
         // sending an empty `Expect:` header.
         array_push($headers, 'Expect: ');
 
+        // injecting user-agent in headers
+        array_push($headers, 'User-Agent: ' . implode(' | ', $this->getUserAgentInfo()));
+
         // generic cURL options
         $options[CURLOPT_URL] = $absUrl;
         $options[CURLOPT_RETURNTRANSFER] = true;
