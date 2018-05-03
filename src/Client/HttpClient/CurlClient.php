@@ -317,8 +317,7 @@ class CurlClient implements ClientInterface
         $numRetries = 0;
 
         while (true) {
-            $rcode = 0;
-            $errno = 0;
+            $rcode = $errno = 0;
 
             $curl = curl_init();
             curl_setopt_array($curl, $options);
