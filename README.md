@@ -5,7 +5,7 @@
 
 <!-- tags -->
 [![Latest Stable Version](https://poser.pugx.org/weglot/weglot-php/v/stable)](https://packagist.org/packages/weglot/weglot-php)
-[![BuildStatus](https://travis-ci.org/weglot/weglot-php.svg?branch=develop)](https://travis-ci.org/weglot/weglot-php)
+[![BuildStatus](https://travis-ci.com/weglot/weglot-php.svg?branch=develop)](https://travis-ci.com/weglot/weglot-php)
 [![Code Climate](https://codeclimate.com/github/weglot/weglot-php/badges/gpa.svg)](https://codeclimate.com/github/weglot/weglot-php)
 [![License](https://poser.pugx.org/weglot/weglot-php/license)](https://packagist.org/packages/weglot/weglot-php)
 
