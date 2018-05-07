@@ -4,6 +4,7 @@
 # PHP library
 
 <!-- tags -->
+[![WeglotSlack](https://weglot-community.now.sh/badge.svg)](https://weglot-community.now.sh/)
 [![Latest Stable Version](https://poser.pugx.org/weglot/weglot-php/v/stable)](https://packagist.org/packages/weglot/weglot-php)
 [![BuildStatus](https://travis-ci.com/weglot/weglot-php.svg?branch=develop)](https://travis-ci.com/weglot/weglot-php)
 [![Code Climate](https://codeclimate.com/github/weglot/weglot-php/badges/gpa.svg)](https://codeclimate.com/github/weglot/weglot-php)
