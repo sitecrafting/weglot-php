@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Travis: Improving script (cleaner / easier to understand)
 - Client: Guzzle removed in favor of cURL implementation
 
+## [0.2.2] - 2018-05-07
+### Fixed
+- Translate/Cache: Cached words aren't unique anymore (before, only one pair could work)
+
 ## [0.2.1] - 2018-04-30
 ### Fixed
 - Parser: Excluding php tags from text checker
