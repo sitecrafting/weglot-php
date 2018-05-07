@@ -14,7 +14,7 @@
 This library allows you to quickly and easily use the Weglot API via PHP. It handle all communication with Weglot API and gives you a [fully functional Parser](#getting-started) to handle HTML pages easily.
 
 ## Requirements
-- PHP version 5.5 and later
+- PHP version 5.4 and later
 - Weglot API Key, starting at [free level](https://dashboard.weglot.com/register)
 
 ## Installation
