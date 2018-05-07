@@ -3,6 +3,10 @@ language: php
 services:
   - redis-server
 
+notifications:
+  email:
+    on_failure: change
+
 env:
   global:
     - TEST_COMMAND="./vendor/bin/codecept run unit --no-interaction"
@@ -29,17 +33,23 @@ install:
 before_script:
   - cp .env.dist .env
   - sed -i "8s/.*/WG_API_KEY=$WG_API_KEY/" .env
-  - if [[ $COVERAGE = true ]]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
-  - if [[ $COVERAGE = true ]]; then chmod +x ./cc-test-reporter; fi
-  - if [[ $COVERAGE = true ]]; then ./cc-test-reporter before-build; fi
+  - |
+    if [[ $COVERAGE = true ]]; then
+      curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      chmod +x ./cc-test-reporter
+      ./cc-test-reporter before-build
+    fi
 
 script:
   - composer validate --strict --no-check-lock
   - $TEST_COMMAND $TEST_FLAGS
 
 after_script:
-  - if [[ $COVERAGE = true ]]; then mv tests/_output/coverage.xml clover.xml; fi
-  - if [[ $COVERAGE = true ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+  - |
+    if [[ $COVERAGE = true ]]; then
+      mv tests/_output/coverage.xml clover.xml
+      ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+    fi
 
 cache:
   directories:
