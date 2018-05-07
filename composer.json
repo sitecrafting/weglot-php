@@ -19,8 +19,7 @@
     "email": "support@weglot.com"
   },
   "require": {
-    "php": ">=5.5",
-    "guzzlehttp/guzzle": "^6.3",
+    "php": ">=5.4",
     "weglot/simplehtmldom": "^0.2",
     "psr/cache": "^1.0"
   },
@@ -30,11 +29,7 @@
     }
   },
   "require-dev": {
-    "codeception/codeception": "^2.4",
-    "vlucas/phpdotenv": "^2.4"
-  },
-  "scripts": {
-    "test": "./vendor/bin/codecept run unit --coverage --coverage-xml --no-interaction",
-    "test-5.5": "./vendor/bin/codecept run unit --no-interaction  -g client -g parser"
+    "vlucas/phpdotenv": "^2.4",
+    "codeception/codeception": "^2.4"
   }
 }

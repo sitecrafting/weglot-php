@@ -4,8 +4,9 @@
 # PHP library
 
 <!-- tags -->
+[![WeglotSlack](https://weglot-community.now.sh/badge.svg)](https://weglot-community.now.sh/)
 [![Latest Stable Version](https://poser.pugx.org/weglot/weglot-php/v/stable)](https://packagist.org/packages/weglot/weglot-php)
-[![BuildStatus](https://travis-ci.org/weglot/weglot-php.svg?branch=develop)](https://travis-ci.org/weglot/weglot-php)
+[![BuildStatus](https://travis-ci.com/weglot/weglot-php.svg?branch=develop)](https://travis-ci.com/weglot/weglot-php)
 [![Code Climate](https://codeclimate.com/github/weglot/weglot-php/badges/gpa.svg)](https://codeclimate.com/github/weglot/weglot-php)
 [![License](https://poser.pugx.org/weglot/weglot-php/license)](https://packagist.org/packages/weglot/weglot-php)
 
@@ -13,7 +14,7 @@
 This library allows you to quickly and easily use the Weglot API via PHP. It handle all communication with Weglot API and gives you a [fully functional Parser](#getting-started) to handle HTML pages easily.
 
 ## Requirements
-- PHP version 5.5 and later
+- PHP version 5.4 and later
 - Weglot API Key, starting at [free level](https://dashboard.weglot.com/register)
 
 ## Installation

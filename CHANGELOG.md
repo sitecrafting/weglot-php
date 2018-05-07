@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3] - 2018-05-07
+### Added
+- Client: Adding bundled CA cert for cURL
+### Changed
+- Travis: Improving script (cleaner / easier to understand)
+- Client: Guzzle removed in favor of cURL implementation
+
 ## [0.2.2] - 2018-05-07
 ### Fixed
 - Translate/Cache: Cached words aren't unique anymore (before, only one pair could work)
