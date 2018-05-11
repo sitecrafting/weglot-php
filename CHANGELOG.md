@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.1] - 2018-05-11
+### Changed
+- Translate: when response if not array, we throw an ApiError
+### Fixed
+- Parser: if simple_html_dom can't parse the HTML, we return raw HTML with no modifications
+
 ## [0.3] - 2018-05-07
 ### Added
 - Client: Adding bundled CA cert for cURL
