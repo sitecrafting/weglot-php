@@ -176,7 +176,10 @@ class Translate extends Endpoint
         }
 
         $response = $this->request($asArray);
-
+        if (!is_array($response)) {
+            throw new ApiError('Response is not an array: ' .$response, $asArray);
+        }
+        
         if ($this->getCache()->enabled()) {
             $response = $this->afterRequest($response, $beforeRequest);
         }
