@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Parser: if simple_html_dom can't parse the HTML, we return raw HTML with no modifications
 
 ## [0.3] - 2018-05-07
 ### Added
