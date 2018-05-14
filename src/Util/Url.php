@@ -29,17 +29,24 @@ class Url
     protected $languages = [];
 
     /**
-     * Url constructor.
-     * @param string $url       Current visited url
-     * @param string $default   Default language represented by ISO 639-1 code
-     * @param array $languages  All available languages
+     * @var string
      */
-    public function __construct($url, $default, $languages = [])
+    protected $pathPrefix = '';
+
+    /**
+     * Url constructor.
+     * @param string $url           Current visited url
+     * @param string $default       Default language represented by ISO 639-1 code
+     * @param array $languages      All available languages
+     * @param string $pathPrefix    Prefix to access website root path (ie. : `/my/custom/path`, don't forget: starting `/` and no ending `/`)
+     */
+    public function __construct($url, $default, $languages = [], $pathPrefix = '')
     {
         $this
             ->setUrl($url)
             ->setDefault($default)
-            ->setLanguages($languages);
+            ->setLanguages($languages)
+            ->setPathPrefix($pathPrefix);
     }
 
     /**
@@ -97,6 +104,24 @@ class Url
     }
 
     /**
+     * @param string $pathPrefix
+     * @return $this
+     */
+    public function setPathPrefix($pathPrefix)
+    {
+        $this->pathPrefix = $pathPrefix;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathPrefix()
+    {
+        return $this->pathPrefix;
+    }
+
+    /**
      * @return null|string
      */
     public function getBaseUrl()
@@ -124,19 +149,21 @@ class Url
     /**
      * Generate possible base URL then store it into $baseUrl
      *
-     * @return string
+     * @return string   Path prefix + base URL
      */
     public function detectBaseUrl()
     {
+        $pathPrefixRegex = str_replace('/', '\/', $this->pathPrefix);
         $languages = implode('|', $this->languages);
-        $baseUrl = preg_replace('#\/?(' .$languages. ')#i', '', $this->url);
 
-        if ($baseUrl === '') {
+        $baseUrl = preg_replace('#' .$pathPrefixRegex. '\/?(' .$languages. ')#i', '', $this->url);
+
+        if ($baseUrl === $this->pathPrefix) {
             $baseUrl = '/';
         }
 
         $this->baseUrl = $baseUrl;
-        return $this->baseUrl;
+        return $this->pathPrefix . $this->baseUrl;
     }
 
     /**
@@ -153,7 +180,7 @@ class Url
         $urls = [];
         $urls[$this->default] = $this->baseUrl;
         foreach ($this->languages as $language) {
-            $urls[$language] = '/' . $language . $this->baseUrl;
+            $urls[$language] = $this->pathPrefix . '/' . $language . $this->baseUrl;
         }
 
         return $urls;
