@@ -145,7 +145,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
-    public function testUrlDefaultEnWithExclude()
+    public function testUrlDefaultEnWithFrAndExclude()
     {
         $profile = [
             'url' => 'https://weglot.com/fr/pricing',
@@ -187,7 +187,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
-    public function testUrlDefaultEnWithInverseExclude()
+    public function testUrlDefaultEnWithKrAndInverseExclude()
     {
         $profile = [
             'url' => 'https://weglot.com/kr/pricing',
