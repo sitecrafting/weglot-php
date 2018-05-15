@@ -229,7 +229,7 @@ class Url
     public function currentRequestAllUrls()
     {
         if ($this->getBaseUrl() === null) {
-            $this->detectBaseUrl();
+            $this->detectUrlDetails();
         }
 
         $urls = [];
