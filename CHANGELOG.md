@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Util.Url: implementing Url utility class ! with all unit tests needed
+- Tests: adding unit tests for Util\JsonLd class
 
 ## [0.3.1] - 2018-05-11
 ### Changed
