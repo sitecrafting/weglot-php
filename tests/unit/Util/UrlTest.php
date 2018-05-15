@@ -92,7 +92,7 @@ class UrlTest extends \Codeception\Test\Unit
         ]
     ];
 
-    public function testSimpleUrlDefaultEn()
+    public function testSimpleUrlDefaultEnWithEsUrl()
     {
         $profile = [
             'url' => 'https://weglot.com/es/pricing',
@@ -119,7 +119,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
-    public function testSimpleUrlDefaultFr()
+    public function testSimpleUrlDefaultFrWithEnUrl()
     {
         $profile = [
             'url' => 'https://www.ratp.fr/en/horaires',
@@ -133,6 +133,31 @@ class UrlTest extends \Codeception\Test\Unit
                 'getBaseUrl' => '/horaires',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'en',
+                'currentRequestAllUrls' => [
+                    'fr' => 'https://www.ratp.fr/horaires',
+                    'en' => 'https://www.ratp.fr/en/horaires',
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
+    public function testSimpleUrlDefaultFrWithFrUrl()
+    {
+        $profile = [
+            'url' => 'https://www.ratp.fr/horaires',
+            'default' => 'fr',
+            'languages' => ['en'],
+            'prefix' => '',
+            'exclude' => [],
+            'results' => [
+                'getHost' => 'https://www.ratp.fr',
+                'detectBaseUrl' => 'https://www.ratp.fr/horaires',
+                'getBaseUrl' => '/horaires',
+                'isTranslable' => true,
+                'detectCurrentLanguage' => 'fr',
                 'currentRequestAllUrls' => [
                     'fr' => 'https://www.ratp.fr/horaires',
                     'en' => 'https://www.ratp.fr/en/horaires',
