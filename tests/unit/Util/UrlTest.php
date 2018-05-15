@@ -159,6 +159,15 @@ class UrlTest extends \Codeception\Test\Unit
             ->setExcludedUrls($profile['exclude']);
     }
 
+    protected function _generateHrefLangs(array $currentRequestAllUrls)
+    {
+        $render = '';
+        foreach ($currentRequestAllUrls as $language => $url) {
+            $render .= '<link rel="alternate" href="' .$url. '" hreflang="' .$language. '"/>'."\n";
+        }
+        return $render;
+    }
+
     /**
      * @param Url $url
      * @param array $profile
@@ -182,5 +191,6 @@ class UrlTest extends \Codeception\Test\Unit
         $this->assertEquals($profile['results']['detectCurrentLanguage'], $url->detectCurrentLanguage());
 
         $this->assertEquals($profile['results']['currentRequestAllUrls'], $url->currentRequestAllUrls());
+        $this->assertEquals($this->_generateHrefLangs($profile['results']['currentRequestAllUrls']), $url->generateHrefLangsTags());
     }
 }
