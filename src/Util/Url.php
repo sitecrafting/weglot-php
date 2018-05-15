@@ -16,6 +16,11 @@ class Url
     /**
      * @var null|string
      */
+    protected $host = null;
+
+    /**
+     * @var null|string
+     */
     protected $baseUrl = null;
 
     /**
@@ -147,6 +152,14 @@ class Url
     /**
      * @return null|string
      */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return null|string
+     */
     public function getBaseUrl()
     {
         return $this->baseUrl;
@@ -179,7 +192,7 @@ class Url
         $uriPath = parse_url($this->getUrl(), PHP_URL_PATH);
         $uriSegments = explode('/', $uriPath);
 
-        $hypothesis = $uriSegments[0];
+        $hypothesis = $uriSegments[1];
         if (in_array($hypothesis, $this->getLanguages())) {
             return $hypothesis;
         }
@@ -187,23 +200,25 @@ class Url
     }
 
     /**
-     * Generate possible base URL then store it into $baseUrl
+     * Generate possible host & base URL then store it into internal variables
      *
-     * @return string   Path prefix + base URL
+     * @return string   Host + path prefix + base URL
      */
-    public function detectBaseUrl()
+    public function detectUrlDetails()
     {
         $pathPrefixRegex = str_replace('/', '\/', $this->getPathPrefix());
         $languages = implode('|', $this->getLanguages());
 
-        $baseUrl = preg_replace('#' .$pathPrefixRegex. '\/?(' .$languages. ')#i', '', $this->getUrl());
+        $fullUrl = preg_replace('#' .$pathPrefixRegex. '\/?(' .$languages. ')#i', '', $this->getUrl());
+        $parsed = parse_url($fullUrl);
 
-        if ($baseUrl === $this->getPathPrefix()) {
-            $baseUrl = '/';
+        $this->host = $parsed['scheme'] . '://' . $parsed['host'];
+        $this->baseUrl = $parsed['path'];
+
+        if ($this->baseUrl === $this->getPathPrefix()) {
+            $this->baseUrl = '/';
         }
-
-        $this->baseUrl = $baseUrl;
-        return $this->getPathPrefix() . $this->getBaseUrl();
+        return $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
     }
 
     /**
@@ -218,9 +233,9 @@ class Url
         }
 
         $urls = [];
-        $urls[$this->getDefault()] = $this->getBaseUrl();
+        $urls[$this->getDefault()] = $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
         foreach ($this->getLanguages() as $language) {
-            $urls[$language] = $this->getPathPrefix() . '/' . $language . $this->getBaseUrl();
+            $urls[$language] = $this->getHost() . $this->getPathPrefix() . '/' . $language . $this->getBaseUrl();
         }
 
         return $urls;
