@@ -201,9 +201,8 @@ class Url
         $uriPath = preg_replace('/^' . $escapedPathPrefix . '/s', '', $uriPath);
         $uriSegments = explode('/', $uriPath);
 
-        $hypothesis = $uriSegments[1];
-        if (in_array($hypothesis, $this->getLanguages())) {
-            return $hypothesis;
+        if (isset($uriSegments[1]) && in_array($uriSegments[1], $this->getLanguages())) {
+            return $uriSegments[1];
         }
         return $this->getDefault();
     }
