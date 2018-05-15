@@ -44,16 +44,14 @@ class Url
      * @param string $default       Default language represented by ISO 639-1 code
      * @param array $languages      All available languages
      * @param string $pathPrefix    Prefix to access website root path (ie. : `/my/custom/path`, don't forget: starting `/` and no ending `/`)
-     * @param array $excludedUrls   An array of urls that should not be translated
      */
-    public function __construct($url, $default, $languages = [], $pathPrefix = '', $excludedUrls = [])
+    public function __construct($url, $default, $languages = [], $pathPrefix = '')
     {
         $this
             ->setUrl(urldecode($url))
             ->setDefault($default)
             ->setLanguages($languages)
-            ->setPathPrefix($pathPrefix)
-            ->setExcludedUrls($excludedUrls);
+            ->setPathPrefix($pathPrefix);
     }
 
     /**
