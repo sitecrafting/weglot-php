@@ -264,8 +264,13 @@ class UrlTest extends \Codeception\Test\Unit
      */
     protected function _checkResults(Url $url, array $profile)
     {
+        // cloned $url, to be sure to have a `null` $baseUrl
         $cloned = clone $url;
         $this->assertEquals($profile['results']['currentRequestAllUrls'], $cloned->currentRequestAllUrls());
+
+        // cloned $url, to be sure to have a `null` $baseUrl
+        $cloned = clone $url;
+        $this->assertEquals($profile['results']['isTranslable'], $cloned->isTranslable());
 
         $this->assertNull($url->getHost());
         $this->assertNull($url->getBaseUrl());
