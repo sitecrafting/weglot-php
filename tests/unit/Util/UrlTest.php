@@ -229,6 +229,48 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
+    public function testUrlDefaultEnWithFrAndPrefixAndExclude()
+    {
+        $profile = [
+            'url' => 'https://weglot.com/landing/fr/how-to-manage-your-translations',
+            'default' => 'en',
+            'languages' => ['fr', 'kr'],
+            'prefix' => '/landing',
+            'exclude' => [
+                '\/admin\/.*'
+            ],
+            'results' => [
+                'getHost' => 'https://weglot.com',
+                'getPathPrefix' => '/landing',
+                'getBaseUrl' => '/how-to-manage-your-translations',
+                'isTranslable' => true,
+                'detectCurrentLanguage' => 'fr',
+                'detectBaseUrl' => 'https://weglot.com/landing/how-to-manage-your-translations',
+                'currentRequestAllUrls' => [
+                    'en' => 'https://weglot.com/landing/how-to-manage-your-translations',
+                    'fr' => 'https://weglot.com/landing/fr/how-to-manage-your-translations',
+                    'kr' => 'https://weglot.com/landing/kr/how-to-manage-your-translations'
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+
+        $profile['url'] = 'https://weglot.com/landing/fr/admin/how-to-manage-your-translations';
+        $profile['results']['getBaseUrl'] = '/admin/how-to-manage-your-translations';
+        $profile['results']['isTranslable'] = false;
+        $profile['results']['detectBaseUrl'] = 'https://weglot.com/landing/admin/how-to-manage-your-translations';
+        $profile['results']['currentRequestAllUrls'] = [
+            'en' => 'https://weglot.com/landing/admin/how-to-manage-your-translations',
+            'fr' => 'https://weglot.com/landing/fr/admin/how-to-manage-your-translations',
+            'kr' => 'https://weglot.com/landing/kr/admin/how-to-manage-your-translations'
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
     /**
      * @param array $profile
      * @return Url
