@@ -172,13 +172,19 @@ class Url
      */
     public function isTranslable()
     {
+        if ($this->getBaseUrl() === null) {
+            $this->detectUrlDetails();
+        }
+
         foreach ($this->getExcludedUrls() as $regex) {
-            $escapedRegex = str_replace('/', '\/', $regex);
+            $escapedRegex = $this->escapeForRegex($regex);
             $fullRegex = sprintf('/%s/', $escapedRegex);
-            if (preg_match($fullRegex, $this->getUrl()) === 1) {
+
+            if (preg_match($fullRegex, $this->getBaseUrl()) === 1) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -267,6 +273,6 @@ class Url
      */
     private function escapeForRegex($regex)
     {
-        return str_replace('/', '\/', $regex);
+        return str_replace('\\/', '\/', str_replace('/', '\/', $regex));
     }
 }
