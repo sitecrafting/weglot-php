@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.4.0] - 2018-05-15
+### Added
+- Util.Url: implementing Url utility class ! with all unit tests needed
+- Tests: adding unit tests for Util\JsonLd class
+
 ## [0.3.1] - 2018-05-11
 ### Changed
 - Translate: when response if not array, we throw an ApiError
