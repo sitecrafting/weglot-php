@@ -117,6 +117,48 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
+    public function testUrlDefaultEnWithExclude()
+    {
+        $profile = [
+            'url' => 'https://weglot.com/fr/pricing',
+            'default' => 'en',
+            'languages' => ['fr', 'kr'],
+            'prefix' => '',
+            'exclude' => [
+                '\/admin\/.*'
+            ],
+            'results' => [
+                'getHost' => 'https://weglot.com',
+                'getPathPrefix' => '',
+                'getBaseUrl' => '/pricing',
+                'isTranslable' => true,
+                'detectCurrentLanguage' => 'fr',
+                'detectBaseUrl' => 'https://weglot.com/pricing',
+                'currentRequestAllUrls' => [
+                    'en' => 'https://weglot.com/pricing',
+                    'fr' => 'https://weglot.com/fr/pricing',
+                    'kr' => 'https://weglot.com/kr/pricing'
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+
+        $profile['url'] = 'https://weglot.com/fr/admin/dashboard';
+        $profile['results']['getBaseUrl'] = '/admin/dashboard';
+        $profile['results']['isTranslable'] = false;
+        $profile['results']['detectBaseUrl'] = 'https://weglot.com/admin/dashboard';
+        $profile['results']['currentRequestAllUrls'] = [
+            'en' => 'https://weglot.com/admin/dashboard',
+            'fr' => 'https://weglot.com/fr/admin/dashboard',
+            'kr' => 'https://weglot.com/kr/admin/dashboard'
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
     public function testUrlDefaultEnWithInverseExclude()
     {
         $profile = [

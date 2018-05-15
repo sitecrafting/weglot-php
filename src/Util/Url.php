@@ -273,6 +273,6 @@ class Url
      */
     private function escapeForRegex($regex)
     {
-        return str_replace('\\/', '\/', str_replace('/', '\/', $regex));
+        return str_replace('\\\\/', '\/', str_replace('/', '\/', $regex));
     }
 }
