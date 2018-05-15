@@ -9,59 +9,8 @@ class UrlTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
-    /**
-     * @var Url
-     */
-    protected $url;
-
-    protected $profile = [
-        'url' => 'https://weglot.com/es/pricing',
-        'default' => 'en',
-        'languages' => ['fr', 'de', 'es'],
-        'prefix' => '',
-        'exclude' => [],
-        'results' => [
-            'getHost' => 'https://weglot.com',
-            'getBaseUrl' => '/pricing',
-            'isTranslable' => true,
-            'detectCurrentLanguage' => 'es',
-            'detectBaseUrl' => '/pricing',
-            'currentRequestAllUrls' => [
-                'https://weglot.com/pricing',
-                'https://weglot.com/fr/pricing',
-                'https://weglot.com/de/pricing',
-                'https://weglot.com/es/pricing'
-            ]
-        ]
-    ];
 
     protected $profiles = [
-        [
-            'url' => 'https://weglot.com/es/pricing',
-            'default' => 'en',
-            'languages' => ['fr', 'de', 'es'],
-            'prefix' => '',
-            'exclude' => [],
-            'results' => [
-                'getBaseUrl' => '/pricing',
-                'isTranslable' => true,
-                'detectCurrentLanguage' => 'es',
-                'detectBaseUrl' => '/pricing',
-                'currentRequestAllUrls' => [
-                    'https://weglot.com/pricing',
-                    'https://weglot.com/fr/pricing',
-                    'https://weglot.com/de/pricing',
-                    'https://weglot.com/es/pricing'
-                ]
-            ]
-        ],
-        [
-            'url' => 'https://www.ratp.fr/de/horaires',
-            'default' => 'fr',
-            'languages' => ['en', 'de', 'es'],
-            'prefix' => '',
-            'exclude' => []
-        ],
         [
             'url' => '',
             'default' => 'en',
@@ -102,6 +51,7 @@ class UrlTest extends \Codeception\Test\Unit
             'exclude' => [],
             'results' => [
                 'getHost' => 'https://weglot.com',
+                'getPathPrefix' => '',
                 'getBaseUrl' => '/pricing',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'es',
@@ -129,6 +79,7 @@ class UrlTest extends \Codeception\Test\Unit
             'exclude' => [],
             'results' => [
                 'getHost' => 'https://www.ratp.fr',
+                'getPathPrefix' => '',
                 'detectBaseUrl' => 'https://www.ratp.fr/horaires',
                 'getBaseUrl' => '/horaires',
                 'isTranslable' => true,
@@ -154,6 +105,7 @@ class UrlTest extends \Codeception\Test\Unit
             'exclude' => [],
             'results' => [
                 'getHost' => 'https://www.ratp.fr',
+                'getPathPrefix' => '',
                 'detectBaseUrl' => 'https://www.ratp.fr/horaires',
                 'getBaseUrl' => '/horaires',
                 'isTranslable' => true,
@@ -161,6 +113,34 @@ class UrlTest extends \Codeception\Test\Unit
                 'currentRequestAllUrls' => [
                     'fr' => 'https://www.ratp.fr/horaires',
                     'en' => 'https://www.ratp.fr/en/horaires',
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
+    public function testUrlDefaultEnWithEsUrlAndPrefix()
+    {
+        $profile = [
+            'url' => 'https://weglot.com/web/es/pricing',
+            'default' => 'en',
+            'languages' => ['fr', 'de', 'es'],
+            'prefix' => '/web',
+            'exclude' => [],
+            'results' => [
+                'getHost' => 'https://weglot.com',
+                'getPathPrefix' => '/web',
+                'getBaseUrl' => '/pricing',
+                'isTranslable' => true,
+                'detectCurrentLanguage' => 'es',
+                'detectBaseUrl' => 'https://weglot.com/web/pricing',
+                'currentRequestAllUrls' => [
+                    'en' => 'https://weglot.com/web/pricing',
+                    'fr' => 'https://weglot.com/web/fr/pricing',
+                    'de' => 'https://weglot.com/web/de/pricing',
+                    'es' => 'https://weglot.com/web/es/pricing'
                 ]
             ]
         ];
@@ -213,6 +193,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->assertEquals($profile['results']['detectBaseUrl'], $url->detectUrlDetails());
 
         $this->assertEquals($profile['results']['getHost'], $url->getHost());
+        $this->assertEquals($profile['results']['getPathPrefix'], $url->getPathPrefix());
         $this->assertEquals($profile['results']['getBaseUrl'], $url->getBaseUrl());
 
         $this->assertEquals($profile['results']['isTranslable'], $url->isTranslable());
