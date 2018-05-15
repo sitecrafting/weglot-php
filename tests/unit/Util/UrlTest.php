@@ -159,6 +159,10 @@ class UrlTest extends \Codeception\Test\Unit
             ->setExcludedUrls($profile['exclude']);
     }
 
+    /**
+     * @param array $currentRequestAllUrls
+     * @return string
+     */
     protected function _generateHrefLangs(array $currentRequestAllUrls)
     {
         $render = '';
