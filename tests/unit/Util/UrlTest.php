@@ -117,6 +117,34 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
+    public function testUrlDefaultEnWithEnUrlAndPrefixAsUrl()
+    {
+        $profile = [
+            'url' => 'https://weglot.com/web',
+            'default' => 'en',
+            'languages' => ['fr', 'de', 'es'],
+            'prefix' => '/web',
+            'exclude' => [],
+            'results' => [
+                'getHost' => 'https://weglot.com',
+                'getPathPrefix' => '/web',
+                'getBaseUrl' => '/',
+                'isTranslable' => true,
+                'detectCurrentLanguage' => 'en',
+                'detectBaseUrl' => 'https://weglot.com/web/',
+                'currentRequestAllUrls' => [
+                    'en' => 'https://weglot.com/web/',
+                    'fr' => 'https://weglot.com/web/fr/',
+                    'de' => 'https://weglot.com/web/de/',
+                    'es' => 'https://weglot.com/web/es/'
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
     public function testUrlDefaultEnWithExclude()
     {
         $profile = [
