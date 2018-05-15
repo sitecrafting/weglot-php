@@ -189,7 +189,10 @@ class Url
      */
     public function detectCurrentLanguage()
     {
+        // parsing url to get only path & removing prefix if there is one
+        $escapedPathPrefix = $this->escapeForRegex($this->getPathPrefix());
         $uriPath = parse_url($this->getUrl(), PHP_URL_PATH);
+        $uriPath = preg_replace('/^' . $escapedPathPrefix . '/s', '', $uriPath);
         $uriSegments = explode('/', $uriPath);
 
         $hypothesis = $uriSegments[1];
@@ -206,10 +209,10 @@ class Url
      */
     public function detectUrlDetails()
     {
-        $pathPrefixRegex = str_replace('/', '\/', $this->getPathPrefix());
+        $escapedPathPrefix = $this->escapeForRegex($this->getPathPrefix());
         $languages = implode('|', $this->getLanguages());
 
-        $fullUrl = preg_replace('#' .$pathPrefixRegex. '\/?(' .$languages. ')#i', '', $this->getUrl());
+        $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/?(' . $languages . ')#i', '', $this->getUrl());
         $parsed = parse_url($fullUrl);
 
         $this->host = $parsed['scheme'] . '://' . $parsed['host'];
@@ -256,5 +259,14 @@ class Url
         }
 
         return $render;
+    }
+
+    /**
+     * @param string $regex
+     * @return string
+     */
+    private function escapeForRegex($regex)
+    {
+        return str_replace('/', '\/', $regex);
     }
 }
