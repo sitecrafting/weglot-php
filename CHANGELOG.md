@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.4.1] - 2018-05-15
+### Fixed
+- Util.Url: fixing error when path is also host root
+
 ## [0.4.0] - 2018-05-15
 ### Added
 - Util.Url: implementing Url utility class ! with all unit tests needed

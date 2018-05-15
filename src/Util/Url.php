@@ -221,7 +221,7 @@ class Url
         $parsed = parse_url($fullUrl);
 
         $this->host = $parsed['scheme'] . '://' . $parsed['host'];
-        $this->baseUrl = $parsed['path'];
+        $this->baseUrl = isset($parsed['path']) ? $parsed['path'] : '/';
 
         if ($this->baseUrl === $this->getPathPrefix()) {
             $this->baseUrl = '/';
