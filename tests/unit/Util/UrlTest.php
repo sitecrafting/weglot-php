@@ -166,6 +166,9 @@ class UrlTest extends \Codeception\Test\Unit
      */
     protected function _checkResults(Url $url, array $profile)
     {
+        $cloned = clone $url;
+        $this->assertEquals($profile['results']['currentRequestAllUrls'], $cloned->currentRequestAllUrls());
+
         $this->assertNull($url->getHost());
         $this->assertNull($url->getBaseUrl());
 
