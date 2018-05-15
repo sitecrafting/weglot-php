@@ -9,38 +9,6 @@ class UrlTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
-
-    protected $profiles = [
-        [
-            'url' => '',
-            'default' => 'en',
-            'languages' => ['fr', 'de', 'es'],
-            'prefix' => '/web',
-            'exclude' => []
-        ],
-        [
-            'url' => '',
-            'default' => 'en',
-            'languages' => ['fr', 'de', 'es'],
-            'prefix' => '/web',
-            'exclude' => [
-                ''
-            ],
-            'results' => [
-                'baseUrl' => ''
-            ]
-        ],
-        [
-            'url' => '',
-            'default' => 'en',
-            'languages' => ['fr', 'en', 'es'],
-            'prefix' => '',
-            'exclude' => [
-                ''
-            ]
-        ]
-    ];
-
     public function testSimpleUrlDefaultEnWithEsUrl()
     {
         $profile = [
@@ -143,6 +111,48 @@ class UrlTest extends \Codeception\Test\Unit
                     'es' => 'https://weglot.com/web/es/pricing'
                 ]
             ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
+    public function testUrlDefaultEnWithInverseExclude()
+    {
+        $profile = [
+            'url' => 'https://weglot.com/kr/pricing',
+            'default' => 'en',
+            'languages' => ['fr', 'kr'],
+            'prefix' => '',
+            'exclude' => [
+                '^(?!/rgpd-wordpress/?|/optimiser-wordpress/?).*$'
+            ],
+            'results' => [
+                'getHost' => 'https://weglot.com',
+                'getPathPrefix' => '',
+                'getBaseUrl' => '/pricing',
+                'isTranslable' => false,
+                'detectCurrentLanguage' => 'kr',
+                'detectBaseUrl' => 'https://weglot.com/pricing',
+                'currentRequestAllUrls' => [
+                    'en' => 'https://weglot.com/pricing',
+                    'fr' => 'https://weglot.com/fr/pricing',
+                    'kr' => 'https://weglot.com/kr/pricing'
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+
+        $profile['url'] = 'https://weglot.com/kr/rgpd-wordpress';
+        $profile['results']['getBaseUrl'] = '/rgpd-wordpress';
+        $profile['results']['isTranslable'] = true;
+        $profile['results']['detectBaseUrl'] = 'https://weglot.com/rgpd-wordpress';
+        $profile['results']['currentRequestAllUrls'] = [
+            'en' => 'https://weglot.com/rgpd-wordpress',
+            'fr' => 'https://weglot.com/fr/rgpd-wordpress',
+            'kr' => 'https://weglot.com/kr/rgpd-wordpress'
         ];
 
         $url = $this->_urlInstance($profile);
