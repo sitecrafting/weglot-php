@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Util.Url: `getForLanguage($code)` function to get given language url base on current `Url` instance
+### Changed
+- Util.Url: Local caching for `currentRequestAllUrls()` function
 
 ## [0.4.2] - 2018-05-21
 ### Fixed

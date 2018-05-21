@@ -24,6 +24,11 @@ class Url
     protected $baseUrl = null;
 
     /**
+     * @var null|array
+     */
+    protected $allUrls = null;
+
+    /**
      * @var
      */
     protected $default;
@@ -166,6 +171,22 @@ class Url
     }
 
     /**
+     * @param string $code  Language represented by ISO 639-1 code
+     * @return bool|string
+     */
+    public function getForLanguage($code)
+    {
+        $url = false;
+
+        if (in_array($code, $this->getLanguages()) || $code === $this->getDefault()) {
+            $all = $this->currentRequestAllUrls();
+            $url = $all[$code];
+        }
+
+        return $url;
+    }
+
+    /**
      * Check if we need to translate given URL
      *
      * @return bool
@@ -237,14 +258,20 @@ class Url
      */
     public function currentRequestAllUrls()
     {
-        if ($this->getBaseUrl() === null) {
-            $this->detectUrlDetails();
-        }
+        $urls = $this->allUrls;
 
-        $urls = [];
-        $urls[$this->getDefault()] = $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
-        foreach ($this->getLanguages() as $language) {
-            $urls[$language] = $this->getHost() . $this->getPathPrefix() . '/' . $language . $this->getBaseUrl();
+        if ($urls === null) {
+            if ($this->getBaseUrl() === null) {
+                $this->detectUrlDetails();
+            }
+
+            $urls = [];
+            $urls[$this->getDefault()] = $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
+            foreach ($this->getLanguages() as $language) {
+                $urls[$language] = $this->getHost() . $this->getPathPrefix() . '/' . $language . $this->getBaseUrl();
+            }
+
+            $this->allUrls = $urls;
         }
 
         return $urls;
