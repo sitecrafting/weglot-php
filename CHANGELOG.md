@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.4.2] - 2018-05-21
+### Fixed
+- Util.Url: handling case where prefix path has trailing slash
+### Added
+- Tests: Unit tests for Util.Url to check when prefix path as trailing slash
+
 ## [0.4.1] - 2018-05-15
 ### Fixed
 - Util.Url: fixing error when path is also host root
