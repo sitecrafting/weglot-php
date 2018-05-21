@@ -223,7 +223,8 @@ class Url
         $this->host = $parsed['scheme'] . '://' . $parsed['host'];
         $this->baseUrl = isset($parsed['path']) ? $parsed['path'] : '/';
 
-        if ($this->baseUrl === $this->getPathPrefix()) {
+        if ($this->baseUrl === $this->getPathPrefix() ||
+            $this->baseUrl === $this->getPathPrefix() . '/') {
             $this->baseUrl = '/';
         }
         return $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();

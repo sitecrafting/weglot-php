@@ -117,6 +117,34 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
+    public function testUrlDefaultEnWithEsUrlAndTrailingSlashAndPrefix()
+    {
+        $profile = [
+            'url' => 'http://weglotmultiv2.local/othersite/',
+            'default' => 'en',
+            'languages' => ['fr', 'de', 'es'],
+            'prefix' => '/othersite',
+            'exclude' => [],
+            'results' => [
+                'getHost' => 'http://weglotmultiv2.local',
+                'getPathPrefix' => '/othersite',
+                'getBaseUrl' => '/',
+                'isTranslable' => true,
+                'detectCurrentLanguage' => 'en',
+                'detectBaseUrl' => 'http://weglotmultiv2.local/othersite/',
+                'currentRequestAllUrls' => [
+                    'en' => 'http://weglotmultiv2.local/othersite/',
+                    'fr' => 'http://weglotmultiv2.local/othersite/fr/',
+                    'de' => 'http://weglotmultiv2.local/othersite/de/',
+                    'es' => 'http://weglotmultiv2.local/othersite/es/'
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
     public function testUrlDefaultEnWithEnUrlAndPrefixAsUrl()
     {
         $profile = [
