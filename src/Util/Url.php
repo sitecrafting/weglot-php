@@ -171,14 +171,6 @@ class Url
     }
 
     /**
-     * @return null|array
-     */
-    public function getAllUrls()
-    {
-        return $this->allUrls;
-    }
-
-    /**
      * @param string $code  Language represented by ISO 639-1 code
      * @return bool|string
      */
@@ -266,7 +258,7 @@ class Url
      */
     public function currentRequestAllUrls()
     {
-        $urls = $this->getAllUrls();
+        $urls = $this->allUrls;
 
         if ($urls === null) {
             if ($this->getBaseUrl() === null) {
