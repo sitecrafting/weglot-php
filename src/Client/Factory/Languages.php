@@ -36,10 +36,14 @@ class Languages
     }
 
     /**
-     * @return array
+     * @param null $key
+     * @return array|string|bool
      */
-    public function getLanguage()
+    public function getLanguage($key = null)
     {
+        if ($key !== null && isset($this->language[$key])) {
+            return $this->language[$key];
+        }
         return $this->language;
     }
 
@@ -49,10 +53,10 @@ class Languages
     public function handle()
     {
         $language = new LanguageEntry(
-            $this->language['code'],
-            $this->language['english'],
-            $this->language['local'],
-            $this->language['rtl']
+            $this->getLanguage('code'),
+            $this->getLanguage('english'),
+            $this->getLanguage('local'),
+            $this->getLanguage('rtl')
         );
 
         return $language;

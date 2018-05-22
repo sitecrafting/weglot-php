@@ -51,7 +51,8 @@ class LanguageEntry extends AbstractCollectionEntry
         $this
             ->setIso639($iso_639_1)
             ->setEnglishName($englishName)
-            ->setLocalName($localName);
+            ->setLocalName($localName)
+            ->setRtl($isRtl);
     }
 
     /**
