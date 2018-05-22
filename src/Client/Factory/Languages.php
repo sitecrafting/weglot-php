@@ -51,7 +51,8 @@ class Languages
         $language = new LanguageEntry(
             $this->language['code'],
             $this->language['english'],
-            $this->language['local']
+            $this->language['local'],
+            $this->language['rtl']
         );
 
         return $language;
