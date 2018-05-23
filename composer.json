@@ -20,6 +20,17 @@
     "source": "https://github.com/weglot/weglot-php",
     "docs": "https://weglot.github.io/weglot-documentation/"
   },
+  "keywords": [
+    "php",
+    "weglot",
+    "weglot-library",
+    "translate",
+    "translation",
+    "translator",
+    "localization",
+    "languages",
+    "i18n"
+  ],
   "require": {
     "php": ">=5.4",
     "weglot/simplehtmldom": "^0.2",
