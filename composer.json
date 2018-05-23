@@ -1,6 +1,7 @@
 {
   "name": "weglot/weglot-php",
   "description": "PHP library for the Weglot API",
+  "homepage": "https://weglot.com/",
   "type": "library",
   "license": "MIT",
   "authors": [
