@@ -16,7 +16,9 @@
     }
   ],
   "support": {
-    "email": "support@weglot.com"
+    "email": "support@weglot.com",
+    "source": "https://github.com/weglot/weglot-php",
+    "docs": "https://weglot.github.io/weglot-documentation/"
   },
   "require": {
     "php": ">=5.4",
