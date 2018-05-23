@@ -15,7 +15,7 @@ This library allows you to quickly and easily use the Weglot API via PHP. It han
 
 ## Requirements
 - PHP version 5.4 and later
-- Weglot API Key, starting at [free level](https://dashboard.weglot.com/register)
+- Weglot API Key, starting at [free level](https://dashboard.weglot.com/register?origin=9)
 
 ## Installation
 You can install the library via [Composer](https://getcomposer.org/). Run the following command:
