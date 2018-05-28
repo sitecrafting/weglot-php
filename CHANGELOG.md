@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.0] - 2018-05-28
+### Added
+- Util.Url: `getForLanguage($code)` function to get given language url base on current `Url` instance
+- Api.Languages: adding data for RTL (right to left) languages and access in API objects
+### Changed
+- Util.Url: Local caching for `currentRequestAllUrls()` function
+- Updating `composer.json`
+
 ## [0.4.2] - 2018-05-21
 ### Fixed
 - Util.Url: handling case where prefix path has trailing slash

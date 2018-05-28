@@ -15,7 +15,7 @@ This library allows you to quickly and easily use the Weglot API via PHP. It han
 
 ## Requirements
 - PHP version 5.4 and later
-- Weglot API Key, starting at [free level](https://dashboard.weglot.com/register)
+- Weglot API Key, starting at [free level](https://dashboard.weglot.com/register?origin=9)
 
 ## Installation
 You can install the library via [Composer](https://getcomposer.org/). Run the following command:
@@ -52,7 +52,7 @@ $parser = new Parser($client, $config);
 $translatedContent = $parser->translate($content, 'en', 'de');
 ```
 
-For more details, check at [corresponding example](./examples/parsing-web-page/run.php) or at [documentation](https://weglot.github.io/weglot-documentation/#parser).
+For more details, check at [corresponding example](./examples/parsing-web-page/run.php) or at [documentation](https://weglot.github.io/documentation/#parser).
 
 ## Examples
 
@@ -62,7 +62,7 @@ You can take a look at: [examples](./examples) folder. You'll find a short READM
 
 ## Documentation
 
-You can find a documentation for our libraries at: https://weglot.github.io/weglot-documentation/
+You can find a documentation for our libraries at: https://weglot.github.io/documentation/
 
 ## About
 `weglot-php` is guided and supported by the Weglot Developer Team.

@@ -357,5 +357,9 @@ class UrlTest extends \Codeception\Test\Unit
 
         $this->assertEquals($profile['results']['currentRequestAllUrls'], $url->currentRequestAllUrls());
         $this->assertEquals($this->_generateHrefLangs($profile['results']['currentRequestAllUrls']), $url->generateHrefLangsTags());
+
+        foreach ($profile['results']['currentRequestAllUrls'] as $lang => $expected) {
+            $this->assertEquals($expected, $url->getForLanguage($lang));
+        }
     }
 }
