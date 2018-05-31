@@ -243,6 +243,9 @@ class Url
 
         $this->host = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':'.$parsed['port'] : '');
         $this->baseUrl = isset($parsed['path']) ? $parsed['path'] : '/';
+        if (preg_match('#^' .$this->getPathPrefix(). '#i', $this->baseUrl)) {
+            $this->baseUrl = preg_replace('#^' .$this->getPathPrefix(). '#i', '', $this->baseUrl);
+        }
 
         if ($this->baseUrl === $this->getPathPrefix() ||
             $this->baseUrl === $this->getPathPrefix() . '/') {

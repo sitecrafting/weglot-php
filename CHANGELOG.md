@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.2] - 2018-05-31
+### Fixed
+- Util.Url: nested Url prefix was in baseUrl
+
 ## [0.5.1] - 2018-05-28
 ### Fixed
 - Util.Url: Adding Port managment
