@@ -353,6 +353,32 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
+    public function testSimpleUrlDefaultFrWithEnUrlAndParameters()
+    {
+        $profile = [
+            'url' => 'https://www.ratp.fr/en/horaires?from=2018-06-04&to=2018-06-05',
+            'default' => 'fr',
+            'languages' => ['en'],
+            'prefix' => '',
+            'exclude' => [],
+            'results' => [
+                'getHost' => 'https://www.ratp.fr',
+                'getPathPrefix' => '',
+                'detectBaseUrl' => 'https://www.ratp.fr/horaires?from=2018-06-04&to=2018-06-05',
+                'getBaseUrl' => '/horaires',
+                'isTranslable' => true,
+                'detectCurrentLanguage' => 'en',
+                'currentRequestAllUrls' => [
+                    'fr' => 'https://www.ratp.fr/horaires?from=2018-06-04&to=2018-06-05',
+                    'en' => 'https://www.ratp.fr/en/horaires?from=2018-06-04&to=2018-06-05',
+                ]
+            ]
+        ];
+
+        $url = $this->_urlInstance($profile);
+        $this->_checkResults($url, $profile);
+    }
+
     /**
      * @param array $profile
      * @return Url
