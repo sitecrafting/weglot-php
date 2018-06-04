@@ -44,4 +44,13 @@ class UrlTranslate
     {
         return $this->languages;
     }
+
+    /**
+     * @param string $code  Language represented by ISO 639-1 code
+     * @return bool
+     */
+    public function checkIfAvailable($code)
+    {
+        return in_array($code, $this->getLanguages()) || $code === $this->getDefault();
+    }
 }
