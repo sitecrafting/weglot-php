@@ -74,6 +74,16 @@ class Url
     }
 
     /**
+     * @deprecated Use getPath() instead
+     * @return null|string
+     */
+    public function getBaseUrl()
+    {
+        @trigger_error('Use getPath() instead', E_USER_DEPRECATED);
+        return $this->getPath();
+    }
+
+    /**
      * @return string
      */
     public function getPathPrefix()
