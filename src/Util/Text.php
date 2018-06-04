@@ -35,4 +35,13 @@ class Text
     {
         return preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename);
     }
+
+    /**
+     * @param string $regex
+     * @return string
+     */
+    public static function escapeForRegex($regex)
+    {
+        return str_replace('\\\\/', '\/', str_replace('/', '\/', $regex));
+    }
 }
