@@ -2,17 +2,15 @@
 
 namespace Weglot\Util;
 
+use Weglot\Util\Url\UrlConfig;
+use Weglot\Util\Url\UrlTranslate;
+
 /**
  * Class Url
  * @package Weglot\Util
  */
 class Url
 {
-    /**
-     * @var string
-     */
-    protected $url;
-
     /**
      * @var null|string
      */
@@ -21,7 +19,7 @@ class Url
     /**
      * @var null|string
      */
-    protected $baseUrl = null;
+    protected $path = null;
 
     /**
      * @var null|array
@@ -29,24 +27,14 @@ class Url
     protected $allUrls = null;
 
     /**
-     * @var
+     * @var UrlConfig
      */
-    protected $default;
+    protected $config = null;
 
     /**
-     * @var array
+     * @var UrlTranslate
      */
-    protected $languages = [];
-
-    /**
-     * @var string
-     */
-    protected $pathPrefix = '';
-
-    /**
-     * @var array
-     */
-    protected $excludedUrls = [];
+    protected $translate = null;
 
     /**
      * Url constructor.
@@ -57,21 +45,8 @@ class Url
      */
     public function __construct($url, $default, $languages = [], $pathPrefix = '')
     {
-        $this
-            ->setUrl(urldecode($url))
-            ->setDefault($default)
-            ->setLanguages($languages)
-            ->setPathPrefix($pathPrefix);
-    }
-
-    /**
-     * @param string $url
-     * @return $this
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-        return $this;
+        $this->config = new UrlConfig($url, $pathPrefix);
+        $this->translate = new UrlTranslate($default, $languages);
     }
 
     /**
@@ -79,79 +54,7 @@ class Url
      */
     public function getUrl()
     {
-        return $this->url;
-    }
-
-    /**
-     * @param string $default
-     * @return $this
-     */
-    public function setDefault($default)
-    {
-        $this->default = $default;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDefault()
-    {
-        return $this->default;
-    }
-
-    /**
-     * @param array $languages
-     * @return $this
-     */
-    public function setLanguages($languages)
-    {
-        $this->languages = $languages;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLanguages()
-    {
-        return $this->languages;
-    }
-
-    /**
-     * @param string $pathPrefix
-     * @return $this
-     */
-    public function setPathPrefix($pathPrefix)
-    {
-        $this->pathPrefix = $pathPrefix;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPathPrefix()
-    {
-        return $this->pathPrefix;
-    }
-
-    /**
-     * @param array $excludedUrls
-     * @return $this
-     */
-    public function setExcludedUrls($excludedUrls)
-    {
-        $this->excludedUrls = $excludedUrls;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getExcludedUrls()
-    {
-        return $this->excludedUrls;
+        return $this->config->getRaw();
     }
 
     /**
@@ -165,9 +68,28 @@ class Url
     /**
      * @return null|string
      */
-    public function getBaseUrl()
+    public function getPath()
     {
-        return $this->baseUrl;
+        return $this->path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathPrefix()
+    {
+        return $this->config->getPathPrefix();
+    }
+
+    /**
+     * @param array $excludedUrls
+     * @return $this
+     */
+    public function setExcludedUrls($excludedUrls)
+    {
+        $this->config->setExcludedUrls($excludedUrls);
+
+        return $this;
     }
 
     /**
@@ -178,7 +100,7 @@ class Url
     {
         $url = false;
 
-        if (in_array($code, $this->getLanguages()) || $code === $this->getDefault()) {
+        if ($this->translate->checkIfAvailable($code)) {
             $all = $this->currentRequestAllUrls();
             $url = $all[$code];
         }
@@ -193,15 +115,15 @@ class Url
      */
     public function isTranslable()
     {
-        if ($this->getBaseUrl() === null) {
+        if ($this->getPath() === null) {
             $this->detectUrlDetails();
         }
 
-        foreach ($this->getExcludedUrls() as $regex) {
-            $escapedRegex = $this->escapeForRegex($regex);
+        foreach ($this->config->getExcludedUrls() as $regex) {
+            $escapedRegex = Text::escapeForRegex($regex);
             $fullRegex = sprintf('/%s/', $escapedRegex);
 
-            if (preg_match($fullRegex, $this->getBaseUrl()) === 1) {
+            if (preg_match($fullRegex, $this->getPath()) === 1) {
                 return false;
             }
         }
@@ -217,15 +139,15 @@ class Url
     public function detectCurrentLanguage()
     {
         // parsing url to get only path & removing prefix if there is one
-        $escapedPathPrefix = $this->escapeForRegex($this->getPathPrefix());
-        $uriPath = parse_url($this->getUrl(), PHP_URL_PATH);
+        $escapedPathPrefix = Text::escapeForRegex($this->config->getPathPrefix());
+        $uriPath = parse_url($this->config->getRaw(), PHP_URL_PATH);
         $uriPath = preg_replace('/^' . $escapedPathPrefix . '/s', '', $uriPath);
         $uriSegments = explode('/', $uriPath);
 
-        if (isset($uriSegments[1]) && in_array($uriSegments[1], $this->getLanguages())) {
+        if (isset($uriSegments[1]) && in_array($uriSegments[1], $this->translate->getLanguages())) {
             return $uriSegments[1];
         }
-        return $this->getDefault();
+        return $this->translate->getDefault();
     }
 
     /**
@@ -235,23 +157,23 @@ class Url
      */
     public function detectUrlDetails()
     {
-        $escapedPathPrefix = $this->escapeForRegex($this->getPathPrefix());
-        $languages = implode('|', $this->getLanguages());
+        $escapedPathPrefix = Text::escapeForRegex($this->config->getPathPrefix());
+        $languages = implode('|', $this->translate->getLanguages());
 
         $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/?(' . $languages . ')#i', '', $this->getUrl());
         $parsed = parse_url($fullUrl);
 
         $this->host = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':'.$parsed['port'] : '');
-        $this->baseUrl = isset($parsed['path']) ? $parsed['path'] : '/';
-        if (preg_match('#^' .$this->getPathPrefix(). '#i', $this->baseUrl)) {
-            $this->baseUrl = preg_replace('#^' .$this->getPathPrefix(). '#i', '', $this->baseUrl);
+        $this->path = isset($parsed['path']) ? $parsed['path'] : '/';
+        if (preg_match('#^' .$this->config->getPathPrefix(). '#i', $this->path)) {
+            $this->path = preg_replace('#^' .$this->config->getPathPrefix(). '#i', '', $this->path);
         }
 
-        if ($this->baseUrl === $this->getPathPrefix() ||
-            $this->baseUrl === $this->getPathPrefix() . '/') {
-            $this->baseUrl = '/';
+        if ($this->path === $this->config->getPathPrefix() ||
+            $this->path === $this->config->getPathPrefix() . '/') {
+            $this->path = '/';
         }
-        return $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
+        return $this->getHost() . $this->config->getPathPrefix() . $this->getPath();
     }
 
     /**
@@ -264,14 +186,14 @@ class Url
         $urls = $this->allUrls;
 
         if ($urls === null) {
-            if ($this->getBaseUrl() === null) {
+            if ($this->getPath() === null) {
                 $this->detectUrlDetails();
             }
 
             $urls = [];
-            $urls[$this->getDefault()] = $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
-            foreach ($this->getLanguages() as $language) {
-                $urls[$language] = $this->getHost() . $this->getPathPrefix() . '/' . $language . $this->getBaseUrl();
+            $urls[$this->translate->getDefault()] = $this->getHost() . $this->config->getPathPrefix() . $this->getPath();
+            foreach ($this->translate->getLanguages() as $language) {
+                $urls[$language] = $this->getHost() . $this->config->getPathPrefix() . '/' . $language . $this->getPath();
             }
 
             $this->allUrls = $urls;
@@ -295,14 +217,5 @@ class Url
         }
 
         return $render;
-    }
-
-    /**
-     * @param string $regex
-     * @return string
-     */
-    private function escapeForRegex($regex)
-    {
-        return str_replace('\\\\/', '\/', str_replace('/', '\/', $regex));
     }
 }
