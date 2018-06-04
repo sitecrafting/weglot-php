@@ -353,7 +353,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
     }
 
-    public function testSimpleUrlDefaultFrWithEnUrlAndParameters()
+    public function testSimpleUrlDefaultFrWithEnUrlAndQuery()
     {
         $profile = [
             'url' => 'https://www.ratp.fr/en/horaires?from=2018-06-04&to=2018-06-05',
