@@ -175,9 +175,11 @@ class Translate extends Endpoint
             $asArray['words'] = $beforeRequest[0];
         }
 
-        $response = $this->request($asArray);
-        if (!is_array($response)) {
-            throw new ApiError('Response is not an array: ' .$response, $asArray);
+        list($rawBody, $httpStatusCode, $httpHeader) = $this->request($asArray, false);
+
+        $response = json_decode($rawBody, true);
+        if ($response === null && $httpStatusCode != 200) {
+            throw new ApiError($rawBody, $asArray);
         }
         
         if ($this->getCache()->enabled()) {

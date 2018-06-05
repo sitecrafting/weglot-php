@@ -262,8 +262,7 @@ class Url
             $this->baseUrl = preg_replace('#^' .$this->getPathPrefix(). '#i', '', $this->baseUrl);
         }
 
-        if ($this->baseUrl === $this->getPathPrefix() ||
-            $this->baseUrl === $this->getPathPrefix() . '/') {
+        if ($this->baseUrl === "") {
             $this->baseUrl = '/';
         }
 
