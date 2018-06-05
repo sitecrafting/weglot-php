@@ -20,7 +20,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'https://weglot.com',
                 'getPathPrefix' => '',
-                'getBaseUrl' => '/pricing',
+                'getPath' => '/pricing',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'es',
                 'detectBaseUrl' => 'https://weglot.com/pricing',
@@ -49,7 +49,7 @@ class UrlTest extends \Codeception\Test\Unit
                 'getHost' => 'https://www.ratp.fr',
                 'getPathPrefix' => '',
                 'detectBaseUrl' => 'https://www.ratp.fr/horaires',
-                'getBaseUrl' => '/horaires',
+                'getPath' => '/horaires',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'en',
                 'currentRequestAllUrls' => [
@@ -75,7 +75,7 @@ class UrlTest extends \Codeception\Test\Unit
                 'getHost' => 'https://www.ratp.fr:3000',
                 'getPathPrefix' => '',
                 'detectBaseUrl' => 'https://www.ratp.fr:3000/horaires',
-                'getBaseUrl' => '/horaires',
+                'getPath' => '/horaires',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'en',
                 'currentRequestAllUrls' => [
@@ -101,7 +101,7 @@ class UrlTest extends \Codeception\Test\Unit
                 'getHost' => 'https://www.ratp.fr',
                 'getPathPrefix' => '',
                 'detectBaseUrl' => 'https://www.ratp.fr/horaires',
-                'getBaseUrl' => '/horaires',
+                'getPath' => '/horaires',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'fr',
                 'currentRequestAllUrls' => [
@@ -126,7 +126,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'https://weglot.com',
                 'getPathPrefix' => '/web',
-                'getBaseUrl' => '/pricing',
+                'getPath' => '/pricing',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'es',
                 'detectBaseUrl' => 'https://weglot.com/web/pricing',
@@ -154,7 +154,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'http://weglotmultiv2.local',
                 'getPathPrefix' => '/othersite',
-                'getBaseUrl' => '/',
+                'getPath' => '/',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'en',
                 'detectBaseUrl' => 'http://weglotmultiv2.local/othersite/',
@@ -182,7 +182,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'https://weglot.com',
                 'getPathPrefix' => '/web',
-                'getBaseUrl' => '/',
+                'getPath' => '/',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'en',
                 'detectBaseUrl' => 'https://weglot.com/web/',
@@ -210,7 +210,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'https://weglot.com:8080',
                 'getPathPrefix' => '/web',
-                'getBaseUrl' => '/',
+                'getPath' => '/',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'es',
                 'detectBaseUrl' => 'https://weglot.com:8080/web/',
@@ -240,7 +240,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'https://weglot.com',
                 'getPathPrefix' => '',
-                'getBaseUrl' => '/pricing',
+                'getPath' => '/pricing',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'fr',
                 'detectBaseUrl' => 'https://weglot.com/pricing',
@@ -256,7 +256,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
 
         $profile['url'] = 'https://weglot.com/fr/admin/dashboard';
-        $profile['results']['getBaseUrl'] = '/admin/dashboard';
+        $profile['results']['getPath'] = '/admin/dashboard';
         $profile['results']['isTranslable'] = false;
         $profile['results']['detectBaseUrl'] = 'https://weglot.com/admin/dashboard';
         $profile['results']['currentRequestAllUrls'] = [
@@ -282,7 +282,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'https://weglot.com',
                 'getPathPrefix' => '',
-                'getBaseUrl' => '/pricing',
+                'getPath' => '/pricing',
                 'isTranslable' => false,
                 'detectCurrentLanguage' => 'kr',
                 'detectBaseUrl' => 'https://weglot.com/pricing',
@@ -298,7 +298,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
 
         $profile['url'] = 'https://weglot.com/kr/rgpd-wordpress';
-        $profile['results']['getBaseUrl'] = '/rgpd-wordpress';
+        $profile['results']['getPath'] = '/rgpd-wordpress';
         $profile['results']['isTranslable'] = true;
         $profile['results']['detectBaseUrl'] = 'https://weglot.com/rgpd-wordpress';
         $profile['results']['currentRequestAllUrls'] = [
@@ -324,7 +324,7 @@ class UrlTest extends \Codeception\Test\Unit
             'results' => [
                 'getHost' => 'https://weglot.com',
                 'getPathPrefix' => '/landing',
-                'getBaseUrl' => '/how-to-manage-your-translations',
+                'getPath' => '/how-to-manage-your-translations',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'fr',
                 'detectBaseUrl' => 'https://weglot.com/landing/how-to-manage-your-translations',
@@ -340,7 +340,7 @@ class UrlTest extends \Codeception\Test\Unit
         $this->_checkResults($url, $profile);
 
         $profile['url'] = 'https://weglot.com/landing/fr/admin/how-to-manage-your-translations';
-        $profile['results']['getBaseUrl'] = '/admin/how-to-manage-your-translations';
+        $profile['results']['getPath'] = '/admin/how-to-manage-your-translations';
         $profile['results']['isTranslable'] = false;
         $profile['results']['detectBaseUrl'] = 'https://weglot.com/landing/admin/how-to-manage-your-translations';
         $profile['results']['currentRequestAllUrls'] = [
@@ -365,7 +365,7 @@ class UrlTest extends \Codeception\Test\Unit
                 'getHost' => 'https://www.ratp.fr',
                 'getPathPrefix' => '',
                 'detectBaseUrl' => 'https://www.ratp.fr/horaires?from=2018-06-04&to=2018-06-05',
-                'getBaseUrl' => '/horaires',
+                'getPath' => '/horaires',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'en',
                 'currentRequestAllUrls' => [
@@ -423,13 +423,13 @@ class UrlTest extends \Codeception\Test\Unit
         $this->assertEquals($profile['results']['isTranslable'], $cloned->isTranslable());
 
         $this->assertNull($url->getHost());
-        $this->assertNull($url->getBaseUrl());
+        $this->assertNull($url->getPath());
 
         $this->assertEquals($profile['results']['detectBaseUrl'], $url->detectUrlDetails());
 
         $this->assertEquals($profile['results']['getHost'], $url->getHost());
         $this->assertEquals($profile['results']['getPathPrefix'], $url->getPathPrefix());
-        $this->assertEquals($profile['results']['getBaseUrl'], $url->getBaseUrl());
+        $this->assertEquals($profile['results']['getPath'], $url->getPath());
 
         $this->assertEquals($profile['results']['isTranslable'], $url->isTranslable());
 
