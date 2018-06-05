@@ -24,6 +24,11 @@ class Url
     protected $baseUrl = null;
 
     /**
+     * @var null|string
+     */
+    protected $query = null;
+
+    /**
      * @var null|array
      */
     protected $allUrls = null;
@@ -171,6 +176,14 @@ class Url
     }
 
     /**
+     * @return null|string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
      * @param string $code  Language represented by ISO 639-1 code
      * @return bool|string
      */
@@ -242,6 +255,8 @@ class Url
         $parsed = parse_url($fullUrl);
 
         $this->host = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':'.$parsed['port'] : '');
+        $this->query = isset($parsed['query']) ? $parsed['query'] : null;
+
         $this->baseUrl = isset($parsed['path']) ? $parsed['path'] : '/';
         if (preg_match('#^' .$this->getPathPrefix(). '#i', $this->baseUrl)) {
             $this->baseUrl = preg_replace('#^' .$this->getPathPrefix(). '#i', '', $this->baseUrl);
@@ -250,7 +265,12 @@ class Url
         if ($this->baseUrl === "") {
             $this->baseUrl = '/';
         }
-        return $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
+
+        $url = $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
+        if (!is_null($this->getQuery())) {
+            $url .= '?'. $this->getQuery();
+        }
+        return $url;
     }
 
     /**
@@ -268,9 +288,19 @@ class Url
             }
 
             $urls = [];
-            $urls[$this->getDefault()] = $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
+
+            $current = $this->getHost() . $this->getPathPrefix() . $this->getBaseUrl();
+            if (!is_null($this->getQuery())) {
+                $current .= '?'. $this->getQuery();
+            }
+            $urls[$this->getDefault()] = $current;
+
             foreach ($this->getLanguages() as $language) {
-                $urls[$language] = $this->getHost() . $this->getPathPrefix() . '/' . $language . $this->getBaseUrl();
+                $current = $this->getHost() . $this->getPathPrefix() . '/' . $language . $this->getBaseUrl();
+                if (!is_null($this->getQuery())) {
+                    $current .= '?'. $this->getQuery();
+                }
+                $urls[$language] = $current;
             }
 
             $this->allUrls = $urls;
