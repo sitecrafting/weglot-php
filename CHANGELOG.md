@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.3] - 2018-06-05
+### Added
+- Util.Url: adding query managment
+### Changed
+- Better exceptions for Translate endpoint
+- Improving Util.Url structure
+- Better travis tests (with low deps for PHP 5.4)
+### Fixed
+- Unit tests where break due to no trailing slash
+
 ## [0.5.2] - 2018-05-31
 ### Fixed
 - Util.Url: nested Url prefix was in baseUrl
