@@ -9,6 +9,7 @@ notifications:
 
 env:
   global:
+    - COMPOSER_UP="composer update --no-progress --no-suggest --ansi --prefer-dist"
     - TEST_COMMAND="./vendor/bin/codecept run unit --no-interaction"
     - TEST_FLAGS=""
     - DEPENDENCIES="cache/predis-adapter"
@@ -17,7 +18,7 @@ matrix:
   fast_finish: true
   include:
     - php: 5.4
-      env: TEST_FLAGS="-g client -g parser -g util" DEPENDENCIES=""
+      env: TEST_FLAGS="-g client -g parser -g util" DEPENDENCIES="" prefer="low"
     - php: 5.5
       env: TEST_FLAGS="-g client -g parser -g util" DEPENDENCIES=""
     - php: 5.6
@@ -27,7 +28,12 @@ matrix:
       env: COVERAGE=true TEST_FLAGS="--coverage --coverage-xml"
 
 install:
-  - composer install --no-interaction
+  - |
+    if [[ $prefer = low ]]; then
+      $COMPOSER_UP --prefer-lowest --prefer-stable
+    else
+      $COMPOSER_UP
+    fi
   - if ! [ -z "$DEPENDENCIES" ]; then composer require ${DEPENDENCIES}; fi;
 
 before_script:
