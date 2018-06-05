@@ -365,7 +365,7 @@ class UrlTest extends \Codeception\Test\Unit
                 'getHost' => 'https://www.ratp.fr',
                 'getPathPrefix' => '',
                 'detectBaseUrl' => 'https://www.ratp.fr/horaires?from=2018-06-04&to=2018-06-05',
-                'getBaseUrl' => '/horaires',
+                'getPath' => '/horaires',
                 'isTranslable' => true,
                 'detectCurrentLanguage' => 'en',
                 'currentRequestAllUrls' => [
