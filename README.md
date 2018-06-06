@@ -64,9 +64,47 @@ You can take a look at: [examples](./examples) folder. You'll find a short READM
 
 ### Client
 
+The Client is all the classes related with communication with the Weglot API
+
 #### Client & Profile
 
+`Weglot\Client\Client` is the main class of this library.
+Basically it manage requests, and that's all.
+
+With this class we have `Weglot\Client\Profile` which represent particularities based on API Key length.
+Today we have 2 types of API Keys:
+- 35-char API Keys: Normal API Keys with no custom functions enabled.
+- 36-char API Keys: Adding `ignoredNodes` behavior, basically we skip some tags from being parsed as sentences (such as `strong`, `em`, ...) to make bigger sentences.
+
 #### API
+
+Includes all the objects to talk with the API (as input or output).
+- `Weglot\Client\Api\WordEntry`: Define a single sentence within an API Object
+- `Weglot\Client\Api\WordCollection`: Define multiple `WordEntry`
+- `Weglot\Client\Api\LanguageEntry`: Define a single language within an API Object
+- `Weglot\Client\Api\LanguageCollection`: Define multiple `LanguageEntry`
+- `Weglot\Client\Api\TranslateEntry`: Define a translate interface to use as input/output of `/translate` endpoint
+
+Here is some quick example of using some of theses:
+```php
+// creating some WordEntry objects
+$firstWord = new WordEntry('This is a blue car', WordType::TEXT);
+$secondWord = new WordEntry('This is a black car', WordType::TEXT);
+
+// then create our TranslateEntry object to use later with /translate
+$translateEntry = new TranslateEntry([
+    'language_from' => 'en',
+    'language_to' => 'de',
+    'title' => 'Weglot | Translate your website - Multilingual for WordPress, Shopify, ...',
+    'request_url' => 'https://weglot.com/',
+    'bot' => BotType::HUMAN
+]);
+$translateEntry->getInputWords()->addMany([$firstWord, $secondWord]);
+```
+
+Like you just saw, you can find quick Enums to set API-related data easier, like theses:
+- `Weglot\Client\Api\Enum\WordType`: Used to provide context over where the text we wish to translate comes from.
+- `Weglot\Client\Api\Enum\BotType`: Used to define the source of a request.
 
 #### Caching
 
