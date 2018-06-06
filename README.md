@@ -144,6 +144,11 @@ No example here since it's only used internally.
 
 #### HttpClient
 
+Another internal set of classes.
+
+Theses are composed by a simple interface to manage requests: `Weglot\Client\HttpClient`
+And an implementation with cURL as the HTTP provider: `Weglot\Client\CurlClient` (this class is actually heavily inspired by Stripe's CurlClient)
+
 ### Parser
 
 The Parser is a big part in our developer kits.
