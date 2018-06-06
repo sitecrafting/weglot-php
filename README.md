@@ -137,6 +137,11 @@ Following this example, the `$translated` object will contain a `TranslateEntry`
 
 #### Factory
 
+Theses are classes used between the endpoints classes and the returned API object.
+It handles all conversion from the API that return JSON to the well formated API object.
+
+No example here since it's only used internally.
+
 #### HttpClient
 
 ### Parser
