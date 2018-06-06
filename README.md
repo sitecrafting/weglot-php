@@ -108,6 +108,16 @@ Like you just saw, you can find quick Enums to set API-related data easier, like
 
 #### Caching
 
+We manage Cache with one main interface: `Weglot\Client\Caching\CacheInterface` it use [PSR-6 RFC](https://www.php-fig.org/psr/psr-6/) internally.
+
+We added one implementation of this interface within the `Weglot\Client\Caching\Cache` class which takes a PSR-6 `CacheItemPoolInterface` as store.
+You can set this one from a Client method as following:
+```php
+$client = new Client('wg_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+$client->setCacheItemPool($myCacheItemPool);
+```
+The given `$myCacheItemPool` can be any PSR-6 compliant object. I suggest to consult [php-cache](http://www.php-cache.com/en/latest/#cache-pool-implementations) cache pool implementations that should contains the library you need to plug your cache.
+
 #### Endpoint
 
 #### Factory
