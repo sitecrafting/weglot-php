@@ -120,6 +120,21 @@ The given `$myCacheItemPool` can be any PSR-6 compliant object. I suggest to con
 
 #### Endpoint
 
+Here are the class to talk with API endpoints. Today we have 3 of them:
+- `Weglot\Client\Endpoint\Translate`: Used to make requests with the `/translate` endpoint
+- `Weglot\Client\Endpoint\Status`: Used to make requests with the `/status` endpoint
+- `Weglot\Client\Endpoint\Languages`: Which is used to get all languages-related data from a "fake" API
+
+Following our example from API Objects, here is how to use `Translate` class:
+```php
+$client = new Client('wg_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+$translateEntry = new TranslateEntry(...); // Check API part for more details about this one
+
+$translate = new Translate($translateEntry, $client);
+$translated = $translate->handle();
+```
+Following this example, the `$translated` object will contain a `TranslateEntry` object with all data returned from the API.
+
 #### Factory
 
 #### HttpClient
