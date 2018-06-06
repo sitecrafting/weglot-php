@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ## [0.5.3] - 2018-06-05
+### Fixed
+- Util.Url: missing getDefault function
+
+## [0.5.3] - 2018-06-05
 ### Added
 - Util.Url: adding query managment
 ### Changed

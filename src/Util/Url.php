@@ -108,6 +108,14 @@ class Url
     }
 
     /**
+     * @return string
+     */
+    public function getDefault()
+    {
+        return $this->translate->getDefault();
+    }
+
+    /**
      * @return null|string
      */
     public function getQuery()
