@@ -60,9 +60,41 @@ For more usage examples, such as: other endpoints, caching, parsing.
 
 You can take a look at: [examples](./examples) folder. You'll find a short README with details about each example.
 
-## Documentation
+## Reference
 
-You can find a documentation for our libraries at: https://weglot.github.io/documentation/
+### Client
+
+#### Client & Profile
+
+#### API
+
+#### Caching
+
+#### Endpoint
+
+#### Factory
+
+#### HttpClient
+
+### Parser
+
+The Parser is a big part in our developer kits.
+
+It's used to match sentences to translate from DOM and to make clean API objects to send them after through the Client.
+
+There is no documentation for the Parser at the moment since we plan a heavy rework in next month on it, we'll make sure there is one after this rework.
+
+### Util
+
+#### JsonLd
+
+#### Server
+
+#### Site
+
+#### Text
+
+#### Url
 
 ## About
 `weglot-php` is guided and supported by the Weglot Developer Team.
