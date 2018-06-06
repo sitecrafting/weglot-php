@@ -134,6 +134,7 @@ $translate = new Translate($translateEntry, $client);
 $translated = $translate->handle();
 ```
 Following this example, the `$translated` object will contain a `TranslateEntry` object with all data returned from the API.
+You can find [a full working example here](./examples/simple-client-translate/)
 
 #### Factory
 
