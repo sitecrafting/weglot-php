@@ -157,18 +157,6 @@ It's used to match sentences to translate from DOM and to make clean API objects
 
 There is no documentation for the Parser at the moment since we plan a heavy rework in next month on it, we'll make sure there is one after this rework.
 
-### Util
-
-#### JsonLd
-
-#### Server
-
-#### Site
-
-#### Text
-
-#### Url
-
 ## About
 `weglot-php` is guided and supported by the Weglot Developer Team.
 
