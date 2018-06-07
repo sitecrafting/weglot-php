@@ -161,10 +161,20 @@ There is no documentation for the Parser at the moment since we plan a heavy rew
 ### Util
 
 There is some short classes to manage simple utilities such as:
-- `Weglot\Util\JsonLd`: Manage all actions related to recover & storing data in JsonLd structures
-- `Weglot\Util\Server`: All $_SERVER related utilities
-- `Weglot\Util\Site`: Used to get contents from a distant website
-- `Weglot\Util\Text`: All classic Text utilities such as `contains()`
+
+#### Weglot\Util\JsonLd
+Manage all actions related to recover & storing data in JsonLd structures
+
+#### Weglot\Util\Server
+All $_SERVER related utilities
+
+#### Weglot\Util\Site
+Used to get contents from a distant website
+
+#### Weglot\Util\Text
+All classic Text utilities such as `contains()`
+
+#### Weglot\Util\Url
 
 And we've `Weglot\Util\Url` which is one of the cornerstone of url managment in our library. By fetching current url and Weglot configuration, it can serve several purposes:
 - Know which language we have on the current url
