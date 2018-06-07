@@ -168,6 +168,11 @@ Manage all actions related to recover & storing data in JsonLd structures
 #### Weglot\Util\Server
 All $_SERVER related utilities
 
+```php
+$fullUrl = Server::fullUrl($_SERVER);
+// will return the current url seen by $_SERVER, for example: https://weglot.com/es/pricing
+```
+
 #### Weglot\Util\Site
 Used to get contents from a distant website
 
