@@ -158,6 +158,59 @@ It's used to match sentences to translate from DOM and to make clean API objects
 
 There is no documentation for the Parser at the moment since we plan a heavy rework in next month on it, we'll make sure there is one after this rework.
 
+### Util
+
+There is some short classes to manage simple utilities such as:
+- `Weglot\Util\JsonLd`: Manage all actions related to recover & storing data in JsonLd structures
+- `Weglot\Util\Server`: All $_SERVER related utilities
+- `Weglot\Util\Site`: Used to get contents from a distant website
+- `Weglot\Util\Text`: All classic Text utilities such as `contains()`
+
+And we've `Weglot\Util\Url` which is one of the cornerstone of url managment in our library. By fetching current url and Weglot configuration, it can serve several purposes:
+- Know which language we have on the current url
+- Generate urls for other languages
+- Know if current url is translable or not (based on excludedUrls)
+- Get all translated urls based on current url
+- Generate hreflang tags based on all translated urls
+
+Here is some quick examples:
+```php
+$url = new Url('https://weglot.com/es/pricing', 'en', ['fr', 'es', 'de']);
+
+$currentLang = $url->detectCurrentLanguage();
+// $currentLang will contain 'es'
+
+$frUrl = $url->getForLanguage('fr');
+// $frUrl will contain 'https://weglot.com/fr/pricing'
+
+$translable = $url->isTranslable();
+// $translable will contain true since we have no excluded urls
+
+$url->setExcludedUrls(['/pricing']);
+$translable = $url->isTranslable();
+// $translable will contain false since we added `/pricing` to the excluded urls
+
+$urls = $url->currentRequestAllUrls();
+/**
+ * $urls will contain following array:
+ * Array(
+ *   'en' => 'https://weglot.com/pricing',
+ *   'fr' => 'https://weglot.com/fr/pricing',
+ *   'es' => 'https://weglot.com/es/pricing',
+ *   'de' => 'https://weglot.com/de/pricing'
+ * );
+ */
+
+$hreflang = $url->generateHrefLangsTags()
+/**
+ * $hreflang will contain following string:
+ * <link rel="alternate" href="https://weglot.com/pricing" hreflang="en"/>
+ * <link rel="alternate" href="https://weglot.com/fr/pricing" hreflang="fr"/>
+ * <link rel="alternate" href="https://weglot.com/es/pricing" hreflang="es"/>
+ * <link rel="alternate" href="https://weglot.com/de/pricing" hreflang="de"/>
+ */
+```
+
 ## About
 `weglot-php` is guided and supported by the Weglot Developer Team.
 
