@@ -226,7 +226,6 @@ class Parser
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function translate($source, $languageFrom, $languageTo)
     {
@@ -280,7 +279,6 @@ class Parser
      * @throws InvalidWordTypeException
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function apiTranslate(simple_html_dom $dom)
     {
