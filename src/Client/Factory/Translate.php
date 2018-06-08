@@ -79,7 +79,7 @@ class Translate
             $translate->getInputWords()->addOne(new WordEntry($response['from_words'][$i]));
         }
         for ($i = 0; $i < \count($response['to_words']); ++$i) {
-            $translate->getInputWords()->addOne(new WordEntry($response['to_words'][$i]));
+            $translate->getOutputWords()->addOne(new WordEntry($response['to_words'][$i]));
         }
 
         return $translate;

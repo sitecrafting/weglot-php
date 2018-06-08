@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [0.5.5] - 2018-06-05
+## [0.5.6] - 2018-06-08
+### Fixed
+- Factory.Translate: fixing wrong assignation
+
+## [0.5.5] - 2018-06-08
 ### Fixed
 - Factory.Translate: fixing issue where PHP can returns an array not in same order as the keys are
 
