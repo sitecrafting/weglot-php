@@ -75,11 +75,11 @@ class Translate
             throw new InputAndOutputCountMatchException($response);
         }
 
-        foreach ($response['from_words'] as $word) {
-            $translate->getInputWords()->addOne(new WordEntry($word));
+        for ($i = 0; $i < \count($response['from_words']); ++$i) {
+            $translate->getInputWords()->addOne(new WordEntry($response['from_words'][$i]));
         }
-        foreach ($response['to_words'] as $word) {
-            $translate->getOutputWords()->addOne(new WordEntry($word));
+        for ($i = 0; $i < \count($response['to_words']); ++$i) {
+            $translate->getInputWords()->addOne(new WordEntry($response['to_words'][$i]));
         }
 
         return $translate;
