@@ -40,10 +40,14 @@ class ClientTest extends \Codeception\Test\Unit
         $curlVersion = curl_version();
         $userAgentInfo = [
             'curl' =>  'cURL\\' .$curlVersion['version'],
-            'ssl' => $curlVersion['ssl_version'],
-            'weglot' => 'Weglot\\' .Client::VERSION
+            'ssl' => $curlVersion['ssl_version']
         ];
         $this->assertEquals($userAgentInfo, $httpClient->getUserAgentInfo());
+
+        $headers = [
+            'Weglot-Context: PHP\\' .Client::VERSION
+        ];
+        $this->assertEquals($headers, $httpClient->getDefaultHeaders());
     }
 
     public function testProfile()
