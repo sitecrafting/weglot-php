@@ -18,19 +18,16 @@ class IgnoredNodes
      * @var array
      */
     protected $ignoredNodes = [
-        ['<strong>', '</strong>'],
-        ['<em>', '</em>'],
-        ['<abbr>', '</abbr>'],
-        ['<acronym>', '</acronym>'],
-        ['<b>', '</b>'],
-        ['<bdo>', '</bdo>'],
-        ['<big>', '</big>'],
-        ['<cite>', '</cite>'],
-        ['<kbd>', '</kbd>'],
-        ['<q>', '</q>'],
-        ['<small>', '</small>'],
-        ['<sub>', '</sub>'],
-        ['<sup>', '</sup>'],
+        'strong', 'b',
+        'em', 'i',
+        'small', 'big',
+        'sub', 'sup',
+        'abbr',
+        'acronym',
+        'bdo',
+        'cite',
+        'kbd',
+        'q',
     ];
 
     /**
@@ -78,8 +75,8 @@ class IgnoredNodes
     public function handle()
     {
         foreach ($this->getIgnoredNodes() as $ignore) {
-            $pattern = '#' . $ignore[0] . '([^>]*)?' . $ignore[1] . '#';
-            $replace = htmlentities($ignore[0]) . '$1' . htmlentities($ignore[1]);
+            $pattern = ['#\<' .$ignore. '(?<after>.*?)\>#', '#\</' .$ignore. '\>#'];
+            $replace = [htmlentities('<' .$ignore. '$1>'), htmlentities('</' .$ignore. '>')];
             $this->setSource(preg_replace($pattern, $replace, $this->getSource()));
         }
     }
