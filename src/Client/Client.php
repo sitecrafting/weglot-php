@@ -112,13 +112,19 @@ class Client
 
     /**
      * @param null|ClientInterface $httpClient
+     * @param null|string $customHeader
      * @return $this
      */
-    public function setHttpClient($httpClient = null)
+    public function setHttpClient($httpClient = null, $customHeader = null)
     {
         if ($httpClient === null) {
             $httpClient = new CurlClient();
-            $httpClient->addUserAgentInfo('weglot', 'Weglot\\' .self::VERSION);
+
+            $header = 'Weglot-Context: PHP\\'.self::VERSION;
+            if (!is_null($customHeader)) {
+                $header .= ' ' .$customHeader;
+            }
+            $httpClient->addHeader($header);
         }
         if ($httpClient instanceof ClientInterface) {
             $this->httpClient = $httpClient;
