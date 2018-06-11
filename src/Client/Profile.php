@@ -34,7 +34,7 @@ class Profile
             $this
                 ->setApiVersion(1)
                 ->setIgnoredNodes(false);
-        } elseif ($apiKeyLength === 36) {
+        } else {
             $this
                 ->setApiVersion(2)
                 ->setIgnoredNodes(true);
