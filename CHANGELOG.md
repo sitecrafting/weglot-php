@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.7] - 2018-06-12
+### Changed
+- Client.HttpClient: Using new header system (Weglot-Context)
+- Client.Profile: Setting ignoredNodes behavior as default one
+### Fixed
+- Parser: fixes some checkers (Check.Placeholder / Check.Text) & fixing AbstractDomChecker in checkers list
+- Parser.ignoredNodes: Fixing replacement method to allow more content (class or other attributes) in skipped tags
+
 ## [0.5.6] - 2018-06-08
 ### Fixed
 - Factory.Translate: fixing wrong assignation
