@@ -24,7 +24,7 @@ class Text extends AbstractDomChecker
     /**
      * {@inheritdoc}
      */
-    const WORD_TYPE = WordType::VALUE;
+    const WORD_TYPE = WordType::TEXT;
 
     /**
      * {@inheritdoc}
