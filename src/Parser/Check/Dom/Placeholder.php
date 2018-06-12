@@ -14,7 +14,7 @@ class Placeholder extends AbstractDomChecker
     /**
      * {@inheritdoc}
      */
-    const DOM = 'input[type="text"],input[type="password"],input[type="search"],input[type="email"],input:not([type]),textarea';
+    const DOM = 'input[type="text"],input[type="password"],input[type="search"],input[type="email"],textarea';
 
     /**
      * {@inheritdoc}

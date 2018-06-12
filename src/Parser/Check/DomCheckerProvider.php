@@ -119,7 +119,7 @@ class DomCheckerProvider
      */
     protected function loadDefaultCheckers()
     {
-        $files = array_diff(scandir(__DIR__ . '/Dom'), ['AbstractChecker.php', '..', '.']);
+        $files = array_diff(scandir(__DIR__ . '/Dom'), ['AbstractDomChecker.php', '..', '.']);
         $checkers = array_map(function ($filename) {
             return self::DEFAULT_CHECKERS_NAMESPACE . Text::removeFileExtension($filename);
         }, $files);
