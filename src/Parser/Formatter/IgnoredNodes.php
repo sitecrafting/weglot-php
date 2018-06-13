@@ -25,7 +25,7 @@ class IgnoredNodes
         'abbr',
         'acronym',
         'bdo',
-        'cite', 'code',
+        'cite',
         'kbd',
         'q',
     ];
