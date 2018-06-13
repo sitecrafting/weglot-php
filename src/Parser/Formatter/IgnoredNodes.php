@@ -73,36 +73,43 @@ class IgnoredNodes
     }
 
     /**
-     * @return array
-     */
-    public function getIgnoredNodes()
-    {
-        return $this->ignoredNodes;
-    }
-
-    /**
      * Convert < & > for some dom tags to let them able
      * to go through API calls.
      */
     public function handle()
     {
-        foreach ($this->getIgnoredNodes() as $ignore) {
-            $pattern = '#\<(?<tag>' .$ignore. ')(?<more>\s.*?)?\>(?<content>.*?)\<\/' .$ignore. '\>#i';
-            $matches = [];
+        // used to make clean single regex
+        array_walk($this->ignoredNodes, function (&$value, $key) {
+            $value = '(' .$value. ')';
+        });
+        array_walk($this->usualTags, function (&$value, $key) {
+            $value = '(' .$value. ')';
+        });
 
-            if (preg_match($pattern, $this->getSource(), $matches)) {
+        // time for the BIG regex ...
+        $pattern = '#\<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>.*?)\<\/' .implode('|', $this->ignoredNodes). '\>#i';
+        $matches = [];
+
+        if ($matchesCount = preg_match_all($pattern, $this->getSource(), $matches)) {
+            for ($i = 0; $i < $matchesCount; ++$i) {
+                if ($matches['content'][$i] === '') {
+                    continue;
+                }
+
                 $count = 0;
                 $patterns = ['#\<' .implode('|', $this->usualTags). '(?<after>.*?)\>#', '#\</' .implode('|', $this->usualTags). '\>#'];
                 foreach ($patterns as $current) {
-                    $count += preg_match($current, $matches['content']);
+                    $count += preg_match($current, $matches['content'][$i]);
                 }
 
                 if ($count === 0) {
-                    $this->setSource(str_replace(
-                        $matches[0],
-                        '&lt;' .$matches['tag'].$matches['more']. '&gt;' .$matches['content']. '&lt;/' .$matches['tag']. '&gt;',
-                        $this->getSource()
-                    ));
+                    $this->setSource(
+                        str_replace(
+                            $matches[0],
+                            '&lt;' .$matches['tag'][$i].$matches['more'][$i]. '&gt;' .$matches['content'][$i]. '&lt;/' .$matches['tag'][$i]. '&gt;',
+                            $this->getSource()
+                        )
+                    );
                 }
             }
         }
