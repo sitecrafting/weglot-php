@@ -87,7 +87,7 @@ class IgnoredNodes
     public function handle()
     {
         foreach ($this->getIgnoredNodes() as $ignore) {
-            $pattern = '#\<(?<tag>' .$ignore. ')(?<more>.*?)\>(?<content>.*?)\<\/' .$ignore. '\>#i';
+            $pattern = '#\<(?<tag>' .$ignore. ')(?<more>\s.*?)?\>(?<content>.*?)\<\/' .$ignore. '\>#i';
             $matches = [];
 
             if (preg_match($pattern, $this->getSource(), $matches)) {
