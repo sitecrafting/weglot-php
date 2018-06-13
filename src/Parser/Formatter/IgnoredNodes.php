@@ -25,9 +25,21 @@ class IgnoredNodes
         'abbr',
         'acronym',
         'bdo',
-        'cite',
+        'cite', 'code',
         'kbd',
         'q',
+    ];
+
+    protected $usualTags = [
+        'span',
+        'blockquote',
+        'aside',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'section', 'article', 'nav',
+        'div',
+        'dd', 'dl', 'dt',
+        'li', 'ul', 'ol',
+        'p', 'pre',
     ];
 
     /**
@@ -75,9 +87,24 @@ class IgnoredNodes
     public function handle()
     {
         foreach ($this->getIgnoredNodes() as $ignore) {
-            $pattern = ['#\<' .$ignore. '(?<after>.*?)\>#', '#\</' .$ignore. '\>#'];
-            $replace = [htmlentities('<' .$ignore. '$1>'), htmlentities('</' .$ignore. '>')];
-            $this->setSource(preg_replace($pattern, $replace, $this->getSource()));
+            $pattern = '#\<(?<tag>' .$ignore. ')(?<more>.*?)\>(?<content>.*?)\<\/' .$ignore. '\>#i';
+            $matches = [];
+
+            if (preg_match($pattern, $this->getSource(), $matches)) {
+                $count = 0;
+                $patterns = ['#\<' .implode('|', $this->usualTags). '(?<after>.*?)\>#', '#\</' .implode('|', $this->usualTags). '\>#'];
+                foreach ($patterns as $current) {
+                    $count += preg_match($current, $matches['content']);
+                }
+
+                if ($count === 0) {
+                    $this->setSource(str_replace(
+                        $matches[0],
+                        '&lt;' .$matches['tag'].$matches['more']. '&gt;' .$matches['content']. '&lt;/' .$matches['tag']. '&gt;',
+                        $this->getSource()
+                    ));
+                }
+            }
         }
     }
 }
