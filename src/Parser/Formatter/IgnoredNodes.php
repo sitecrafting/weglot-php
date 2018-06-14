@@ -30,6 +30,18 @@ class IgnoredNodes
         'q',
     ];
 
+    protected $usualTags = [
+        'span',
+        'blockquote',
+        'aside',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'section', 'article', 'nav',
+        'div',
+        'dd', 'dl', 'dt',
+        'li', 'ul', 'ol',
+        'p', 'pre',
+    ];
+
     /**
      * IgnoredNodes constructor.
      * @param string $source
@@ -61,11 +73,48 @@ class IgnoredNodes
     }
 
     /**
-     * @return array
+     * Used to make clean single regex from tags
      */
-    public function getIgnoredNodes()
+    protected function cleaningTags()
     {
-        return $this->ignoredNodes;
+        array_walk($this->ignoredNodes, function (&$value, $key) {
+            $value = '(' .$value. ')';
+        });
+        array_walk($this->usualTags, function (&$value, $key) {
+            $value = '(' .$value. ')';
+        });
+    }
+
+    /**
+     * @param array $matches
+     * @param int $index
+     */
+    protected function replaceContent($matches, $index)
+    {
+        $this->setSource(
+            str_replace(
+                $matches[0],
+                '&lt;' .$matches['tag'][$index].$matches['more'][$index]. '&gt;' .$matches['content'][$index]. '&lt;/' .$matches['tag'][$index]. '&gt;',
+                $this->getSource()
+            )
+        );
+    }
+
+    /**
+     * @param array $matches
+     * @param int $index
+     */
+    protected function manageReplace($matches, $index)
+    {
+        $count = 0;
+        $patterns = ['#\<' .implode('|', $this->usualTags). '(?<after>.*?)\>#', '#\</' .implode('|', $this->usualTags). '\>#'];
+        foreach ($patterns as $current) {
+            $count += preg_match($current, $matches['content'][$index]);
+        }
+
+        if ($count === 0) {
+            $this->replaceContent($matches, $index);
+        }
     }
 
     /**
@@ -74,10 +123,20 @@ class IgnoredNodes
      */
     public function handle()
     {
-        foreach ($this->getIgnoredNodes() as $ignore) {
-            $pattern = ['#\<' .$ignore. '(?<after>.*?)\>#', '#\</' .$ignore. '\>#'];
-            $replace = [htmlentities('<' .$ignore. '$1>'), htmlentities('</' .$ignore. '>')];
-            $this->setSource(preg_replace($pattern, $replace, $this->getSource()));
+        $this->cleaningTags();
+
+        // time for the BIG regex ...
+        $pattern = '#\<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>.*?)\<\/' .implode('|', $this->ignoredNodes). '\>#i';
+        $matches = [];
+
+        if ($matchesCount = preg_match_all($pattern, $this->getSource(), $matches)) {
+            for ($i = 0; $i < $matchesCount; ++$i) {
+                if ($matches['content'][$i] === '') {
+                    continue;
+                }
+
+                $this->manageReplace($matches, $i);
+            }
         }
     }
 }
