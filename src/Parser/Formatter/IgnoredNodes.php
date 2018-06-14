@@ -73,18 +73,40 @@ class IgnoredNodes
     }
 
     /**
-     * Convert < & > for some dom tags to let them able
-     * to go through API calls.
+     * Used to make clean single regex from tags
      */
-    public function handle()
+    protected function cleaningTags()
     {
-        // used to make clean single regex
         array_walk($this->ignoredNodes, function (&$value, $key) {
             $value = '(' .$value. ')';
         });
         array_walk($this->usualTags, function (&$value, $key) {
             $value = '(' .$value. ')';
         });
+    }
+
+    /**
+     * @param array $matches
+     * @param int $index
+     */
+    protected function replaceContent($matches, $index)
+    {
+        $this->setSource(
+            str_replace(
+                $matches[0],
+                '&lt;' .$matches['tag'][$index].$matches['more'][$index]. '&gt;' .$matches['content'][$index]. '&lt;/' .$matches['tag'][$index]. '&gt;',
+                $this->getSource()
+            )
+        );
+    }
+
+    /**
+     * Convert < & > for some dom tags to let them able
+     * to go through API calls.
+     */
+    public function handle()
+    {
+        $this->cleaningTags();
 
         // time for the BIG regex ...
         $pattern = '#\<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>.*?)\<\/' .implode('|', $this->ignoredNodes). '\>#i';
@@ -103,13 +125,7 @@ class IgnoredNodes
                 }
 
                 if ($count === 0) {
-                    $this->setSource(
-                        str_replace(
-                            $matches[0],
-                            '&lt;' .$matches['tag'][$i].$matches['more'][$i]. '&gt;' .$matches['content'][$i]. '&lt;/' .$matches['tag'][$i]. '&gt;',
-                            $this->getSource()
-                        )
-                    );
+                    $this->replaceContent($matches, $i);
                 }
             }
         }
