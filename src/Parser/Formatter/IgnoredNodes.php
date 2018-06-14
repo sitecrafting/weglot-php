@@ -101,6 +101,23 @@ class IgnoredNodes
     }
 
     /**
+     * @param array $matches
+     * @param int $index
+     */
+    protected function manageReplace($matches, $index)
+    {
+        $count = 0;
+        $patterns = ['#\<' .implode('|', $this->usualTags). '(?<after>.*?)\>#', '#\</' .implode('|', $this->usualTags). '\>#'];
+        foreach ($patterns as $current) {
+            $count += preg_match($current, $matches['content'][$index]);
+        }
+
+        if ($count === 0) {
+            $this->replaceContent($matches, $index);
+        }
+    }
+
+    /**
      * Convert < & > for some dom tags to let them able
      * to go through API calls.
      */
@@ -118,15 +135,7 @@ class IgnoredNodes
                     continue;
                 }
 
-                $count = 0;
-                $patterns = ['#\<' .implode('|', $this->usualTags). '(?<after>.*?)\>#', '#\</' .implode('|', $this->usualTags). '\>#'];
-                foreach ($patterns as $current) {
-                    $count += preg_match($current, $matches['content'][$i]);
-                }
-
-                if ($count === 0) {
-                    $this->replaceContent($matches, $i);
-                }
+                $this->manageReplace($matches, $i);
             }
         }
     }
