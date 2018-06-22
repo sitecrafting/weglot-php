@@ -30,18 +30,6 @@ class IgnoredNodes
         'q',
     ];
 
-    protected $usualTags = [
-        'span',
-        'blockquote',
-        'aside',
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'section', 'article', 'nav',
-        'div',
-        'dd', 'dl', 'dt',
-        'li', 'ul', 'ol',
-        'p', 'pre',
-    ];
-
     /**
      * IgnoredNodes constructor.
      * @param string $source
@@ -72,50 +60,22 @@ class IgnoredNodes
         return $this->source;
     }
 
-    /**
-     * Used to make clean single regex from tags
-     */
-    protected function cleaningTags()
-    {
-        array_walk($this->ignoredNodes, function (&$value, $key) {
-            $value = '(' .$value. ')';
-        });
-        array_walk($this->usualTags, function (&$value, $key) {
-            $value = '(' .$value. ')';
-        });
-    }
 
     /**
      * @param array $matches
-     * @param int $index
      */
-    protected function replaceContent($matches, $index)
+    protected function replaceContent($matches)
     {
         $this->setSource(
             str_replace(
                 $matches[0],
-                '&lt;' .$matches['tag'][$index].$matches['more'][$index]. '&gt;' .$matches['content'][$index]. '&lt;/' .$matches['tag'][$index]. '&gt;',
+                '&lt;' .$matches['tag'].str_replace('>','&gt;',str_replace('<','&lt;',$matches['more'])). '&gt;' . $matches['content']. '&lt;/' . $matches['tag'] . '&gt;',
                 $this->getSource()
             )
         );
     }
 
-    /**
-     * @param array $matches
-     * @param int $index
-     */
-    protected function manageReplace($matches, $index)
-    {
-        $count = 0;
-        $patterns = ['#\<' .implode('|', $this->usualTags). '(?<after>.*?)\>#', '#\</' .implode('|', $this->usualTags). '\>#'];
-        foreach ($patterns as $current) {
-            $count += preg_match($current, $matches['content'][$index]);
-        }
 
-        if ($count === 0) {
-            $this->replaceContent($matches, $index);
-        }
-    }
 
     /**
      * Convert < & > for some dom tags to let them able
@@ -123,19 +83,15 @@ class IgnoredNodes
      */
     public function handle()
     {
-        $this->cleaningTags();
-
         // time for the BIG regex ...
-        $pattern = '#\<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>.*?)\<\/' .implode('|', $this->ignoredNodes). '\>#i';
+        $pattern = '#<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>[^>]*?)\<\/(' .implode('|', $this->ignoredNodes). ')>#i';
+
         $matches = [];
 
-        if ($matchesCount = preg_match_all($pattern, $this->getSource(), $matches)) {
-            for ($i = 0; $i < $matchesCount; ++$i) {
-                if ($matches['content'][$i] === '') {
-                    continue;
-                }
-
-                $this->manageReplace($matches, $i);
+        // Using while instead of preg_match_all is the key to handle nested ignored nodes.
+        while ($matchesCount = preg_match($pattern, $this->getSource(), $matches)) {
+            if($matches[0] !== '') {
+               $this->replaceContent($matches);
             }
         }
     }
