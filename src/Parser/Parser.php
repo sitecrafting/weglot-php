@@ -2,9 +2,12 @@
 
 namespace Weglot\Parser;
 
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Weglot\Client\Client;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
+use Weglot\Parser\Event\ParserCrawlerAfterEvent;
+use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
 use Weglot\Parser\Event\ParserInitEvent;
 
 /**
@@ -47,7 +50,7 @@ class Parser implements ParserInterface
         // init
         $this->eventDispatcher = new EventDispatcher();
 
-        // dispatch
+        // dispatch - parser.init
         $event = new ParserInitEvent($this);
         $this->eventDispatcher->dispatch(ParserInitEvent::NAME, $event);
     }
@@ -114,6 +117,16 @@ class Parser implements ParserInterface
      */
     public function translate($source, $languageFrom, $languageTo)
     {
+        // dispatch - parser.crawler.before
+        $event = new ParserCrawlerBeforeEvent($this, $source);
+        $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
+
+        $crawler = new Crawler($source);
+
+        // dispatch - parser.crawler.after
+        $event = new ParserCrawlerAfterEvent($this, $crawler);
+        $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
+        
         return $source;
     }
 }
