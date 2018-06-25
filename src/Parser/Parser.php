@@ -9,6 +9,7 @@ use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
 use Weglot\Parser\Event\ParserInitEvent;
+use Weglot\Parser\Event\ParserRenderEvent;
 
 /**
  * Class Parser
@@ -126,7 +127,13 @@ class Parser implements ParserInterface
         // dispatch - parser.crawler.after
         $event = new ParserCrawlerAfterEvent($this, $crawler);
         $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
-        
+
+        $source = $crawler->html();
+
+        // dispatch - parser.render
+        $event = new ParserRenderEvent($this, $source);
+        $this->eventDispatcher->dispatch(ParserRenderEvent::NAME, $event);
+
         return $source;
     }
 }
