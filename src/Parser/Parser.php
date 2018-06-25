@@ -2,8 +2,10 @@
 
 namespace Weglot\Parser;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Weglot\Client\Client;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
+use Weglot\Parser\Event\ParserInitEvent;
 
 /**
  * Class Parser
@@ -27,14 +29,27 @@ class Parser implements ParserInterface
     protected $excludeBlocks = [];
 
     /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(Client $client, ConfigProviderInterface $configProvider, array $excludeBlocks = [])
     {
+        // config-related stuff
         $this
             ->setClient($client)
             ->setConfigProvider($configProvider)
             ->setExcludeBlocks($excludeBlocks);
+
+        // init
+        $this->eventDispatcher = new EventDispatcher();
+
+        // dispatch
+        $event = new ParserInitEvent($this);
+        $this->eventDispatcher->dispatch(ParserInitEvent::NAME, $event);
     }
 
     /**
