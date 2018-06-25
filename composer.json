@@ -36,7 +36,8 @@
   "require": {
     "php": ">=5.4",
     "weglot/simplehtmldom": "^0.2",
-    "psr/cache": "^1.0"
+    "psr/cache": "^1.0",
+    "symfony/event-dispatcher": "^4.1"
   },
   "autoload": {
     "psr-4": {
