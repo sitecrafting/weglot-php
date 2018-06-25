@@ -10,6 +10,7 @@ use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
 use Weglot\Parser\Event\ParserInitEvent;
 use Weglot\Parser\Event\ParserRenderEvent;
+use Weglot\Parser\Listener\IgnoredNodesListener;
 
 /**
  * Class Parser
@@ -17,6 +18,11 @@ use Weglot\Parser\Event\ParserRenderEvent;
  */
 class Parser implements ParserInterface
 {
+    /**
+     * @var string
+     */
+    protected $source = '';
+
     /**
      * @var Client
      */
@@ -50,10 +56,19 @@ class Parser implements ParserInterface
 
         // init
         $this->eventDispatcher = new EventDispatcher();
+        $this->defaultSubscribers();
 
         // dispatch - parser.init
         $event = new ParserInitEvent($this);
         $this->eventDispatcher->dispatch(ParserInitEvent::NAME, $event);
+    }
+
+    /**
+     * Add default listeners
+     */
+    protected function defaultSubscribers()
+    {
+        $this->eventDispatcher->addListener('parser.crawler.before', new IgnoredNodesListener());
     }
 
     /**
@@ -114,12 +129,30 @@ class Parser implements ParserInterface
     }
 
     /**
+     * @param string $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function translate($source, $languageFrom, $languageTo)
     {
+        $this->setSource($source);
+
         // dispatch - parser.crawler.before
-        $event = new ParserCrawlerBeforeEvent($this, $source);
+        $event = new ParserCrawlerBeforeEvent($this);
         $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
 
         $crawler = new Crawler($source);
@@ -128,10 +161,10 @@ class Parser implements ParserInterface
         $event = new ParserCrawlerAfterEvent($this, $crawler);
         $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
 
-        $source = $crawler->html();
+        $this->setSource($crawler->html());
 
         // dispatch - parser.render
-        $event = new ParserRenderEvent($this, $source);
+        $event = new ParserRenderEvent($this);
         $this->eventDispatcher->dispatch(ParserRenderEvent::NAME, $event);
 
         return $source;
