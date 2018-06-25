@@ -85,11 +85,10 @@ class IgnoredNodes
     {
         // time for the BIG regex ...
         $pattern = '#<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>[^>]*?)\<\/(' .implode('|', $this->ignoredNodes). ')>#i';
-
         $matches = [];
 
         // Using while instead of preg_match_all is the key to handle nested ignored nodes.
-        while ($matchesCount = preg_match($pattern, $this->getSource(), $matches)) {
+        while (preg_match($pattern, $this->getSource(), $matches)) {
             if($matches[0] !== '') {
                $this->replaceContent($matches);
             }
