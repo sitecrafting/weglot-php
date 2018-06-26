@@ -3,6 +3,7 @@
 namespace Weglot\Parser;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Weglot\Parser\Exception\ParserContextException;
 
 /**
  * Class ParserContext
@@ -77,9 +78,16 @@ class ParserContext
     /**
      * @param string $source
      * @return $this
+     *
+     * @throws ParserContextException
      */
     public function setSource($source)
     {
+        $crawler = $this->getCrawler();
+        if (!is_null($crawler) && $crawler instanceof Crawler) {
+            throw new ParserContextException('It is not allowed to update source when crawler is active.');
+        }
+
         $this->source = $source;
 
         return $this;
