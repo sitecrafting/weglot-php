@@ -13,14 +13,10 @@ class DomTextListener
 {
     /**
      * @param ParserCrawlerAfterEvent $event
-     *
-     * @throws InvalidWordTypeException
-     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerAfterEvent $event)
     {
         $crawler = $event->getContext()->getCrawler();
-        $inputWords = $event->getContext()->getTranslateEntry()->getInputWords();
 
         $nodes = $crawler->filterXPath('//text()/parent::*[not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/text()');
         foreach ($nodes as $node) {
@@ -29,11 +25,7 @@ class DomTextListener
             $text = preg_replace('/\s+/', ' ', $text);
 
             if ($text !== '' && strpos($text, Parser::ATTRIBUTE_NO_TRANSLATE) === false) {
-                $index = count($inputWords);
-                $path = $node->getNodePath();
-
-                $inputWords->addOne(new WordEntry($text, WordType::TEXT));
-                $event->getContext()->addToTranslateMap($index, $path);
+                $event->getContext()->addWord($text, $node->getNodePath());
             }
         }
     }
