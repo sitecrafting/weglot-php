@@ -4,11 +4,12 @@ namespace Weglot\Parser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Client;
+use Weglot\Client\Endpoint\Translate;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
+use Weglot\Parser\Event\ParserTranslatedEvent;
 use Weglot\Parser\Event\ParserInitEvent;
 use Weglot\Parser\Event\ParserRenderEvent;
 use Weglot\Parser\Listener\IgnoredNodesListener;
@@ -137,17 +138,27 @@ class Parser implements ParserInterface
 
         // crawling source
         $crawler = new Crawler($context->getSource());
-        $context->setCrawler($crawler);
-        $context->generateTranslateEntry();
+        $context
+            ->setCrawler($crawler)
+            ->generateTranslateEntry();
 
         // dispatch - parser.crawler.after
         $event = new ParserCrawlerAfterEvent($context);
         $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
 
+        // translating through Weglot API
+        $translate = new Translate($context->getTranslateEntry(), $this->getClient());
+        $context->setTranslateEntry($translate->handle());
+
+        // dispatch - parser.translated
+        $event = new ParserTranslatedEvent($context);
+        $this->eventDispatcher->dispatch(ParserTranslatedEvent::NAME, $event);
+
         // rendering crawled source
         $source = $context->getCrawler()->html();
-        $context->setCrawler(null);
-        $context->setSource($source);
+        $context
+            ->setCrawler(null)
+            ->setSource($source);
 
         // dispatch - parser.render
         $event = new ParserRenderEvent($context);
