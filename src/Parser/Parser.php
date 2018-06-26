@@ -12,6 +12,8 @@ use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
 use Weglot\Parser\Event\ParserTranslatedEvent;
 use Weglot\Parser\Event\ParserInitEvent;
 use Weglot\Parser\Event\ParserRenderEvent;
+use Weglot\Parser\Listener\CleanHtmlEntitiesListener;
+use Weglot\Parser\Listener\DomReplaceListener;
 use Weglot\Parser\Listener\DomTextListener;
 use Weglot\Parser\Listener\IgnoredNodesListener;
 
@@ -68,6 +70,8 @@ class Parser implements ParserInterface
     {
         $this->eventDispatcher->addListener('parser.crawler.before', new IgnoredNodesListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomTextListener());
+        $this->eventDispatcher->addListener('parser.translated', new DomReplaceListener());
+        $this->eventDispatcher->addListener('parser.render', new CleanHtmlEntitiesListener());
     }
 
     /**
