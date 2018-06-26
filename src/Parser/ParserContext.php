@@ -3,7 +3,9 @@
 namespace Weglot\Parser;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Weglot\Client\Api\Exception\MissingRequiredParamException;
 use Weglot\Client\Api\TranslateEntry;
+use Weglot\Client\Factory\Translate;
 use Weglot\Parser\ConfigProvider\ServerConfigProvider;
 use Weglot\Parser\Exception\ParserContextException;
 
@@ -128,6 +130,22 @@ class ParserContext
     }
 
     /**
+     * @param TranslateEntry $translateEntry
+     * @return $this
+     *
+     * @throws ParserContextException
+     */
+    public function setTranslateEntry(TranslateEntry $translateEntry)
+    {
+        if (is_null($this->translateEntry)) {
+            throw new ParserContextException('TranslateEntry should be generated through `generateTranslateEntry()` function first.');
+        }
+        $this->translateEntry = $translateEntry;
+
+        return $this;
+    }
+
+    /**
      * @return null|TranslateEntry
      */
     public function getTranslateEntry()
@@ -139,7 +157,7 @@ class ParserContext
      * @return TranslateEntry
      *
      * @throws ParserContextException
-     * @throws \Weglot\Client\Api\Exception\MissingRequiredParamException
+     * @throws MissingRequiredParamException
      */
     public function generateTranslateEntry()
     {
