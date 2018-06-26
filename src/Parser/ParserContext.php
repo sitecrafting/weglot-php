@@ -75,6 +75,17 @@ class ParserContext
     }
 
     /**
+     * @param string $source
+     * @return $this
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getSource()
