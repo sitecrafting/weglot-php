@@ -2,9 +2,7 @@
 
 namespace Weglot\Parser\Listener;
 
-use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Exception\ParserContextException;
 use Weglot\Parser\Parser;
@@ -13,6 +11,9 @@ class DomTextListener
 {
     /**
      * @param ParserCrawlerAfterEvent $event
+     *
+     * @throws InvalidWordTypeException
+     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerAfterEvent $event)
     {
