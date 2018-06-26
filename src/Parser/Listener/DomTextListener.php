@@ -6,6 +6,7 @@ use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
+use Weglot\Parser\Exception\ParserContextException;
 
 class DomTextListener
 {
@@ -13,6 +14,7 @@ class DomTextListener
      * @param ParserCrawlerAfterEvent $event
      *
      * @throws InvalidWordTypeException
+     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerAfterEvent $event)
     {
@@ -26,7 +28,11 @@ class DomTextListener
             $text = preg_replace('/\s+/', ' ', $text);
 
             if ($text !== '' && strpos($text, 'data-wg-notranslate') === false) {
+                $index = count($inputWords);
+                $path = $node->getNodePath();
+
                 $inputWords->addOne(new WordEntry($text, WordType::TEXT));
+                $event->getContext()->addToTranslateMap($index, $path);
             }
         }
     }

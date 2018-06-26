@@ -5,7 +5,6 @@ namespace Weglot\Parser;
 use Symfony\Component\DomCrawler\Crawler;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
 use Weglot\Client\Api\TranslateEntry;
-use Weglot\Client\Factory\Translate;
 use Weglot\Parser\ConfigProvider\ServerConfigProvider;
 use Weglot\Parser\Exception\ParserContextException;
 
@@ -44,6 +43,11 @@ class ParserContext
      * @var null|TranslateEntry
      */
     protected $translateEntry = null;
+
+    /**
+     * @var array
+     */
+    protected $translateMap = [];
 
     /**
      * ParserContext constructor.
@@ -151,6 +155,31 @@ class ParserContext
     public function getTranslateEntry()
     {
         return $this->translateEntry;
+    }
+
+    /**
+     * @param int $index
+     * @param string $path
+     * @return $this
+     *
+     * @throws ParserContextException
+     */
+    public function addToTranslateMap($index, $path)
+    {
+        if (in_array($path, array_values($this->translateMap))) {
+            throw new ParserContextException('You can\'t have same DOM node path two times.');
+        }
+        $this->translateMap[$index] = $path;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTranslateMap()
+    {
+        return $this->translateMap;
     }
 
     /**
