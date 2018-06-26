@@ -135,6 +135,7 @@ class Parser implements ParserInterface
         $event = new ParserCrawlerBeforeEvent($context);
         $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
 
+        // crawling source
         $crawler = new Crawler($context->getSource());
         $context->setCrawler($crawler);
         $context->generateTranslateEntry();
@@ -143,6 +144,7 @@ class Parser implements ParserInterface
         $event = new ParserCrawlerAfterEvent($context);
         $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
 
+        // rendering crawled source
         $source = $context->getCrawler()->html();
         $context->setCrawler(null);
         $context->setSource($source);
