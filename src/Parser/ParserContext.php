@@ -162,17 +162,17 @@ class ParserContext
 
     /**
      * @param int $index
-     * @param string $path
+     * @param array $details
      * @return $this
      *
      * @throws ParserContextException
      */
-    public function addToTranslateMap($index, $path)
+    public function addToTranslateMap($index, array $details)
     {
-        if (in_array($path, array_values($this->translateMap))) {
-            throw new ParserContextException('You can\'t have same DOM node path two times.');
+        if (in_array($details, array_values($this->translateMap))) {
+            throw new ParserContextException('You can\'t have same DOM node details two times.');
         }
-        $this->translateMap[$index] = $path;
+        $this->translateMap[$index] = $details;
 
         return $this;
     }
@@ -229,17 +229,21 @@ class ParserContext
     /**
      * @param string $text
      * @param string $path
+     * @param string $property
      * @param int $textType
      *
      * @throws InvalidWordTypeException
      * @throws ParserContextException
      */
-    public function addWord($text, $path, $textType = WordType::TEXT)
+    public function addWord($text, $path, $property = 'textContent', $textType = WordType::TEXT)
     {
         $inputWords = $this->getTranslateEntry()->getInputWords();
 
         $index = count($inputWords);
         $inputWords->addOne(new WordEntry($text, $textType));
-        $this->addToTranslateMap($index, $path);
+        $this->addToTranslateMap($index, [
+            'path' => $path,
+            'property' => $property
+        ]);
     }
 }

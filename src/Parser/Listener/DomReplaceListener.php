@@ -15,10 +15,12 @@ class DomReplaceListener
         $replaceMap = $event->getContext()->getTranslateMap();
         $outputWords = $event->getContext()->getTranslateEntry()->getOutputWords();
 
-        foreach ($replaceMap as $index => $path) {
+        foreach ($replaceMap as $index => $details) {
             $wordType = $outputWords[$index];
-            $node = $crawler->filterXPath('/'.$path)->getNode(0);
-            $node->textContent = $wordType->getWord();
+            $property = $details['property'];
+
+            $node = $crawler->filterXPath('/'.$details['path'])->getNode(0);
+            $node->$property = $wordType->getWord();
         }
     }
 }
