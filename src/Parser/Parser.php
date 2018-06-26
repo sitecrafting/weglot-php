@@ -56,7 +56,7 @@ class Parser implements ParserInterface
 
         // init
         $this->eventDispatcher = new EventDispatcher();
-        $this->defaultSubscribers();
+        $this->defaultListeners();
 
         // dispatch - parser.init
         $event = new ParserInitEvent($this);
@@ -66,7 +66,7 @@ class Parser implements ParserInterface
     /**
      * Add default listeners
      */
-    protected function defaultSubscribers()
+    protected function defaultListeners()
     {
         $this->eventDispatcher->addListener('parser.crawler.before', new IgnoredNodesListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomTextListener());
