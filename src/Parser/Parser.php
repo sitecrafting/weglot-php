@@ -12,6 +12,7 @@ use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
 use Weglot\Parser\Event\ParserTranslatedEvent;
 use Weglot\Parser\Event\ParserInitEvent;
 use Weglot\Parser\Event\ParserRenderEvent;
+use Weglot\Parser\Listener\DomTextListener;
 use Weglot\Parser\Listener\IgnoredNodesListener;
 
 /**
@@ -66,6 +67,7 @@ class Parser implements ParserInterface
     protected function defaultSubscribers()
     {
         $this->eventDispatcher->addListener('parser.crawler.before', new IgnoredNodesListener());
+        $this->eventDispatcher->addListener('parser.crawler.after', new DomTextListener());
     }
 
     /**
