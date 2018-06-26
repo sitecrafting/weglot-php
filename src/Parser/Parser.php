@@ -4,6 +4,7 @@ namespace Weglot\Parser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Client;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
@@ -18,11 +19,6 @@ use Weglot\Parser\Listener\IgnoredNodesListener;
  */
 class Parser implements ParserInterface
 {
-    /**
-     * @var string
-     */
-    protected $source = '';
-
     /**
      * @var Client
      */
@@ -129,44 +125,31 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @param string $source
-     */
-    public function setSource($source)
-    {
-        $this->source = $source;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSource()
-    {
-        return $this->source;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function translate($source, $languageFrom, $languageTo)
     {
-        $this->setSource($source);
+        $context = new ParserContext($this, $languageFrom, $languageTo, $source);
 
         // dispatch - parser.crawler.before
-        $event = new ParserCrawlerBeforeEvent($this);
+        $event = new ParserCrawlerBeforeEvent($context);
         $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
 
-        $crawler = new Crawler($source);
+        $crawler = new Crawler($context->getSource());
+        $context->setCrawler($crawler);
 
         // dispatch - parser.crawler.after
-        $event = new ParserCrawlerAfterEvent($this, $crawler);
+        $event = new ParserCrawlerAfterEvent($context);
         $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
 
-        $this->setSource($crawler->html());
+        $source = $context->getCrawler()->html();
+        $context->setCrawler(null);
+        $context->setSource($source);
 
         // dispatch - parser.render
-        $event = new ParserRenderEvent($this);
+        $event = new ParserRenderEvent($context);
         $this->eventDispatcher->dispatch(ParserRenderEvent::NAME, $event);
 
-        return $source;
+        return $context->getSource();
     }
 }
