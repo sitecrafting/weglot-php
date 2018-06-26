@@ -3,8 +3,11 @@
 namespace Weglot\Parser;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Weglot\Client\Api\Enum\WordType;
+use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\Exception\MissingRequiredParamException;
 use Weglot\Client\Api\TranslateEntry;
+use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\ConfigProvider\ServerConfigProvider;
 use Weglot\Parser\Exception\ParserContextException;
 
@@ -221,5 +224,22 @@ class ParserContext
         $this->translateEntry = new TranslateEntry($parameters);
 
         return $this->translateEntry;
+    }
+
+    /**
+     * @param string $text
+     * @param string $path
+     * @param int $textType
+     *
+     * @throws InvalidWordTypeException
+     * @throws ParserContextException
+     */
+    public function addWord($text, $path, $textType = WordType::TEXT)
+    {
+        $inputWords = $this->getTranslateEntry()->getInputWords();
+
+        $index = count($inputWords);
+        $inputWords->addOne(new WordEntry($text, $textType));
+        $this->addToTranslateMap($index, $path);
     }
 }
