@@ -28,12 +28,12 @@ class ParserContext
     /**
      * @var string
      */
-    protected $source;
+    protected $source = '';
 
     /**
-     * @var Crawler
+     * @var null|Crawler
      */
-    protected $crawler;
+    protected $crawler = null;
 
     /**
      * ParserContext constructor.
@@ -94,10 +94,10 @@ class ParserContext
     }
 
     /**
-     * @param Crawler $crawler
+     * @param null|Crawler $crawler
      * @return $this
      */
-    public function setCrawler(Crawler $crawler)
+    public function setCrawler($crawler)
     {
         $this->crawler = $crawler;
 
@@ -105,7 +105,7 @@ class ParserContext
     }
 
     /**
-     * @return Crawler
+     * @return null|Crawler
      */
     public function getCrawler()
     {
