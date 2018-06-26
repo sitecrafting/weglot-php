@@ -24,6 +24,13 @@ use Weglot\Parser\Listener\IgnoredNodesListener;
 class Parser implements ParserInterface
 {
     /**
+     * Attribute to match in DOM when we don't want to translate innertext & childs.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_NO_TRANSLATE = 'data-wg-notranslate';
+
+    /**
      * @var Client
      */
     protected $client;
