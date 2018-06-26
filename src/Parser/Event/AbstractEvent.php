@@ -3,29 +3,29 @@
 namespace Weglot\Parser\Event;
 
 use Symfony\Component\EventDispatcher\Event;
-use Weglot\Parser\Parser;
+use Weglot\Parser\ParserContext;
 
 abstract class AbstractEvent extends Event
 {
     /**
-     * @var Parser
+     * @var ParserContext
      */
-    protected $parser;
+    protected $context;
 
     /**
      * AbstractEvent constructor.
-     * @param Parser $parser
+     * @param ParserContext $context
      */
-    public function __construct(Parser $parser)
+    public function __construct(ParserContext $context)
     {
-        $this->parser = $parser;
+        $this->context = $context;
     }
 
     /**
-     * @return Parser
+     * @return ParserContext
      */
-    public function getParser()
+    public function getContext()
     {
-        return $this->parser;
+        return $this->context;
     }
 }

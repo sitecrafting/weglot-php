@@ -3,7 +3,7 @@
 namespace Weglot\Parser\Event;
 
 use Symfony\Component\DomCrawler\Crawler;
-use Weglot\Parser\Parser;
+use Weglot\Parser\ParserContext;
 
 class ParserCrawlerAfterEvent extends AbstractEvent
 {
@@ -16,12 +16,12 @@ class ParserCrawlerAfterEvent extends AbstractEvent
 
     /**
      * ParserCrawlerAfterEvent constructor.
-     * @param Parser $parser
+     * @param ParserContext $context
      * @param Crawler $crawler
      */
-    public function __construct(Parser $parser, Crawler $crawler)
+    public function __construct(ParserContext $context, Crawler $crawler)
     {
-        parent::__construct($parser);
+        parent::__construct($context);
         $this->crawler = $crawler;
     }
 
