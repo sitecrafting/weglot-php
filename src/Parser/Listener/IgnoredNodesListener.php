@@ -3,6 +3,7 @@
 namespace Weglot\Parser\Listener;
 
 use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
+use Weglot\Parser\Exception\ParserContextException;
 
 class IgnoredNodesListener
 {
@@ -25,6 +26,8 @@ class IgnoredNodesListener
 
     /**
      * @param ParserCrawlerBeforeEvent $event
+     *
+     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerBeforeEvent $event)
     {
