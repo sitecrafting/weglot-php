@@ -60,13 +60,22 @@ class IgnoredNodes
         return $this->source;
     }
 
+
     /**
-     * @return array
+     * @param array $matches
      */
-    public function getIgnoredNodes()
+    protected function replaceContent($matches)
     {
-        return $this->ignoredNodes;
+        $this->setSource(
+            str_replace(
+                $matches[0],
+                '&lt;' .$matches['tag'].str_replace('>', '&gt;', str_replace('<', '&lt;', $matches['more'])). '&gt;' . $matches['content']. '&lt;/' . $matches['tag'] . '&gt;',
+                $this->getSource()
+            )
+        );
     }
+
+
 
     /**
      * Convert < & > for some dom tags to let them able
@@ -74,10 +83,15 @@ class IgnoredNodes
      */
     public function handle()
     {
-        foreach ($this->getIgnoredNodes() as $ignore) {
-            $pattern = ['#\<' .$ignore. '(?<after>.*?)\>#', '#\</' .$ignore. '\>#'];
-            $replace = [htmlentities('<' .$ignore. '$1>'), htmlentities('</' .$ignore. '>')];
-            $this->setSource(preg_replace($pattern, $replace, $this->getSource()));
+        // time for the BIG regex ...
+        $pattern = '#<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>[^>]*?)\<\/(?<tagclosed>' .implode('|', $this->ignoredNodes). ')>#i';
+        $matches = [];
+
+        // Using while instead of preg_match_all is the key to handle nested ignored nodes.
+        while (preg_match($pattern, $this->getSource(), $matches)) {
+            if ($matches[0] !== '' && $matches['tag'] === $matches['tagclosed']) {
+                $this->replaceContent($matches);
+            }
         }
     }
 }
