@@ -137,6 +137,7 @@ class Parser implements ParserInterface
 
         $crawler = new Crawler($context->getSource());
         $context->setCrawler($crawler);
+        $context->generateTranslateEntry();
 
         // dispatch - parser.crawler.after
         $event = new ParserCrawlerAfterEvent($context);
