@@ -69,7 +69,7 @@ class IgnoredNodes
         $this->setSource(
             str_replace(
                 $matches[0],
-                '&lt;' .$matches['tag'].str_replace('>','&gt;',str_replace('<','&lt;',$matches['more'])). '&gt;' . $matches['content']. '&lt;/' . $matches['tag'] . '&gt;',
+                '&lt;' .$matches['tag'].str_replace('>', '&gt;', str_replace('<', '&lt;', $matches['more'])). '&gt;' . $matches['content']. '&lt;/' . $matches['tag'] . '&gt;',
                 $this->getSource()
             )
         );
@@ -89,8 +89,8 @@ class IgnoredNodes
 
         // Using while instead of preg_match_all is the key to handle nested ignored nodes.
         while (preg_match($pattern, $this->getSource(), $matches)) {
-            if($matches[0] !== '' && $matches['tag'] === $matches['tagclosed']) {
-               $this->replaceContent($matches);
+            if ($matches[0] !== '' && $matches['tag'] === $matches['tagclosed']) {
+                $this->replaceContent($matches);
             }
         }
     }
