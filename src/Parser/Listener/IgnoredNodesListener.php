@@ -28,7 +28,7 @@ class IgnoredNodesListener
      */
     public function __invoke(ParserCrawlerBeforeEvent $event)
     {
-        $source = $event->getParser()->getSource();
+        $source = $event->getContext()->getSource();
 
         // time for the BIG regex ...
         $pattern = '#<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>[^>]*?)\<\/(?<tagclosed>' .implode('|', $this->ignoredNodes). ')>#i';
@@ -45,6 +45,6 @@ class IgnoredNodesListener
             }
         }
 
-        $event->getParser()->setSource($source);
+        $event->getContext()->setSource($source);
     }
 }
