@@ -86,6 +86,7 @@ class Parser implements ParserInterface
     protected function defaultListeners()
     {
         $this->eventDispatcher->addListener('parser.crawler.before', new IgnoredNodesListener());
+
         $this->eventDispatcher->addListener('parser.crawler.after', new DomTextListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomButtonListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomIframeSrcListener());
@@ -97,7 +98,9 @@ class Parser implements ParserInterface
         $this->eventDispatcher->addListener('parser.crawler.after', new DomPlaceholderListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomSpanListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomTableDataListener());
+
         $this->eventDispatcher->addListener('parser.translated', new DomReplaceListener());
+        
         $this->eventDispatcher->addListener('parser.render', new CleanHtmlEntitiesListener());
     }
 
