@@ -38,7 +38,6 @@ class DomLinkListener
      * @param ParserCrawlerAfterEvent $event
      *
      * @throws InvalidWordTypeException
-     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerAfterEvent $event)
     {
@@ -60,7 +59,7 @@ class DomLinkListener
             }
 
             if ($value !== '' && $continue) {
-                $event->getContext()->addWord($value, $node->getNodePath(), function (\DOMAttr $node, $translated) {
+                $event->getContext()->addWord($value, function ($translated) use ($node) {
                     $node->value = $translated;
                 }, $type);
             }

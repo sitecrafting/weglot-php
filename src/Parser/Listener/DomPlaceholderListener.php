@@ -5,8 +5,6 @@ namespace Weglot\Parser\Listener;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
-use Weglot\Parser\Exception\ParserContextException;
-use Weglot\Parser\Parser;
 use Weglot\Util\Text;
 
 class DomPlaceholderListener
@@ -24,7 +22,6 @@ class DomPlaceholderListener
      * @param ParserCrawlerAfterEvent $event
      *
      * @throws InvalidWordTypeException
-     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerAfterEvent $event)
     {
@@ -35,7 +32,7 @@ class DomPlaceholderListener
             $value = Text::fullTrim($node->value);
 
             if ($value !== '' && !is_numeric($value) && !preg_match('/^\d+%$/', $value)) {
-                $event->getContext()->addWord($value, $node->getNodePath(), function (\DOMAttr $node, $translated) {
+                $event->getContext()->addWord($value, function ($translated) use ($node) {
                     $node->value = $translated;
                 }, WordType::META_CONTENT);
             }

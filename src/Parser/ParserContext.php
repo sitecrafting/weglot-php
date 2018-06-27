@@ -162,17 +162,12 @@ class ParserContext
 
     /**
      * @param int $index
-     * @param array $details
+     * @param callable $callable
      * @return $this
-     *
-     * @throws ParserContextException
      */
-    public function addToTranslateMap($index, array $details)
+    public function addToTranslateMap($index, callable $callable)
     {
-        if (in_array($details, array_values($this->translateMap))) {
-            throw new ParserContextException('You can\'t have same DOM node details two times.');
-        }
-        $this->translateMap[$index] = $details;
+        $this->translateMap[$index] = $callable;
 
         return $this;
     }
@@ -228,22 +223,17 @@ class ParserContext
 
     /**
      * @param string $text
-     * @param string $path
      * @param callable $callback
      * @param int $textType
      *
      * @throws InvalidWordTypeException
-     * @throws ParserContextException
      */
-    public function addWord($text, $path, callable $callback, $textType = WordType::TEXT)
+    public function addWord($text, callable $callback, $textType = WordType::TEXT)
     {
         $inputWords = $this->getTranslateEntry()->getInputWords();
 
         $index = count($inputWords);
         $inputWords->addOne(new WordEntry($text, $textType));
-        $this->addToTranslateMap($index, [
-            'path' => $path,
-            'callback' => $callback
-        ]);
+        $this->addToTranslateMap($index, $callback);
     }
 }

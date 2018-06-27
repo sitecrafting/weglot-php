@@ -14,7 +14,6 @@ class DomInputRadioListener
      * @param ParserCrawlerAfterEvent $event
      *
      * @throws InvalidWordTypeException
-     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerAfterEvent $event)
     {
@@ -24,7 +23,7 @@ class DomInputRadioListener
         foreach ($nodes as $node) {
             $text = trim($node->value);
             if ($text !== '') {
-                $event->getContext()->addWord($text, $node->getNodePath(), function (\DOMAttr $node, $translated) {
+                $event->getContext()->addWord($text, function ($translated) use ($node) {
                     $node->value = $translated;
                 }, WordType::VALUE);
             }

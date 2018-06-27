@@ -5,7 +5,6 @@ namespace Weglot\Parser\Listener;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
-use Weglot\Parser\Exception\ParserContextException;
 use Weglot\Parser\Parser;
 
 class DomTableDataListener
@@ -14,7 +13,6 @@ class DomTableDataListener
      * @param ParserCrawlerAfterEvent $event
      *
      * @throws InvalidWordTypeException
-     * @throws ParserContextException
      */
     public function __invoke(ParserCrawlerAfterEvent $event)
     {
@@ -25,7 +23,7 @@ class DomTableDataListener
             $value = trim($node->value);
 
             if ($value !== '') {
-                $event->getContext()->addWord($value, $node->getNodePath(), function (\DOMAttr $node, $translated) {
+                $event->getContext()->addWord($value, function ($translated) use ($node) {
                     $node->value = $translated;
                 }, WordType::VALUE);
             }
