@@ -26,7 +26,7 @@ class DomInputRadioListener
             if ($text !== '') {
                 $event->getContext()->addWord($text, $node->getNodePath(), function (\DOMAttr $node, $translated) {
                     $node->value = $translated;
-                });
+                }, WordType::VALUE);
             }
         }
     }
