@@ -38,7 +38,7 @@
     "weglot/simplehtmldom": "^0.2",
     "psr/cache": "^1.0",
     "symfony/event-dispatcher": "^2.8",
-    "symfony/dom-crawler": "^2.8",
+    "symfony/dom-crawler": "^2.8.1",
     "symfony/css-selector": "^2.8"
   },
   "autoload": {
