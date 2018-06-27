@@ -26,7 +26,9 @@ class DomTextListener
             $text = preg_replace('/\s+/', ' ', $text);
 
             if ($text !== '' && strpos($text, Parser::ATTRIBUTE_NO_TRANSLATE) === false) {
-                $event->getContext()->addWord($text, $node->getNodePath());
+                $event->getContext()->addWord($text, $node->getNodePath(), function (\DOMText $node, $translated) {
+                    $node->textContent = $translated;
+                });
             }
         }
     }
