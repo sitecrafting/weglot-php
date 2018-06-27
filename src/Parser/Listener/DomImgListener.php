@@ -22,7 +22,7 @@ class DomImgListener
 
         $nodes = $crawler->filterXPath('//img[not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@*[name()=\'src\' or name()=\'alt\']');
         foreach ($nodes as $node) {
-            $value = trim($node->nodeValue);
+            $value = trim($node->value);
 
             $type = null;
             switch ($node->localName) {
@@ -36,7 +36,7 @@ class DomImgListener
 
             if ($value !== '' && !is_null($type)) {
                 $event->getContext()->addWord($value, $node->getNodePath(), function (\DOMAttr $node, $translated) {
-                    $node->nodeValue = $translated;
+                    $node->value = $translated;
                 }, $type);
             }
         }
