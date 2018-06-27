@@ -16,6 +16,7 @@ use Weglot\Parser\Listener\CleanHtmlEntitiesListener;
 use Weglot\Parser\Listener\DomButtonListener;
 use Weglot\Parser\Listener\DomIframeSrcListener;
 use Weglot\Parser\Listener\DomImgListener;
+use Weglot\Parser\Listener\DomInputDataListener;
 use Weglot\Parser\Listener\DomReplaceListener;
 use Weglot\Parser\Listener\DomTextListener;
 use Weglot\Parser\Listener\IgnoredNodesListener;
@@ -83,6 +84,7 @@ class Parser implements ParserInterface
         $this->eventDispatcher->addListener('parser.crawler.after', new DomButtonListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomIframeSrcListener());
         $this->eventDispatcher->addListener('parser.crawler.after', new DomImgListener());
+        $this->eventDispatcher->addListener('parser.crawler.after', new DomInputDataListener());
         $this->eventDispatcher->addListener('parser.translated', new DomReplaceListener());
         $this->eventDispatcher->addListener('parser.render', new CleanHtmlEntitiesListener());
     }
