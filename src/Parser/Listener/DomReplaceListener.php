@@ -17,10 +17,9 @@ class DomReplaceListener
 
         foreach ($replaceMap as $index => $details) {
             $wordType = $outputWords[$index];
-            $property = $details['property'];
 
             $node = $crawler->filterXPath('/'.$details['path'])->getNode(0);
-            $node->$property = $wordType->getWord();
+            $details['callback']($node, $wordType->getWord());
         }
     }
 }

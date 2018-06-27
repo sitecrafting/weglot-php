@@ -229,13 +229,13 @@ class ParserContext
     /**
      * @param string $text
      * @param string $path
-     * @param string $property
+     * @param callable $callback
      * @param int $textType
      *
      * @throws InvalidWordTypeException
      * @throws ParserContextException
      */
-    public function addWord($text, $path, $property = 'textContent', $textType = WordType::TEXT)
+    public function addWord($text, $path, callable $callback, $textType = WordType::TEXT)
     {
         $inputWords = $this->getTranslateEntry()->getInputWords();
 
@@ -243,7 +243,7 @@ class ParserContext
         $inputWords->addOne(new WordEntry($text, $textType));
         $this->addToTranslateMap($index, [
             'path' => $path,
-            'property' => $property
+            'callback' => $callback
         ]);
     }
 }
