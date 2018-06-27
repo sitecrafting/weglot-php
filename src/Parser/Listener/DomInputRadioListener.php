@@ -22,7 +22,7 @@ class DomInputRadioListener
 
         $nodes = $crawler->filterXPath('//input[@type = \'radio\' and not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@data-order_button_text');
         foreach ($nodes as $node) {
-            $text = trim($node->textContent);
+            $text = trim($node->value);
             if ($text !== '') {
                 $event->getContext()->addWord($text, $node->getNodePath(), function (\DOMAttr $node, $translated) {
                     $node->value = $translated;
