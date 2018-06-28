@@ -81,27 +81,35 @@ class Parser implements ParserInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function addListener($eventName, $listener, $priority = 0)
+    {
+        $this->eventDispatcher->addListener($eventName, $listener, $priority);
+    }
+
+    /**
      * Add default listeners
      */
     protected function defaultListeners()
     {
-        $this->eventDispatcher->addListener('parser.crawler.before', new IgnoredNodesListener());
+        $this->addListener('parser.crawler.before', new IgnoredNodesListener());
 
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomTextListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomButtonListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomIframeSrcListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomImgListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomInputDataListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomInputRadioListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomLinkListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomMetaContentListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomPlaceholderListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomSpanListener());
-        $this->eventDispatcher->addListener('parser.crawler.after', new DomTableDataListener());
+        $this->addListener('parser.crawler.after', new DomTextListener());
+        $this->addListener('parser.crawler.after', new DomButtonListener());
+        $this->addListener('parser.crawler.after', new DomIframeSrcListener());
+        $this->addListener('parser.crawler.after', new DomImgListener());
+        $this->addListener('parser.crawler.after', new DomInputDataListener());
+        $this->addListener('parser.crawler.after', new DomInputRadioListener());
+        $this->addListener('parser.crawler.after', new DomLinkListener());
+        $this->addListener('parser.crawler.after', new DomMetaContentListener());
+        $this->addListener('parser.crawler.after', new DomPlaceholderListener());
+        $this->addListener('parser.crawler.after', new DomSpanListener());
+        $this->addListener('parser.crawler.after', new DomTableDataListener());
 
-        $this->eventDispatcher->addListener('parser.translated', new DomReplaceListener());
+        $this->addListener('parser.translated', new DomReplaceListener());
         
-        $this->eventDispatcher->addListener('parser.render', new CleanHtmlEntitiesListener());
+        $this->addListener('parser.render', new CleanHtmlEntitiesListener());
     }
 
     /**

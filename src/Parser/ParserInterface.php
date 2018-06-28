@@ -32,4 +32,15 @@ interface ParserInterface
      * @return string
      */
     public function translate($source, $languageFrom, $languageTo);
+
+    /**
+     * Adds an event listener that listens on the specified events.
+     *
+     * @param string $eventName
+     * @param callable $listener
+     * @param int $priority
+     *
+     * @see \Symfony\Component\EventDispatcher\EventDispatcherInterface::addListener()
+     */
+    public function addListener($eventName, $listener, $priority = 0);
 }
