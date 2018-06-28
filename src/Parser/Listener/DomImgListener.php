@@ -3,40 +3,36 @@
 namespace Weglot\Parser\Listener;
 
 use Weglot\Client\Api\Enum\WordType;
-use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Parser\Event\ParserCrawlerAfterEvent;
+use Weglot\Parser\Exception\ParserCrawlerAfterListenerException;
 use Weglot\Parser\Parser;
 
-class DomImgListener
+class DomImgListener extends AbstractCrawlerAfterListener
 {
     /**
-     * @param ParserCrawlerAfterEvent $event
-     *
-     * @throws InvalidWordTypeException
+     * {@inheritdoc}
      */
-    public function __invoke(ParserCrawlerAfterEvent $event)
+    protected function xpath()
     {
-        $crawler = $event->getContext()->getCrawler();
+        return '//img[not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@*[name()=\'src\' or name()=\'alt\']' ;
+    }
 
-        $nodes = $crawler->filterXPath('//img[not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@*[name()=\'src\' or name()=\'alt\']');
-        foreach ($nodes as $node) {
-            $value = trim($node->value);
-
-            $type = null;
-            switch ($node->localName) {
-                case 'alt':
-                    $type = WordType::IMG_ALT;
-                    break;
-                case 'src':
-                    $type = WordType::IMG_SRC;
-                    break;
-            }
-
-            if ($value !== '' && !is_null($type)) {
-                $event->getContext()->addWord($value, function ($translated) use ($node) {
-                    $node->value = $translated;
-                }, $type);
-            }
+    /**
+     * {@inheritdoc}
+     */
+    protected function type(\DOMNode $node)
+    {
+        $type = null;
+        switch ($node->localName) {
+            case 'alt':
+                $type = WordType::IMG_ALT;
+                break;
+            case 'src':
+                $type = WordType::IMG_SRC;
+                break;
+            default:
+                throw new ParserCrawlerAfterListenerException('Found no word type for this image attribute.');
+                break;
         }
+        return $type;
     }
 }

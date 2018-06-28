@@ -2,30 +2,15 @@
 
 namespace Weglot\Parser\Listener;
 
-use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Parser;
 
-class DomSpanListener
+class DomSpanListener extends AbstractCrawlerAfterListener
 {
     /**
-     * @param ParserCrawlerAfterEvent $event
-     *
-     * @throws InvalidWordTypeException
+     * {@inheritdoc}
      */
-    public function __invoke(ParserCrawlerAfterEvent $event)
+    protected function xpath()
     {
-        $crawler = $event->getContext()->getCrawler();
-
-        $nodes = $crawler->filterXPath('//span[not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@title');
-        foreach ($nodes as $node) {
-            $value = trim($node->value);
-
-            if ($value !== '') {
-                $event->getContext()->addWord($value, function ($translated) use ($node) {
-                    $node->value = $translated;
-                });
-            }
-        }
+        return '//span[not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@title';
     }
 }

@@ -2,12 +2,9 @@
 
 namespace Weglot\Parser\Listener;
 
-use Weglot\Client\Api\Enum\WordType;
-use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Parser\Event\ParserCrawlerAfterEvent;
-use Weglot\Util\Text;
+use Weglot\Parser\Parser;
 
-class DomPlaceholderListener
+class DomPlaceholderListener extends AbstractCrawlerAfterListener
 {
     protected $attributes = [
         'type' => [
@@ -19,27 +16,9 @@ class DomPlaceholderListener
     ];
 
     /**
-     * @param ParserCrawlerAfterEvent $event
-     *
-     * @throws InvalidWordTypeException
+     * {@inheritdoc}
      */
-    public function __invoke(ParserCrawlerAfterEvent $event)
-    {
-        $crawler = $event->getContext()->getCrawler();
-
-        $nodes = $crawler->filterXPath('//*[self::input[' .$this->makeSelectorForAttributes(). '] or self::textarea]/@placeholder');
-        foreach ($nodes as $node) {
-            $value = Text::fullTrim($node->value);
-
-            if ($value !== '' && !is_numeric($value) && !preg_match('/^\d+%$/', $value)) {
-                $event->getContext()->addWord($value, function ($translated) use ($node) {
-                    $node->value = $translated;
-                }, WordType::META_CONTENT);
-            }
-        }
-    }
-
-    protected function makeSelectorForAttributes()
+    protected function xpath()
     {
         $selectors = [];
         foreach ($this->attributes as $name => $values) {
@@ -47,6 +26,7 @@ class DomPlaceholderListener
                 $selectors[] = '@' .$name. ' = \'' .$value. '\'';
             }
         }
-        return implode(' or ', $selectors);
+
+        return '//*[(self::input[' .implode(' or ', $selectors). '] or self::textarea) and not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@placeholder';
     }
 }
