@@ -2,30 +2,15 @@
 
 namespace Weglot\Parser\Listener;
 
-use Weglot\Client\Api\Enum\WordType;
-use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Parser;
 
-class DomButtonListener
+class DomButtonListener extends AbstractCrawlerAfterListener
 {
     /**
-     * @param ParserCrawlerAfterEvent $event
-     *
-     * @throws InvalidWordTypeException
+     * {@inheritdoc}
      */
-    public function __invoke(ParserCrawlerAfterEvent $event)
+    protected function xpath()
     {
-        $crawler = $event->getContext()->getCrawler();
-
-        $nodes = $crawler->filterXPath('//*[(self::button or self::input[@type=\'submit\']) and not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@value');
-        foreach ($nodes as $node) {
-            $text = trim($node->value);
-            if ($text !== '') {
-                $event->getContext()->addWord($text, function ($translated) use ($node) {
-                    $node->value = $translated;
-                }, WordType::VALUE);
-            }
-        }
+        return '//*[(self::button or self::input[@type=\'submit\']) and not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@value';
     }
 }

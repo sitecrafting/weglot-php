@@ -2,6 +2,7 @@
 
 namespace Weglot\Parser\Listener;
 
+use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Exception\ParserCrawlerAfterListenerException;
@@ -35,7 +36,7 @@ abstract class AbstractCrawlerAfterListener
             $value = $this->fix($node, $value);
 
             if ($this->validation($node, $value)) {
-                $event->getContext()->addWord($value, $this->replaceCallback($node));
+                $event->getContext()->addWord($value, $this->replaceCallback($node), $this->type($node));
             }
         }
     }
@@ -114,5 +115,26 @@ abstract class AbstractCrawlerAfterListener
                 throw new ParserCrawlerAfterListenerException('No callback behavior set for this node type.');
             }
         };
+    }
+
+    /**
+     * Get the type of the word given by this kind of node
+     *
+     * @param \DOMNode $node
+     * @return string
+     *
+     * @throws ParserCrawlerAfterListenerException
+     */
+    protected function type(\DOMNode $node)
+    {
+        $type = null;
+        if ($node instanceof \DOMText) {
+            $type = WordType::TEXT;
+        } elseif ($node instanceof \DOMAttr) {
+            $type = WordType::VALUE;
+        } else {
+            throw new ParserCrawlerAfterListenerException('No word type set for this kind of node.');
+        }
+        return $type;
     }
 }
