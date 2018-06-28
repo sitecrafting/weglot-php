@@ -6,13 +6,6 @@ use Weglot\Client\Api\Enum\BotType;
 use Weglot\Client\Client;
 use Weglot\Parser\Parser;
 use Weglot\Util\Site;
-use Weglot\Parser\ParserContext;
-use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
-use Weglot\Parser\Event\ParserCrawlerAfterEvent;
-use Weglot\Parser\Event\ParserTranslatedEvent;
-use Weglot\Parser\Event\ParserRenderEvent;
-use Symfony\Component\DomCrawler\Crawler;
-use Weglot\Client\Api\TranslateEntry;
 
 class ParserTest extends \Codeception\Test\Unit
 {
