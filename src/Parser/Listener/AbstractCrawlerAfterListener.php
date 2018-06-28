@@ -89,7 +89,10 @@ abstract class AbstractCrawlerAfterListener
      */
     protected function validation(\DOMNode $node, $value)
     {
-        $boolean = $value !== '';
+        $boolean =
+            $value !== '' &&
+            !is_numeric($value) &&
+            !preg_match('/^\d+%$/', $value);
 
         if ($node instanceof \DOMText) {
             $boolean = $boolean && strpos($value, Parser::ATTRIBUTE_NO_TRANSLATE) === false;
