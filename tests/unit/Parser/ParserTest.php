@@ -78,7 +78,7 @@ class ParserTest extends \Codeception\Test\Unit
     public function testTranslateFromString()
     {
         $parser = new Parser($this->client, $this->config['server']);
-        $sample = __DIR__ . '/../Resources/en-sample.html';
+        $sample = file_get_contents(__DIR__ . '/Resources/en-sample.html');
 
         $translated = $parser->translate($sample, 'en', 'fr');
         $this->assertNotEquals($translated, $sample);

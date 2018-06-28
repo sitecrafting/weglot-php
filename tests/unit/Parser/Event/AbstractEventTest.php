@@ -34,7 +34,7 @@ abstract class AbstractEventTest extends \Codeception\Test\Unit
     protected function _beforeDispatchEvent()
     {
         $parser = new Parser($this->client, $this->config);
-        $sample = __DIR__ . '/../../Resources/en-sample.html';
+        $sample = file_get_contents(__DIR__ . '/../Resources/en-sample.html');
 
         return [$parser, $sample];
     }
