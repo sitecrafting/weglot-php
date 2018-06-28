@@ -22,8 +22,9 @@ interface ParserInterface
      * @param Client $client
      * @param ConfigProviderInterface $config
      * @param array $excludeBlocks
+     * @param array $listeners
      */
-    public function __construct(Client $client, ConfigProviderInterface $config, array $excludeBlocks = []);
+    public function __construct(Client $client, ConfigProviderInterface $config, array $excludeBlocks = [], array $listeners = []);
 
     /**
      * @param string $source

@@ -63,7 +63,7 @@ class Parser implements ParserInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(Client $client, ConfigProviderInterface $configProvider, array $excludeBlocks = [])
+    public function __construct(Client $client, ConfigProviderInterface $configProvider, array $excludeBlocks = [], array $listeners = [])
     {
         // config-related stuff
         $this
@@ -71,9 +71,12 @@ class Parser implements ParserInterface
             ->setConfigProvider($configProvider)
             ->setExcludeBlocks($excludeBlocks);
 
-        // init
+        // init EventDispatcher
         $this->eventDispatcher = new EventDispatcher();
         $this->defaultListeners();
+        foreach ($listeners as $eventName => $callback) {
+            $this->addListener($eventName, $callback);
+        }
 
         // dispatch - parser.init
         $event = new ParserInitEvent($this);
