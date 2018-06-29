@@ -6,7 +6,6 @@ use Weglot\Client\Api\Enum\BotType;
 use Weglot\Client\Client;
 use Weglot\Parser\Parser;
 use Weglot\Util\Site;
-use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 
 class ParserTest extends \Codeception\Test\Unit
 {
@@ -54,31 +53,6 @@ class ParserTest extends \Codeception\Test\Unit
     public function testNoTranslate()
     {
         $this->assertEquals('data-wg-notranslate', Parser::ATTRIBUTE_NO_TRANSLATE);
-    }
-
-    public function testExcludeBlocks()
-    {
-        $excluded = ['section.advantages'];
-
-        $sample = file_get_contents(__DIR__ . '/Resources/en-sample.html');
-        $parser = new Parser($this->client, $this->config['server'], $excluded);
-
-        $parser->addListener('parser.crawler.after', function (ParserCrawlerAfterEvent $event) use ($excluded) {
-            $crawler = $event->getContext()->getCrawler();
-            foreach ($excluded as $exception) {
-                $nodes = $crawler->filter($exception);
-                foreach ($nodes as $node) {
-                    $this->assertTrue($node->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE));
-                }
-            }
-        });
-
-        $translated = $parser->translate($sample, 'en', 'fr');
-
-        $this->assertEquals($excluded, $parser->getExcludeBlocks());
-        $this->assertContains('Integrated within minutes', $translated);
-        $this->assertContains('Manage your content', $translated);
-        $this->assertContains('Reliable and powerful', $translated);
     }
 
     public function testTranslateFromUrl()
