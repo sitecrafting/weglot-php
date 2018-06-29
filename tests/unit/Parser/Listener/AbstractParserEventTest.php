@@ -5,8 +5,9 @@ use Weglot\Parser\ConfigProvider\ManualConfigProvider;
 use Weglot\Client\Api\Enum\BotType;
 use Weglot\Parser\Parser;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
+use Weglot\Parser\Event\AbstractEvent;
 
-class AbstractParserCrawlerAfterEventTest extends \Codeception\Test\Unit
+abstract class AbstractParserEventTest extends \Codeception\Test\Unit
 {
     /**
      * @var array
@@ -17,6 +18,11 @@ class AbstractParserCrawlerAfterEventTest extends \Codeception\Test\Unit
      * @var Parser
      */
     protected $parser;
+
+    /**
+     * @var string
+     */
+    const EVENT = '';
 
     protected function _before()
     {
@@ -35,4 +41,21 @@ class AbstractParserCrawlerAfterEventTest extends \Codeception\Test\Unit
     {
         $this->parser = new Parser($client, $config);
     }
+
+
+    public function testBehavior()
+    {
+        $this->parser->addListener(self::EVENT, [$this, 'listenerCallback']);
+        $translated = $this->parser->translate($this->sample['en'], 'en', 'fr');
+
+        $this->checks($translated);
+    }
+
+    abstract protected function listenerCallback(AbstractEvent $event);
+    abstract protected function checks($translated);
+}
+
+abstract class AbstractParserCrawlerAfterEventTest extends AbstractParserEventTest
+{
+    const EVENT = 'parser.crawler.after';
 }

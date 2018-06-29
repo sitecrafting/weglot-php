@@ -3,7 +3,7 @@
 use Weglot\Client\Client;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\Parser;
-use Weglot\Parser\Event\ParserCrawlerAfterEvent;
+use Weglot\Parser\Event\AbstractEvent;
 
 class ExcludeBlocksListenerTest extends AbstractParserCrawlerAfterEventTest
 {
@@ -14,20 +14,19 @@ class ExcludeBlocksListenerTest extends AbstractParserCrawlerAfterEventTest
         $this->parser = new Parser($client, $config, $this->excluded);
     }
 
-    public function testBehavior()
+    protected function listenerCallback(AbstractEvent $event)
     {
-        $this->parser->addListener('parser.crawler.after', function (ParserCrawlerAfterEvent $event) {
-            $crawler = $event->getContext()->getCrawler();
-            foreach ($this->excluded as $exception) {
-                $nodes = $crawler->filter($exception);
-                foreach ($nodes as $node) {
-                    $this->assertTrue($node->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE));
-                }
+        $crawler = $event->getContext()->getCrawler();
+        foreach ($this->excluded as $exception) {
+            $nodes = $crawler->filter($exception);
+            foreach ($nodes as $node) {
+                $this->assertTrue($node->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE));
             }
-        });
+        }
+    }
 
-        $translated = $this->parser->translate($this->sample['en'], 'en', 'fr');
-
+    protected function checks($translated)
+    {
         $this->assertEquals($this->excluded, $this->parser->getExcludeBlocks());
         $this->assertContains('Integrated within minutes', $translated);
         $this->assertContains('Manage your content', $translated);
