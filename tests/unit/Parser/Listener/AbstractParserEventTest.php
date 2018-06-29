@@ -27,7 +27,7 @@ abstract class AbstractParserEventTest extends \Codeception\Test\Unit
     /**
      * @var int
      */
-    const EVENT_PRIORITY = 0;
+    const EVENT_PRIORITY = -1;
 
     protected function _before()
     {

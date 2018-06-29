@@ -4,11 +4,6 @@ use Weglot\Parser\Event\AbstractEvent;
 
 class IgnoredNodesListenerTest extends AbstractParserCrawlerBeforeEventTest
 {
-    /**
-     * @var int
-     */
-    const EVENT_PRIORITY = -1;
-
     public function listenerCallback(AbstractEvent $event)
     {
         $source = $event->getContext()->getSource();
