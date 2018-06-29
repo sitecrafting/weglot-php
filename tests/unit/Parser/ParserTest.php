@@ -74,7 +74,11 @@ class ParserTest extends \Codeception\Test\Unit
         });
 
         $translated = $parser->translate($sample, 'en', 'fr');
+
         $this->assertEquals($excluded, $parser->getExcludeBlocks());
+        $this->assertContains('Integrated within minutes', $translated);
+        $this->assertContains('Manage your content', $translated);
+        $this->assertContains('Reliable and powerful', $translated);
     }
 
     public function testTranslateFromUrl()
