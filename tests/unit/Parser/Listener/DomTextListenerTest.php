@@ -1,6 +1,7 @@
 <?php
 
 use Weglot\Parser\Event\AbstractEvent;
+use Weglot\Client\Api\Enum\WordType;
 
 class DomTextListenerTest extends AbstractParserCrawlerAfterEventTest
 {
@@ -24,18 +25,19 @@ class DomTextListenerTest extends AbstractParserCrawlerAfterEventTest
 
     public function listenerCallback(AbstractEvent $event)
     {
-        $contains = false;
+        $count = 0;
 
         $translateEntry = $event->getContext()->getTranslateEntry();
         foreach ($translateEntry->getInputWords() as $inputWord)
         {
-            if($inputWord->getWord() === $this->words['en'])
+            if ($inputWord->getWord() === $this->words['en'] &&
+                $inputWord->getType() === WordType::TEXT)
             {
-                $contains = true;
+                ++$count;
             }
         }
 
-        $this->assertTrue($contains);
+        $this->assertTrue($count === 1);
     }
 
     public function checks($translated)
