@@ -24,6 +24,11 @@ abstract class AbstractParserEventTest extends \Codeception\Test\Unit
      */
     const EVENT = '';
 
+    /**
+     * @var int
+     */
+    const EVENT_PRIORITY = 0;
+
     protected function _before()
     {
         $this->sample = [
@@ -45,17 +50,24 @@ abstract class AbstractParserEventTest extends \Codeception\Test\Unit
 
     public function testBehavior()
     {
-        $this->parser->addListener(self::EVENT, [$this, 'listenerCallback']);
+        $class = get_called_class();
+
+        $this->parser->addListener($class::EVENT, [$this, 'listenerCallback'], $class::EVENT_PRIORITY);
         $translated = $this->parser->translate($this->sample['en'], 'en', 'fr');
 
         $this->checks($translated);
     }
 
-    abstract protected function listenerCallback(AbstractEvent $event);
-    abstract protected function checks($translated);
+    abstract public function listenerCallback(AbstractEvent $event);
+    abstract public function checks($translated);
 }
 
 abstract class AbstractParserCrawlerAfterEventTest extends AbstractParserEventTest
 {
     const EVENT = 'parser.crawler.after';
+}
+
+abstract class AbstractParserCrawlerBeforeEventTest extends AbstractParserEventTest
+{
+    const EVENT = 'parser.crawler.before';
 }

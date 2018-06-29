@@ -14,7 +14,7 @@ class ExcludeBlocksListenerTest extends AbstractParserCrawlerAfterEventTest
         $this->parser = new Parser($client, $config, $this->excluded);
     }
 
-    protected function listenerCallback(AbstractEvent $event)
+    public function listenerCallback(AbstractEvent $event)
     {
         $crawler = $event->getContext()->getCrawler();
         foreach ($this->excluded as $exception) {
@@ -25,7 +25,7 @@ class ExcludeBlocksListenerTest extends AbstractParserCrawlerAfterEventTest
         }
     }
 
-    protected function checks($translated)
+    public function checks($translated)
     {
         $this->assertEquals($this->excluded, $this->parser->getExcludeBlocks());
         $this->assertContains('Integrated within minutes', $translated);
