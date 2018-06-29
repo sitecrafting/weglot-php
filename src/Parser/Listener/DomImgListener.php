@@ -29,9 +29,6 @@ class DomImgListener extends AbstractCrawlerAfterListener
             case 'src':
                 $type = WordType::IMG_SRC;
                 break;
-            default:
-                throw new ParserCrawlerAfterListenerException('Found no word type for this image attribute.');
-                break;
         }
         return $type;
     }
