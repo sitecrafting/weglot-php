@@ -111,7 +111,7 @@ abstract class AbstractCrawlerAfterListener
     {
         return function ($translated) use ($node) {
             if ($node instanceof \DOMText) {
-                $node->textContent = $translated;
+                $node->nodeValue = $translated;
             } elseif ($node instanceof \DOMAttr) {
                 $node->value = $translated;
             } else {
