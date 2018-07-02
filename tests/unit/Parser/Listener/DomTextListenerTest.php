@@ -42,6 +42,6 @@ class DomTextListenerTest extends AbstractParserCrawlerAfterEventTest
 
     public function checks($translated)
     {
-        $this->assertContains($this->words['fr'], $translated);
+        $this->assertEquals($this->words['fr'], $translated);
     }
 }
