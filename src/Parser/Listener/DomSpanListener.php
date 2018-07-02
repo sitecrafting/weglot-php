@@ -4,7 +4,7 @@ namespace Weglot\Parser\Listener;
 
 use Weglot\Parser\Parser;
 
-class DomSpanListener extends AbstractCrawlerAfterListener
+final class DomSpanListener extends AbstractCrawlerAfterListener
 {
     /**
      * {@inheritdoc}

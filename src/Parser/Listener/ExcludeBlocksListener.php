@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Parser\Event\ParserCrawlerAfterEvent;
 use Weglot\Parser\Parser;
 
-class ExcludeBlocksListener
+final class ExcludeBlocksListener
 {
     /**
      * @param ParserCrawlerAfterEvent $event

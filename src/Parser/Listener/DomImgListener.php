@@ -6,7 +6,7 @@ use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Exception\ParserCrawlerAfterListenerException;
 use Weglot\Parser\Parser;
 
-class DomImgListener extends AbstractCrawlerAfterListener
+final class DomImgListener extends AbstractCrawlerAfterListener
 {
     /**
      * {@inheritdoc}

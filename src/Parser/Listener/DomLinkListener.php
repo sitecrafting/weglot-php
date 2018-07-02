@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Parser;
 
-class DomLinkListener extends AbstractCrawlerAfterListener
+final class DomLinkListener extends AbstractCrawlerAfterListener
 {
     /**
      * @var array

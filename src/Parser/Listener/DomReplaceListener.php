@@ -4,7 +4,7 @@ namespace Weglot\Parser\Listener;
 
 use Weglot\Parser\Event\ParserTranslatedEvent;
 
-class DomReplaceListener
+final class DomReplaceListener
 {
     /**
      * @param ParserTranslatedEvent $event

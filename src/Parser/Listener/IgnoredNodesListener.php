@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
 use Weglot\Parser\Exception\ParserContextException;
 
-class IgnoredNodesListener
+final class IgnoredNodesListener
 {
     /**
      * Nodes to ignore in DOM

@@ -4,7 +4,7 @@ namespace Weglot\Parser\Listener;
 
 use Weglot\Parser\Parser;
 
-class DomPlaceholderListener extends AbstractCrawlerAfterListener
+final class DomPlaceholderListener extends AbstractCrawlerAfterListener
 {
     protected $attributes = [
         'type' => [

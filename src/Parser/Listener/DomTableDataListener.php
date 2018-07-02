@@ -4,7 +4,7 @@ namespace Weglot\Parser\Listener;
 
 use Weglot\Parser\Parser;
 
-class DomTableDataListener extends AbstractCrawlerAfterListener
+final class DomTableDataListener extends AbstractCrawlerAfterListener
 {
     /**
      * {@inheritdoc}

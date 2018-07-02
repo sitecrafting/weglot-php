@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Parser;
 
-class DomInputDataListener extends AbstractCrawlerAfterListener
+final class DomInputDataListener extends AbstractCrawlerAfterListener
 {
     /**
      * {@inheritdoc}

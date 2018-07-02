@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Parser;
 
-class DomInputRadioListener extends AbstractCrawlerAfterListener
+final class DomInputRadioListener extends AbstractCrawlerAfterListener
 {
     /**
      * {@inheritdoc}

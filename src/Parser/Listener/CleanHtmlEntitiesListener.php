@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Parser\Event\ParserRenderEvent;
 use Weglot\Parser\Exception\ParserContextException;
 
-class CleanHtmlEntitiesListener
+final class CleanHtmlEntitiesListener
 {
     /**
      * @param ParserRenderEvent $event

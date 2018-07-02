@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Parser;
 
-class DomMetaContentListener extends AbstractCrawlerAfterListener
+final class DomMetaContentListener extends AbstractCrawlerAfterListener
 {
     protected $attributes = [
         'name' => [

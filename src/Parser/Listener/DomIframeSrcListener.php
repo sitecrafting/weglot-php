@@ -5,7 +5,7 @@ namespace Weglot\Parser\Listener;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Parser;
 
-class DomIframeSrcListener extends AbstractCrawlerAfterListener
+final class DomIframeSrcListener extends AbstractCrawlerAfterListener
 {
     /**
      * {@inheritdoc}
