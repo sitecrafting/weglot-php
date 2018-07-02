@@ -6,7 +6,33 @@ actor: UnitTester
 groups:
   client: ['tests/unit/Client/ClientTest.php', 'tests/unit/Client/Endpoint/Languages.php', 'tests/unit/Client/Endpoint/StatusTest.php', 'tests/unit/Client/Endpoint/TranslateTest.php']
   client.cache: ['tests/unit/Client/ClientCachingTest.php', 'tests/unit/Client/CachedTranslateTest.php']
-  parser: ['tests/unit/Parser/ParserTest.php', 'tests/unit/Parser/Check/Dom/MetaContentTest.php']
+  parser:
+    - 'tests/unit/Parser/ParserTest.php'
+    - 'tests/unit/Parser/ParserContextTest.php'
+    - 'tests/unit/Parser/ConfigProvider/ManualConfigProvider.php'
+    - 'tests/unit/Parser/ConfigProvider/ServerConfigProvider.php'
+    - 'tests/unit/Parser/Event/ParserCrawlerAfterEventTest.php'
+    - 'tests/unit/Parser/Event/ParserCrawlerAfterBeforeTest.php'
+    - 'tests/unit/Parser/Event/ParserInitEventTest.php'
+    - 'tests/unit/Parser/Event/ParserRenderEventTest.php'
+    - 'tests/unit/Parser/Event/ParserTranslatedEventTest.php'
+    - 'tests/unit/Parser/ConfigProvider/ServerConfigProvider.php'
+    - 'tests/unit/Parser/Listener/AbstractCrawlerAfterListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomIframeSrcListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomInputRadioListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomMetaContentListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomTableDataListenerTest.php'
+    - 'tests/unit/Parser/Listener/IgnoredNodesListenerTest.php'
+    - 'tests/unit/Parser/Listener/AbstractParserEventTest.php'
+    - 'tests/unit/Parser/Listener/DomImgListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomLinkListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomPlaceholderListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomTextListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomButtonListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomInputDataListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomLinkWithPdfListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomSpanListenerTest.php'
+    - 'tests/unit/Parser/Listener/ExcludeBlocksListenerTest.php'
   util: ['tests/unit/Util/UrlTest.php', 'tests/unit/Util/JsonLdTest.php']
 modules:
     enabled:
