@@ -5,7 +5,7 @@ namespace Weglot\Parser\Event;
 use Symfony\Component\EventDispatcher\Event;
 use Weglot\Parser\Parser;
 
-class ParserInitEvent extends Event
+final class ParserInitEvent extends Event
 {
     const NAME = 'parser.init';
 

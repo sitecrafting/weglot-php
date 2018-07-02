@@ -2,7 +2,7 @@
 
 namespace Weglot\Parser\Event;
 
-class ParserCrawlerAfterEvent extends AbstractEvent
+final class ParserCrawlerAfterEvent extends AbstractEvent
 {
     const NAME = 'parser.crawler.after';
 }

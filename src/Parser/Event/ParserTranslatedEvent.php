@@ -2,7 +2,7 @@
 
 namespace Weglot\Parser\Event;
 
-class ParserTranslatedEvent extends AbstractEvent
+final class ParserTranslatedEvent extends AbstractEvent
 {
     const NAME = 'parser.translated';
 }
