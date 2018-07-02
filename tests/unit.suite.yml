@@ -33,7 +33,7 @@ groups:
     - 'tests/unit/Parser/Listener/DomLinkWithPdfListenerTest.php'
     - 'tests/unit/Parser/Listener/DomSpanListenerTest.php'
     - 'tests/unit/Parser/Listener/ExcludeBlocksListenerTest.php'
-    - 'tests/unit/Parser/Listener/DomHTMLListenerTest.php'
+    - 'tests/unit/Parser/Listener/DomCombinedListenerTest.php'
   util: ['tests/unit/Util/UrlTest.php', 'tests/unit/Util/JsonLdTest.php']
 modules:
     enabled:
