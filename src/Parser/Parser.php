@@ -186,6 +186,7 @@ class Parser implements ParserInterface
         $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
 
         // crawling source
+        $hasBodyTag = (strpos($context->getSource(), 'body') !== false);
         $crawler = new Crawler($context->getSource());
         $context
             ->setCrawler($crawler)
@@ -205,6 +206,11 @@ class Parser implements ParserInterface
 
         // rendering crawled source
         $source = $context->getCrawler()->html();
+        if(!$hasBodyTag) {
+            $source = str_replace('<body>', '', $source);
+            $source = str_replace('</body>', '', $source);
+        }
+
         $context
             ->setCrawler(null)
             ->setSource($source);
