@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bleduc
- * Date: 25/06/2018
- * Time: 16:12
- */
 
 namespace Weglot\Parser;
 
