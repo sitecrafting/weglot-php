@@ -15,8 +15,8 @@ class DomTextListenerTest extends AbstractParserCrawlerAfterEventTest
         parent::_before();
 
         $this->words = [
-            'en' => 'The car is blue',
-            'fr' => 'La voiture est bleue'
+            'en' => file_get_contents(__DIR__ . '/../Resources/en-combined-sample.html'),
+            'fr' => file_get_contents(__DIR__ . '/../Resources/fr-combined-sample.html'),
         ];
 
         $this->sample['en'] = '<p>' .$this->words['en']. '</p>';
@@ -42,6 +42,6 @@ class DomTextListenerTest extends AbstractParserCrawlerAfterEventTest
 
     public function checks($translated)
     {
-        $this->assertContains($this->words['fr'], $translated);
+        $this->assertEquals($this->sample['fr'], $translated);
     }
 }
