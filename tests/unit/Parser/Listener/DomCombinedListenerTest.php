@@ -3,7 +3,7 @@
 use Weglot\Parser\Event\AbstractEvent;
 use Weglot\Client\Api\Enum\WordType;
 
-class DomHTMLListenerTest extends AbstractParserCrawlerAfterEventTest
+class DomCombinedListenerTest extends AbstractParserCrawlerAfterEventTest
 {
     /**
      * @var array
