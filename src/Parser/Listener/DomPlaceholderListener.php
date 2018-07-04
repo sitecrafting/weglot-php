@@ -6,13 +6,11 @@ use Weglot\Parser\Parser;
 
 final class DomPlaceholderListener extends AbstractCrawlerAfterListener
 {
-    protected $attributes = [
-        'type' => [
-            'text',
-            'password',
-            'search',
-            'email'
-        ]
+    protected $types = [
+        'text',
+        'password',
+        'search',
+        'email'
     ];
 
     /**
@@ -21,10 +19,8 @@ final class DomPlaceholderListener extends AbstractCrawlerAfterListener
     protected function xpath()
     {
         $selectors = [];
-        foreach ($this->attributes as $name => $values) {
-            foreach ($values as $value) {
-                $selectors[] = '@' .$name. ' = \'' .$value. '\'';
-            }
+        foreach ($this->types as $type) {
+            $selectors[] = '@type = \'' .$type. '\'';
         }
 
         return '//*[(self::input[' .implode(' or ', $selectors). '] or self::textarea) and not(ancestor-or-self::*[@' .Parser::ATTRIBUTE_NO_TRANSLATE. '])]/@placeholder';
