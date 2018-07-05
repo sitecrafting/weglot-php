@@ -78,8 +78,7 @@ class DomLinkListenerTest extends AbstractParserCrawlerAfterEventTest
 
         $translateEntry = $event->getContext()->getTranslateEntry();
 
-        foreach ($translateEntry->getInputWords() as $inputWord)
-        {
+        foreach ($translateEntry->getInputWords() as $inputWord) {
             $pass = false;
 
             foreach ($this->attributesWords['en'] as $attribute => $word) {
@@ -95,7 +94,7 @@ class DomLinkListenerTest extends AbstractParserCrawlerAfterEventTest
                 $pass = true;
             }
 
-            if(!$pass) {
+            if (!$pass) {
                 $this->assertTrue($pass);
             }
         }

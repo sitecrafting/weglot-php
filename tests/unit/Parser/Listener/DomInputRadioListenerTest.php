@@ -34,11 +34,9 @@ class DomInputRadioListenerTest extends AbstractParserCrawlerAfterEventTest
         $count = 0;
 
         $translateEntry = $event->getContext()->getTranslateEntry();
-        foreach ($translateEntry->getInputWords() as $inputWord)
-        {
+        foreach ($translateEntry->getInputWords() as $inputWord) {
             if ($inputWord->getWord() === $this->words['en'] &&
-                $inputWord->getType() === WordType::VALUE)
-            {
+                $inputWord->getType() === WordType::VALUE) {
                 ++$count;
             }
         }

@@ -15,11 +15,9 @@ final class ExcludeBlocksListener
         $crawler = $event->getContext()->getCrawler();
         $excludeBlocks = $event->getContext()->getParser()->getExcludeBlocks();
 
-        foreach ($excludeBlocks as $exception)
-        {
+        foreach ($excludeBlocks as $exception) {
             $nodes = $crawler->filter($exception);
-            foreach ($nodes as $node)
-            {
+            foreach ($nodes as $node) {
                 $node->setAttribute(Parser::ATTRIBUTE_NO_TRANSLATE, '');
             }
         }
