@@ -121,17 +121,9 @@ abstract class AbstractCrawlerAfterListener
                 throw new ParserCrawlerAfterListenerException('No callback behavior set for this node type.');
             }
 
-            $reservedInXML = [
-                '&' => '&amp;',
-                '"' => '&quot;',
-                '\'' => '&apos;',
-                '<' => '&lt;',
-                '>' => '&gt;',
-            ];
-            foreach ($reservedInXML as $reserved => $accepted) {
-                $text = str_replace($accepted, $reserved, $text);
-                $text = str_replace($reserved, $accepted, $text);
-            }
+            // reserved character in XML: &
+            $text = str_replace('&amp;', '&', $text);
+            $text = str_replace('&', '&amp;', $text);
 
             $node->$attribute = $text;
         };
