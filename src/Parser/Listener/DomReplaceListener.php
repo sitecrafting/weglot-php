@@ -16,7 +16,7 @@ final class DomReplaceListener
 
         foreach ($replaceMap as $index => $callable) {
             $wordType = $outputWords[$index];
-            $callable($wordType->getWord());
+            call_user_func($callable, $wordType->getWord());
         }
     }
 }

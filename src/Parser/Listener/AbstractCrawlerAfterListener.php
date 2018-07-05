@@ -109,14 +109,23 @@ abstract class AbstractCrawlerAfterListener
      */
     protected function replaceCallback(\DOMNode $node)
     {
-        return function ($translated) use ($node) {
+        return function ($text) use ($node) {
+            $attribute = '';
             if ($node instanceof \DOMText) {
-                $node->nodeValue = $translated;
+                $attribute = 'nodeValue';
             } elseif ($node instanceof \DOMAttr) {
-                $node->value = $translated;
-            } else {
+                $attribute = 'value';
+            }
+
+            if ($attribute === '') {
                 throw new ParserCrawlerAfterListenerException('No callback behavior set for this node type.');
             }
+
+            // reserved character in XML: &
+            $text = str_replace('&amp;', '&', $text);
+            $text = str_replace('&', '&amp;', $text);
+
+            $node->$attribute = $text;
         };
     }
 

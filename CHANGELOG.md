@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.6.1] - 2018-07-05
+### Fixed
+- Parser: full support for & in XML documents
+- Parser: improve custom trim function
+
 ## [0.6.0] - 2018-07-05
 ### Changed
 - Parser: whole behavior has been reworked to make it: faster, stronger and tested
