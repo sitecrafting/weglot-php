@@ -14,7 +14,7 @@ class Text
      */
     public static function fullTrim($word)
     {
-        return trim($word, " \t\n\r\0\x0B\xA0�");
+        return trim($word, " \t\n\r\0\x0B");
     }
 
     /**
