@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.6.0] - 2018-07-05
+### Changed
+- Parser: whole behavior has been reworked to make it: faster, stronger and tested
+
 ## [0.5.8] - 2018-06-26
 ### Changed
 - Simplify code and fix all ignore nodes related problems

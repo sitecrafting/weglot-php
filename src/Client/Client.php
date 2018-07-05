@@ -22,7 +22,7 @@ class Client
      *
      * @var string
      */
-    const VERSION = '0.5.8';
+    const VERSION = '0.6.0';
 
     /**
      * Weglot API Key
