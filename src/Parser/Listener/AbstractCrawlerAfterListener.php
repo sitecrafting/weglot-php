@@ -91,8 +91,11 @@ abstract class AbstractCrawlerAfterListener
     {
         $boolean =
             $value !== '' &&
+            !in_array($node->parentNode->localName, ['script', 'style', 'noscript', 'code']) &&
             !is_numeric($value) &&
-            !preg_match('/^\d+%$/', $value);
+            !preg_match('/^\d+%$/', $value) &&
+            !Text::contains($value, '[vc_') &&
+            !Text::contains($value, '<?php');
 
         if ($node instanceof \DOMText) {
             $boolean = $boolean && strpos($value, Parser::ATTRIBUTE_NO_TRANSLATE) === false;
