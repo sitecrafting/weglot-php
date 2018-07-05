@@ -2,34 +2,42 @@
 
 namespace Weglot\Parser;
 
-use SimpleHtmlDom\simple_html_dom;
-use Weglot\Client\Api\Exception\ApiError;
-use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
-use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Client\Api\Exception\MissingRequiredParamException;
-use Weglot\Client\Api\Exception\MissingWordsOutputException;
-use Weglot\Client\Api\TranslateEntry;
-use Weglot\Client\Api\WordCollection;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
-use Weglot\Parser\Check\DomChecker;
-use Weglot\Parser\Check\DomCheckerProvider;
-use Weglot\Parser\Check\JsonLdChecker;
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
-use Weglot\Parser\ConfigProvider\ServerConfigProvider;
-use Weglot\Parser\Formatter\DomFormatter;
-use Weglot\Parser\Formatter\ExcludeBlocksFormatter;
-use Weglot\Parser\Formatter\IgnoredNodes;
-use Weglot\Parser\Formatter\JsonLdFormatter;
+use Weglot\Parser\Event\ParserCrawlerAfterEvent;
+use Weglot\Parser\Event\ParserCrawlerBeforeEvent;
+use Weglot\Parser\Event\ParserTranslatedEvent;
+use Weglot\Parser\Event\ParserInitEvent;
+use Weglot\Parser\Event\ParserRenderEvent;
+use Weglot\Parser\Listener\CleanHtmlEntitiesListener;
+use Weglot\Parser\Listener\DomButtonListener;
+use Weglot\Parser\Listener\DomIframeSrcListener;
+use Weglot\Parser\Listener\DomImgListener;
+use Weglot\Parser\Listener\DomInputDataListener;
+use Weglot\Parser\Listener\DomInputRadioListener;
+use Weglot\Parser\Listener\DomLinkListener;
+use Weglot\Parser\Listener\DomMetaContentListener;
+use Weglot\Parser\Listener\DomPlaceholderListener;
+use Weglot\Parser\Listener\DomReplaceListener;
+use Weglot\Parser\Listener\DomSpanListener;
+use Weglot\Parser\Listener\DomTableDataListener;
+use Weglot\Parser\Listener\DomTextListener;
+use Weglot\Parser\Listener\ExcludeBlocksListener;
+use Weglot\Parser\Listener\IgnoredNodesListener;
 
 /**
  * Class Parser
  * @package Weglot\Parser
  */
-class Parser
+class Parser implements ParserInterface
 {
     /**
      * Attribute to match in DOM when we don't want to translate innertext & childs.
+     *
+     * @var string
      */
     const ATTRIBUTE_NO_TRANSLATE = 'data-wg-notranslate';
 
@@ -46,42 +54,67 @@ class Parser
     /**
      * @var array
      */
-    protected $excludeBlocks;
+    protected $excludeBlocks = [];
 
     /**
-     * @var string
+     * @var EventDispatcher
      */
-    protected $languageFrom;
+    protected $eventDispatcher;
 
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    protected $languageTo;
-
-    /**
-     * @var WordCollection
-     */
-    protected $words;
-
-    /**
-     * @var DomCheckerProvider
-     */
-    protected $domCheckerProvider;
-
-    /**
-     * Parser constructor.
-     * @param Client $client
-     * @param ConfigProviderInterface $config
-     * @param array $excludeBlocks
-     */
-    public function __construct(Client $client, ConfigProviderInterface $config, array $excludeBlocks = [])
+    public function __construct(Client $client, ConfigProviderInterface $configProvider, array $excludeBlocks = [], array $listeners = [])
     {
+        // config-related stuff
         $this
             ->setClient($client)
-            ->setConfigProvider($config)
-            ->setExcludeBlocks($excludeBlocks)
-            ->setWords(new WordCollection())
-            ->setDomCheckerProvider(new DomCheckerProvider($this));
+            ->setConfigProvider($configProvider)
+            ->setExcludeBlocks($excludeBlocks);
+
+        // init EventDispatcher
+        $this->eventDispatcher = new EventDispatcher();
+        $this->defaultListeners();
+        foreach ($listeners as $eventName => $callback) {
+            $this->addListener($eventName, $callback);
+        }
+
+        // dispatch - parser.init
+        $event = new ParserInitEvent($this);
+        $this->eventDispatcher->dispatch(ParserInitEvent::NAME, $event);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addListener($eventName, $listener, $priority = 0)
+    {
+        $this->eventDispatcher->addListener($eventName, $listener, $priority);
+    }
+
+    /**
+     * Add default listeners
+     */
+    protected function defaultListeners()
+    {
+        $this->addListener('parser.crawler.before', new IgnoredNodesListener());
+
+        $this->addListener('parser.crawler.after', new ExcludeBlocksListener(), 1);
+        $this->addListener('parser.crawler.after', new DomTextListener());
+        $this->addListener('parser.crawler.after', new DomButtonListener());
+        $this->addListener('parser.crawler.after', new DomIframeSrcListener());
+        $this->addListener('parser.crawler.after', new DomImgListener());
+        $this->addListener('parser.crawler.after', new DomInputDataListener());
+        $this->addListener('parser.crawler.after', new DomInputRadioListener());
+        $this->addListener('parser.crawler.after', new DomLinkListener());
+        $this->addListener('parser.crawler.after', new DomMetaContentListener());
+        $this->addListener('parser.crawler.after', new DomPlaceholderListener());
+        $this->addListener('parser.crawler.after', new DomSpanListener());
+        $this->addListener('parser.crawler.after', new DomTableDataListener());
+
+        $this->addListener('parser.translated', new DomReplaceListener());
+        
+        $this->addListener('parser.render', new CleanHtmlEntitiesListener());
     }
 
     /**
@@ -104,10 +137,29 @@ class Parser
     }
 
     /**
+     * @param ConfigProviderInterface $configProvider
+     * @return $this
+     */
+    public function setConfigProvider(ConfigProviderInterface $configProvider)
+    {
+        $this->configProvider = $configProvider;
+
+        return $this;
+    }
+
+    /**
+     * @return ConfigProviderInterface
+     */
+    public function getConfigProvider()
+    {
+        return $this->configProvider;
+    }
+
+    /**
      * @param array $excludeBlocks
      * @return $this
      */
-    public function setExcludeBlocks(array $excludeBlocks)
+    public function setExcludeBlocks(array $excludeBlocks = [])
     {
         $this->excludeBlocks = $excludeBlocks;
 
@@ -123,238 +175,50 @@ class Parser
     }
 
     /**
-     * @param ConfigProviderInterface $config
-     * @return $this
-     */
-    public function setConfigProvider(ConfigProviderInterface $config)
-    {
-        $this->configProvider = $config;
-
-        return $this;
-    }
-
-    /**
-     * @return ConfigProviderInterface
-     */
-    public function getConfigProvider()
-    {
-        return $this->configProvider;
-    }
-
-    /**
-     * @param string $languageFrom
-     * @return $this
-     */
-    public function setLanguageFrom($languageFrom)
-    {
-        $this->languageFrom = $languageFrom;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLanguageFrom()
-    {
-        return $this->languageFrom;
-    }
-
-    /**
-     * @param string $languageTo
-     * @return $this
-     */
-    public function setLanguageTo($languageTo)
-    {
-        $this->languageTo = $languageTo;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLanguageTo()
-    {
-        return $this->languageTo;
-    }
-
-    /**
-     * @param WordCollection $wordCollection
-     * @return $this
-     */
-    public function setWords(WordCollection $wordCollection)
-    {
-        $this->words = $wordCollection;
-
-        return $this;
-    }
-
-    /**
-     * @return WordCollection
-     */
-    public function getWords()
-    {
-        return $this->words;
-    }
-
-    /**
-     * @param DomCheckerProvider $domCheckerProvider
-     * @return $this
-     */
-    public function setDomCheckerProvider(DomCheckerProvider $domCheckerProvider)
-    {
-        $this->domCheckerProvider = $domCheckerProvider;
-        return $this;
-    }
-
-    /**
-     * @return DomCheckerProvider
-     */
-    public function getDomCheckerProvider()
-    {
-        return $this->domCheckerProvider;
-    }
-
-    /**
-     * @param string $source
-     * @param string $languageFrom
-     * @param string $languageTo
-     * @return string
-     * @throws ApiError
-     * @throws InputAndOutputCountMatchException
-     * @throws InvalidWordTypeException
-     * @throws MissingRequiredParamException
-     * @throws MissingWordsOutputException
+     * {@inheritdoc}
      */
     public function translate($source, $languageFrom, $languageTo)
     {
-        // setters
-        $this
-            ->setLanguageFrom($languageFrom)
-            ->setLanguageTo($languageTo);
+        $context = new ParserContext($this, $languageFrom, $languageTo, $source);
 
-        if ($this->client->getProfile()->getIgnoredNodes()) {
-            $ignoredNodesFormatter = new IgnoredNodes($source);
-            $source = $ignoredNodesFormatter->getSource();
+        // dispatch - parser.crawler.before
+        $event = new ParserCrawlerBeforeEvent($context);
+        $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
+
+        // crawling source
+        $hasBodyTag = (strpos($context->getSource(), 'body') !== false);
+        $crawler = new Crawler($context->getSource());
+        $context
+            ->setCrawler($crawler)
+            ->generateTranslateEntry();
+
+        // dispatch - parser.crawler.after
+        $event = new ParserCrawlerAfterEvent($context);
+        $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
+
+        // translating through Weglot API
+        $translate = new Translate($context->getTranslateEntry(), $this->getClient());
+        $context->setTranslateEntry($translate->handle());
+
+        // dispatch - parser.translated
+        $event = new ParserTranslatedEvent($context);
+        $this->eventDispatcher->dispatch(ParserTranslatedEvent::NAME, $event);
+
+        // rendering crawled source
+        $source = $context->getCrawler()->html();
+        if(!$hasBodyTag) {
+            $source = str_replace('<body>', '', $source);
+            $source = str_replace('</body>', '', $source);
         }
 
-        // simple_html_dom
-        $dom = \SimpleHtmlDom\str_get_html(
-            $source,
-            true,
-            true,
-            DEFAULT_TARGET_CHARSET,
-            false
-        );
+        $context
+            ->setCrawler(null)
+            ->setSource($source);
 
-        // if simple_html_dom can't parse the $source, it returns false
-        // so we just return raw $source
-        if ($dom === false) {
-            return $source;
-        }
+        // dispatch - parser.render
+        $event = new ParserRenderEvent($context);
+        $this->eventDispatcher->dispatch(ParserRenderEvent::NAME, $event);
 
-        // exclude blocks
-        if (!empty($this->excludeBlocks)) {
-            $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
-            $dom = $excludeBlocks->getDom();
-        }
-
-        // checkers
-        list($nodes, $jsons) = $this->checkers($dom);
-
-        // api communication
-        $translated = $this->apiTranslate($dom);
-
-        // formatters
-        $this->formatters($translated, $nodes, $jsons);
-        return $dom->save();
-    }
-
-    /**
-     * @param simple_html_dom $dom
-     * @return TranslateEntry
-     * @throws ApiError
-     * @throws InputAndOutputCountMatchException
-     * @throws InvalidWordTypeException
-     * @throws MissingRequiredParamException
-     * @throws MissingWordsOutputException
-     */
-    protected function apiTranslate(simple_html_dom $dom)
-    {
-        // Translate endpoint parameters
-        $params = [
-            'language_from' => $this->getLanguageFrom(),
-            'language_to' => $this->getLanguageTo()
-        ];
-
-        // if data is coming from $_SERVER, load it ...
-        if ($this->getConfigProvider() instanceof ServerConfigProvider) {
-            $this->getConfigProvider()->loadFromServer();
-        }
-
-        if ($this->getConfigProvider()->getAutoDiscoverTitle()) {
-            $params['title'] = $this->getTitle($dom);
-        }
-        $params = array_merge($params, $this->getConfigProvider()->asArray());
-
-        try {
-            $translate = new TranslateEntry($params);
-            $translate->setInputWords($this->getWords());
-        } catch (\Exception $e) {
-            die($e->getMessage());
-        }
-        $translate = new Translate($translate, $this->client);
-
-        $translated = $translate->handle();
-
-        return $translated;
-    }
-
-    /**
-     * @param simple_html_dom $dom
-     * @return string
-     */
-    protected function getTitle(simple_html_dom $dom)
-    {
-        $title = 'Empty title';
-        foreach ($dom->find('title') as $k => $node) {
-            if ($node->innertext != '') {
-                $title = $node->innertext;
-            }
-        }
-        return $title;
-    }
-
-    /**
-     * @param $dom
-     * @return array
-     * @throws InvalidWordTypeException
-     */
-    protected function checkers($dom)
-    {
-        $nodes = $this->getDomCheckerProvider()->handle($dom);
-
-        $checker = new JsonLdChecker($this, $dom);
-        $jsons = $checker->handle();
-
-        return [
-            $nodes,
-            $jsons
-        ];
-    }
-
-    /**
-     * @param TranslateEntry $translateEntry
-     * @param array $nodes
-     * @param array $jsons
-     */
-    protected function formatters(TranslateEntry $translateEntry, array $nodes, array $jsons)
-    {
-        $formatter = new DomFormatter($this, $translateEntry);
-        $formatter->handle($nodes);
-
-        $formatter = new JsonLdFormatter($this, $translateEntry, count($nodes));
-        $formatter->handle($jsons);
+        return $context->getSource();
     }
 }

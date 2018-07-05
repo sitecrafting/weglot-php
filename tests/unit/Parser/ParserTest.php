@@ -5,16 +5,12 @@ use Weglot\Parser\ConfigProvider\ManualConfigProvider;
 use Weglot\Client\Api\Enum\BotType;
 use Weglot\Client\Client;
 use Weglot\Parser\Parser;
+use Weglot\Util\Site;
 
 class ParserTest extends \Codeception\Test\Unit
 {
     /**
-     * @var \UnitTester
-     */
-    protected $tester;
-
-    /**
-     * @var string
+     * @var array
      */
     protected $url;
 
@@ -28,14 +24,13 @@ class ParserTest extends \Codeception\Test\Unit
      */
     protected $client;
 
-    /**
-     * @var Parser
-     */
-    protected $parser;
 
     protected function _before()
     {
-        $this->url = 'https://weglot.com/documentation/getting-started';
+        $this->url = [
+            'source' => 'https://weglot.com/documentation/getting-started',
+            'translated' => 'https://weglot.com/fr/documentation/getting-started'
+        ];
 
         // Config with $_SERVER variables
         $_SERVER['SERVER_NAME'] = 'weglot.com';
@@ -47,7 +42,7 @@ class ParserTest extends \Codeception\Test\Unit
 
         // Config manually
         $this->config = [
-            'manual'    => new ManualConfigProvider($this->url, BotType::HUMAN),
+            'manual'    => new ManualConfigProvider($this->url['source'], BotType::HUMAN),
             'server'    => new ServerConfigProvider()
         ];
 
@@ -55,45 +50,30 @@ class ParserTest extends \Codeception\Test\Unit
         $this->client = new Client(getenv('WG_API_KEY'));
     }
 
-    // tests
-    public function testTranslateManual()
+    public function testNoTranslate()
     {
-        // Parser
-        $this->parser = new Parser($this->client, $this->config['manual']);
-
-        // Run the Parser
-        $translatedContent = $this->parser->translate(
-            $this->_getContent($this->url),
-            'en',
-            'de'
-        );
-
-        $this->assertTrue(\is_string($translatedContent));
+        $this->assertEquals('data-wg-notranslate', Parser::ATTRIBUTE_NO_TRANSLATE);
     }
 
-    public function testTranslateServer()
+    public function testTranslateFromUrl()
     {
-        // Parser
-        $this->parser = new Parser($this->client, $this->config['server']);
+        $parser = new Parser($this->client, $this->config['server']);
+        $source = Site::get($this->url['source']);
 
-        // Run the Parser
-        $translatedContent = $this->parser->translate(
-            $this->_getContent($this->url),
-            'en',
-            'de'
-        );
-        $this->assertTrue(\is_string($translatedContent));
+        $translated = $parser->translate($source, 'en', 'fr');
+        $this->assertNotEquals($translated, $source);
+
+        $source = Site::get($this->url['translated']);
+        $similarity = similar_text($source, $translated) / strlen($source);
+        $this->assertTrue($similarity >= 0.8);
     }
 
-    private function _getContent($url)
+    public function testTranslateFromString()
     {
-        // Fetching url content
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-        $content = curl_exec($ch);
-        curl_close($ch);
+        $parser = new Parser($this->client, $this->config['server']);
+        $sample = file_get_contents(__DIR__ . '/Resources/en-sample.html');
 
-        return $content;
+        $translated = $parser->translate($sample, 'en', 'fr');
+        $this->assertNotEquals($translated, $sample);
     }
 }
