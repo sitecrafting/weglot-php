@@ -206,7 +206,7 @@ class Parser implements ParserInterface
 
         // rendering crawled source
         $source = $context->getCrawler()->html();
-        if(!$hasBodyTag) {
+        if (!$hasBodyTag) {
             $source = str_replace('<body>', '', $source);
             $source = str_replace('</body>', '', $source);
         }

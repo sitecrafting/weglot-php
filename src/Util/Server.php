@@ -111,7 +111,7 @@ class Server
      */
     public static function getPort(array $server)
     {
-        if($server['SERVER_PORT'] === 443 && self::getProtocol($server) === 'https') {
+        if ($server['SERVER_PORT'] === 443 && self::getProtocol($server) === 'https') {
             return '';
         }
         return ':' .$server['SERVER_PORT'];

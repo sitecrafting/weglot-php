@@ -37,8 +37,7 @@ class DomLinkWithPdfListenerTest extends AbstractParserCrawlerAfterEventTest
 
         $translateEntry = $event->getContext()->getTranslateEntry();
 
-        foreach ($translateEntry->getInputWords() as $inputWord)
-        {
+        foreach ($translateEntry->getInputWords() as $inputWord) {
             if (($inputWord->getWord() === $this->link && $inputWord->getType() === WordType::PDF_HREF) ||
                 ($inputWord->getWord() === $this->words['en'] && $inputWord->getType() === WordType::TEXT)) {
                 ++$count;

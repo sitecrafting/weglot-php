@@ -56,8 +56,7 @@ HTML;
         $count = 0;
 
         $translateEntry = $event->getContext()->getTranslateEntry();
-        foreach ($translateEntry->getInputWords() as $inputWord)
-        {
+        foreach ($translateEntry->getInputWords() as $inputWord) {
             if ($inputWord->getType() === WordType::VALUE && in_array($inputWord->getWord(), $this->words['en'])) {
                 ++$count;
             }
