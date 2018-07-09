@@ -9,6 +9,16 @@ class Crawler extends BaseCrawler
     /**
      * @var bool
      */
+    protected $hasHtml = false;
+
+    /**
+     * @var array
+     */
+    protected $htmlMatches = [];
+
+    /**
+     * @var bool
+     */
     protected $hasHead = false;
 
     /**
@@ -16,11 +26,19 @@ class Crawler extends BaseCrawler
      */
     protected $hasBody = false;
 
+    public function __construct($node = null, $uri = null, $baseHref = null)
+    {
+        parent::__construct($node, $uri, $baseHref);
+    }
+
     /**
      * {@inheritdoc}
      */
     public function addHtmlContent($content, $charset = 'UTF-8')
     {
+        if (preg_match('/(?<before><html(?:.*?)?>)(?:.*?)(?<after><\/html>)/is', $content, $this->htmlMatches)) {
+            $this->hasHtml = true;
+        }
         if (preg_match('/<head(?:.*?)?>(?:.*?)<\/head>/i', $content)) {
             $this->hasHead = true;
         }
@@ -58,7 +76,7 @@ class Crawler extends BaseCrawler
         $childrens = null;
 
         try {
-            $xml = simplexml_load_string($html);
+            $xml = @simplexml_load_string($html);
         } catch (\Exception $e) {
             // ignore
         }
@@ -78,6 +96,10 @@ class Crawler extends BaseCrawler
                 }
                 $html = html_entity_decode($temp);
             }
+        }
+
+        if ($this->hasHtml) {
+            $html = $this->htmlMatches['before'].$html.$this->htmlMatches['after'];
         }
 
         return $html;
