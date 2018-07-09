@@ -21,20 +21,11 @@ class Crawler extends BaseCrawler
      */
     public function addHtmlContent($content, $charset = 'UTF-8')
     {
-        $xml = false;
-
-        try {
-            $xml = simplexml_load_string($content);
-        } catch (\Exception $e) {
-            // ignore
+        if (preg_match('/<head (?:.*?)>(?:.*?)<\/head>/i', $content)) {
+            $this->hasHead = true;
         }
-
-        if ($xml !== false) {
-            $elements = $xml->xpath('//body');
-            $this->hasBody = count($elements) > 0;
-
-            $elements = $xml->xpath('//head');
-            $this->hasHead = count($elements) > 0;
+        if (preg_match('/<body (?:.*?)>(?:.*?)<\/body>/i', $content)) {
+            $this->hasBody = true;
         }
 
         parent::addHtmlContent($content, $charset);
