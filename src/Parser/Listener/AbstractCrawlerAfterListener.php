@@ -74,7 +74,7 @@ abstract class AbstractCrawlerAfterListener
         $fixed = Text::fullTrim($value);
         if ($node instanceof \DOMText) {
             $fixed = str_replace("\n", '', $fixed);
-            $fixed = preg_replace('/\s+/', ' ', $fixed);
+            $fixed = preg_replace('/\s+/u', ' ', $fixed);
         }
 
         return $fixed;
