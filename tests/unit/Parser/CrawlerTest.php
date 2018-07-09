@@ -54,4 +54,22 @@ class CrawlerTest extends \Codeception\Test\Unit
         $translated = $this->parser->translate('<body class="expanded" onload="load();"><p>Test</p></body>', 'fr', 'en');
         $this->assertEquals('<body class="expanded" onload="load();"><p>Test</p></body>', $translated);
     }
+
+    public function testWrapping()
+    {
+        $translated = $this->parser->translate('<html><body><p>Test</p></body></html>', 'fr', 'en');
+        $this->assertEquals('<html><body><p>Test</p></body></html>', $translated);
+
+        $translated = $this->parser->translate('<html><body><p>Test</p></body></html>', 'fr', 'en');
+        $this->assertEquals('<html><body><p>Test</p></body></html>', $translated);
+
+        $translated = $this->parser->translate('<html lang="en" prefix="og: http://ogp.me/ns#"><body><p>Test</p></body></html>', 'fr', 'en');
+        $this->assertEquals('<html lang="en" prefix="og: http://ogp.me/ns#"><body><p>Test</p></body></html>', $translated);
+
+        $translated = $this->parser->translate('<html><head><title>Test</title></head></html>', 'fr', 'en');
+        $this->assertEquals('<html><head><title>Test</title></head></html>', $translated);
+
+        $translated = $this->parser->translate('<html lang="en" prefix="og: http://ogp.me/ns#"><head><title>Test</title></head></html>', 'fr', 'en');
+        $this->assertEquals('<html lang="en" prefix="og: http://ogp.me/ns#"><head><title>Test</title></head></html>', $translated);
+    }
 }
