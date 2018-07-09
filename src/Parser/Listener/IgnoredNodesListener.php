@@ -34,7 +34,7 @@ final class IgnoredNodesListener
         $source = $event->getContext()->getSource();
 
         // time for the BIG regex ...
-        $pattern = '#<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>[^>]*?)\<\/(?<tagclosed>' .implode('|', $this->ignoredNodes). ')>#i';
+        $pattern = '#<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>[^>]+?)\<\/(?<tagclosed>' .implode('|', $this->ignoredNodes). ')>#i';
         $matches = [];
 
         // Using while instead of preg_match_all is the key to handle nested ignored nodes.

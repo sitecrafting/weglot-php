@@ -71,10 +71,10 @@ abstract class AbstractCrawlerAfterListener
      */
     protected function fix(\DOMNode $node, $value)
     {
-        $fixed = Text::fullTrim($value);
+        $fixed = $value;
         if ($node instanceof \DOMText) {
             $fixed = str_replace("\n", '', $fixed);
-            $fixed = preg_replace('/\s+/', ' ', $fixed);
+            $fixed = preg_replace('/\s+/u', ' ', $fixed);
         }
 
         return $fixed;
@@ -90,9 +90,12 @@ abstract class AbstractCrawlerAfterListener
     protected function validation(\DOMNode $node, $value)
     {
         $boolean =
-            $value !== '' &&
-            !is_numeric($value) &&
-            !preg_match('/^\d+%$/', $value);
+            Text::fullTrim($value) !== '' &&
+            !in_array($node->parentNode->localName, ['script', 'style', 'noscript', 'code']) &&
+            !is_numeric(Text::fullTrim($value)) &&
+            !preg_match('/^\d+%$/', Text::fullTrim($value)) &&
+            !Text::contains(Text::fullTrim($value), '[vc_') &&
+            !Text::contains(Text::fullTrim($value), '<?php');
 
         if ($node instanceof \DOMText) {
             $boolean = $boolean && strpos($value, Parser::ATTRIBUTE_NO_TRANSLATE) === false;

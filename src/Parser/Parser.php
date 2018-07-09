@@ -2,7 +2,6 @@
 
 namespace Weglot\Parser;
 
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
@@ -186,7 +185,7 @@ class Parser implements ParserInterface
         $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
 
         // crawling source
-        $hasBodyTag = (strpos($context->getSource(), 'body') !== false);
+        $hasBodyTag = (strpos($context->getSource(), '<body') !== false);
         $crawler = new Crawler($context->getSource());
         $context
             ->setCrawler($crawler)
