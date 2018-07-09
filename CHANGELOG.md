@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.6.2] - 2018-07-09
+### Fixed
+- #70, Recover forgotten checks
+- #73, Don't send ignoredNodes content when they don't contain any text
+- #74, Don't add head/body tags when they were not in original content
+- #75, Unicode support
+- #72, Recover html & doctype tags
+- #77, Don't trim translated words (we only trim them for checks)
+
 ## [0.6.1] - 2018-07-05
 ### Fixed
 - Parser: full support for & in XML documents
