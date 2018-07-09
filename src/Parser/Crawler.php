@@ -21,10 +21,10 @@ class Crawler extends BaseCrawler
      */
     public function addHtmlContent($content, $charset = 'UTF-8')
     {
-        if (preg_match('/<head (?:.*?)>(?:.*?)<\/head>/i', $content)) {
+        if (preg_match('/<head(?:.*?)?>(?:.*?)<\/head>/i', $content)) {
             $this->hasHead = true;
         }
-        if (preg_match('/<body (?:.*?)>(?:.*?)<\/body>/i', $content)) {
+        if (preg_match('/<body(?:.*?)?>(?:.*?)<\/body>/i', $content)) {
             $this->hasBody = true;
         }
 
@@ -37,10 +37,6 @@ class Crawler extends BaseCrawler
      */
     public function html()
     {
-        if ($this->count() === 0) {
-            throw new \InvalidArgumentException('The current node list is empty.');
-        }
-
         $html = '';
         foreach ($this->getNode(0)->childNodes as $child) {
             $html .= $child->ownerDocument->saveHTML($child);
