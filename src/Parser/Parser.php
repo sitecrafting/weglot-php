@@ -2,7 +2,6 @@
 
 namespace Weglot\Parser;
 
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
