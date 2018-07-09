@@ -9,6 +9,16 @@ class Crawler extends BaseCrawler
     /**
      * @var bool
      */
+    protected $hasDoctype = false;
+
+    /**
+     * @var array
+     */
+    protected $doctypeMatches = [];
+
+    /**
+     * @var bool
+     */
     protected $hasHtml = false;
 
     /**
@@ -29,6 +39,18 @@ class Crawler extends BaseCrawler
     public function __construct($node = null, $uri = null, $baseHref = null)
     {
         parent::__construct($node, $uri, $baseHref);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addContent($content, $type = null)
+    {
+        if (preg_match('/(?<content><\!DOCTYPE(?:.*?)?>)/is', $content, $this->doctypeMatches)) {
+            $this->hasDoctype = true;
+        }
+
+        parent::addContent($content, $type);
     }
 
     /**
@@ -100,6 +122,9 @@ class Crawler extends BaseCrawler
 
         if ($this->hasHtml) {
             $html = $this->htmlMatches['before'].$html.$this->htmlMatches['after'];
+        }
+        if ($this->hasDoctype) {
+            $html = $this->doctypeMatches['content'].$html;
         }
 
         return $html;
