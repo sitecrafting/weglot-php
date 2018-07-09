@@ -16,8 +16,8 @@ class DomIframeSrcListenerTest extends AbstractParserCrawlerAfterEventTest
 
         $this->url = 'https://www.google.com/';
 
-        $this->sample['en'] = '<iframe src="' .$this->url. '"></iframe>';
-        $this->sample['fr'] = '<iframe src="' .$this->url. '"></iframe>';
+        $this->sample['en'] = '<iframe src="' .$this->url. '"/>';
+        $this->sample['fr'] = '<iframe src="' .$this->url. '"/>';
     }
 
     public function listenerCallback(AbstractEvent $event)

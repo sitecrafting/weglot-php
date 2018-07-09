@@ -6,20 +6,36 @@ use Symfony\Component\DomCrawler\Crawler as BaseCrawler;
 
 class Crawler extends BaseCrawler
 {
-    protected $hasHead;
-    protected $hasBody;
+    /**
+     * @var bool
+     */
+    protected $hasHead = false;
+
+    /**
+     * @var bool
+     */
+    protected $hasBody = false;
 
     /**
      * {@inheritdoc}
      */
     public function addHtmlContent($content, $charset = 'UTF-8')
     {
-        $xml = simplexml_load_string($content);
-        $elements = $xml->xpath('//body');
-        $this->hasBody = count($elements) > 0;
+        $xml = false;
 
-        $elements = $xml->xpath('//head');
-        $this->hasHead = count($elements) > 0;
+        try {
+            $xml = simplexml_load_string($content);
+        } catch (\Exception $e) {
+            // ignore
+        }
+
+        if ($xml !== false) {
+            $elements = $xml->xpath('//body');
+            $this->hasBody = count($elements) > 0;
+
+            $elements = $xml->xpath('//head');
+            $this->hasHead = count($elements) > 0;
+        }
 
         parent::addHtmlContent($content, $charset);
     }
@@ -51,22 +67,30 @@ class Crawler extends BaseCrawler
      */
     protected function cleaningHtml($html)
     {
+        $xml = false;
         $childrens = null;
-        $xml = simplexml_load_string($html);
 
-        if (!$this->hasHead && $xml->getName() === 'head') {
-            $childrens = $xml->xpath('//head/child::*');
-        }
-        if (!$this->hasBody && $xml->getName() === 'body') {
-            $childrens = $xml->xpath('//body/child::*');
+        try {
+            $xml = simplexml_load_string($html);
+        } catch (\Exception $e) {
+            // ignore
         }
 
-        if ($childrens !== null) {
-            $temp = '';
-            foreach ($childrens as $children) {
-                $temp .= $children->saveXML();
+        if ($xml !== false) {
+            if (!$this->hasHead && $xml->getName() === 'head') {
+                $childrens = $xml->xpath('//head/child::*');
             }
-            $html = $temp;
+            if (!$this->hasBody && $xml->getName() === 'body') {
+                $childrens = $xml->xpath('//body/child::*');
+            }
+
+            if ($childrens !== null) {
+                $temp = '';
+                foreach ($childrens as $children) {
+                    $temp .= $children->saveXML();
+                }
+                $html = html_entity_decode($temp);
+            }
         }
 
         return $html;
