@@ -48,6 +48,9 @@ class CrawlerTest extends \Codeception\Test\Unit
         $translated = $this->parser->translate('<p>Test</p>', 'fr', 'en');
         $this->assertEquals('<p>Test</p>', $translated);
 
+        $translated = $this->parser->translate('<body><p>Test</p></body>', 'fr', 'en');
+        $this->assertEquals('<body><p>Test</p></body>', $translated);
+
         $translated = $this->parser->translate('<body class="expanded" onload="load();"><p>Test</p></body>', 'fr', 'en');
         $this->assertEquals('<body class="expanded" onload="load();"><p>Test</p></body>', $translated);
     }
