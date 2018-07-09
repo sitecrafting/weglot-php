@@ -9,6 +9,7 @@ groups:
   parser:
     - 'tests/unit/Parser/ParserTest.php'
     - 'tests/unit/Parser/ParserContextTest.php'
+    - 'tests/unit/Parser/CrawlerTest.php'
     - 'tests/unit/Parser/ConfigProvider/ManualConfigProvider.php'
     - 'tests/unit/Parser/ConfigProvider/ServerConfigProvider.php'
     - 'tests/unit/Parser/Event/ParserCrawlerAfterEventTest.php'
