@@ -151,7 +151,7 @@ class Url
         }
 
         foreach ($this->config->getExcludedUrls() as $regex) {
-            $escapedRegex = Text::escapeForRegex($regex);
+            $escapedRegex = Text::escapeForRegex(Text::fullTrim($regex));
             $fullRegex = sprintf('/%s/', $escapedRegex);
 
             if (preg_match($fullRegex, $this->getPath()) === 1) {
