@@ -176,12 +176,11 @@ class Translate extends Endpoint
         }
 
         list($rawBody, $httpStatusCode, $httpHeader) = $this->request($asArray, false);
-
-        $response = json_decode($rawBody, true);
-        if ($response === null && $httpStatusCode != 200) {
+        if ($httpStatusCode !== 200) {
             throw new ApiError($rawBody, $asArray);
         }
-        
+
+        $response = json_decode($rawBody, true);
         if ($this->getCache()->enabled()) {
             $response = $this->afterRequest($response, $beforeRequest);
         }
