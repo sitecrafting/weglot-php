@@ -191,7 +191,7 @@ class Url
         $escapedPathPrefix = Text::escapeForRegex($this->config->getPathPrefix());
         $languages = implode('|', $this->translate->getLanguages());
 
-        $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/(' . $languages . ')/#i', '', $this->getUrl());
+        $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/(' . $languages . ')/#i', '/', $this->getUrl());
         $parsed = parse_url($fullUrl);
 
         $this->host = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':'.$parsed['port'] : '');
