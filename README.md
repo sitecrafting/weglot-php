@@ -8,6 +8,7 @@
 [![Latest Stable Version](https://poser.pugx.org/weglot/weglot-php/v/stable)](https://packagist.org/packages/weglot/weglot-php)
 [![BuildStatus](https://travis-ci.com/weglot/weglot-php.svg?branch=develop)](https://travis-ci.com/weglot/weglot-php)
 [![Code Climate](https://codeclimate.com/github/weglot/weglot-php/badges/gpa.svg)](https://codeclimate.com/github/weglot/weglot-php)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/a9888fa80057b67f0b0c/test_coverage)](https://codeclimate.com/github/weglot/weglot-php/test_coverage)
 [![License](https://poser.pugx.org/weglot/weglot-php/license)](https://packagist.org/packages/weglot/weglot-php)
 
 ## Overview

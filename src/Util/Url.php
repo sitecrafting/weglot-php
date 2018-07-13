@@ -151,7 +151,7 @@ class Url
         }
 
         foreach ($this->config->getExcludedUrls() as $regex) {
-            $escapedRegex = Text::escapeForRegex($regex);
+            $escapedRegex = Text::escapeForRegex(Text::fullTrim($regex));
             $fullRegex = sprintf('/%s/', $escapedRegex);
 
             if (preg_match($fullRegex, $this->getPath()) === 1) {
@@ -191,7 +191,9 @@ class Url
         $escapedPathPrefix = Text::escapeForRegex($this->config->getPathPrefix());
         $languages = implode('|', $this->translate->getLanguages());
 
-        $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/?(' . $languages . ')#i', '', $this->getUrl());
+        $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/(' . $languages . ')$#i', '', $this->getUrl());
+        $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/(' . $languages . ')\/#i', '/', $fullUrl);
+
         $parsed = parse_url($fullUrl);
 
         $this->host = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':'.$parsed['port'] : '');

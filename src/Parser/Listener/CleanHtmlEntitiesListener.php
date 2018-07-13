@@ -18,6 +18,7 @@ final class CleanHtmlEntitiesListener
 
         $source = str_replace('&lt;', '<', $source);
         $source = str_replace('&gt;', '>', $source);
+        $source = str_replace('&amp;', '&', $source);
 
         $event->getContext()->setSource($source);
     }
