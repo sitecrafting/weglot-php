@@ -35,23 +35,21 @@ final class IgnoredNodesListener
 
         // time for the BIG regex ...
         $pattern = '#<(?<tag>' .implode('|', $this->ignoredNodes). ')(?<more>\s.*?)?\>(?<content>[^>]+?)\<\/(?<tagclosed>' .implode('|', $this->ignoredNodes). ')>#i';
+
+        $last = null;
         $matches = [];
 
-        $sourceCopy = $source;
         // Using while instead of preg_match_all is the key to handle nested ignored nodes.
-        while (preg_match($pattern, $sourceCopy, $matches)) {
-            //var_dump($matches['tag'].$matches['tagclosed']);
+        while (preg_match($pattern, $source, $matches) && $last !== $matches[0]) {
             if ($matches[0] !== '' && $matches['tag'] === $matches['tagclosed']) {
                 $source = str_replace(
                     $matches[0],
                     '&lt;' .$matches['tag'].str_replace('>', '&gt;', str_replace('<', '&lt;', $matches['more'])). '&gt;' . $matches['content']. '&lt;/' . $matches['tag'] . '&gt;',
                     $source
                 );
-                $sourceCopy = $source;
             }
-            else {
-                $sourceCopy = str_replace($matches[0],'',$sourceCopy);
-            }
+
+            $last = $matches[0];
         }
 
         $event->getContext()->setSource($source);
