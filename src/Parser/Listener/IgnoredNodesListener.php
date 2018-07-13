@@ -39,13 +39,11 @@ final class IgnoredNodesListener
 
         // Using while instead of preg_match_all is the key to handle nested ignored nodes.
         while (preg_match($pattern, $source, $matches)) {
-            if ($matches[0] !== '') {
-                $source = str_replace(
-                    $matches[0],
-                    '&lt;' .$matches['tag'].str_replace('>', '&gt;', str_replace('<', '&lt;', $matches['more'])). '&gt;' . $matches['content']. '&lt;/' . $matches['tag'] . '&gt;',
-                    $source
-                );
-            }
+            $source = str_replace(
+                $matches[0],
+                '&lt;' .$matches['tag'].str_replace('>', '&gt;', str_replace('<', '&lt;', $matches['more'])). '&gt;' . $matches['content']. '&lt;/' . $matches['tag'] . '&gt;',
+                $source
+            );
         }
 
         $event->getContext()->setSource($source);
