@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.6.3] - 2018-07-13
+### Fixed
+- #78 - No transformation of HTML characters
+- #79 - Trim Exclude URL
+- #81 - Some error were not catched correctly
+- #82 - Fix Util/Url regex to not match elements in hostname
+- #83 - Infinite loop on tags with no close tag
+
 ## [0.6.2] - 2018-07-09
 ### Fixed
 - #70, Recover forgotten checks
