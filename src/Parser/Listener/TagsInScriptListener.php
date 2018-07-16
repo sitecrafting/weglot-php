@@ -27,14 +27,20 @@ final class TagsInScriptListener
         $source = $event->getContext()->getSource();
         $matches = [];
 
-        if (preg_match('#\<script(\s.*?)?\>(.*?)\<\/script\>#is', $source, $matches)) {
-            if ($this->cleaning) {
-                $replacement = '<script' .$matches[1]. '>' .str_replace('<', '\x3C', $matches[2]). '</script>';
-            } else {
-                $replacement = '<script' .$matches[1]. '>' .str_replace('\x3C', '<', $matches[2]). '</script>';
-            }
+        if (preg_match_all('#\<script(\s.*?)?\>(.*?)\<\/script\>#is', $source, $matches)) {
+            if (isset($matches[0])) {
+                $count = count($matches[0]);
 
-            $source = preg_replace('#\<script(\s.*?)?\>(.*?)\<\/script\>#is', $replacement, $source);
+                for ($i = 0; $i < $count; ++$i) {
+                    if ($this->cleaning) {
+                        $replacement = '<script' .$matches[1][$i]. '>' .str_replace('<', '\x3C', $matches[2][$i]). '</script>';
+                    } else {
+                        $replacement = '<script' .$matches[1][$i]. '>' .str_replace('\x3C', '<', $matches[2][$i]). '</script>';
+                    }
+
+                    $source = str_replace($matches[0][$i], $replacement, $source);
+                }
+            }
         }
 
         $event->getContext()->setSource($source);
