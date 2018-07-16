@@ -25,9 +25,8 @@ use Weglot\Parser\Listener\DomSpanListener;
 use Weglot\Parser\Listener\DomTableDataListener;
 use Weglot\Parser\Listener\DomTextListener;
 use Weglot\Parser\Listener\ExcludeBlocksListener;
-use Weglot\Parser\Listener\ForgetTagsInScriptListener;
 use Weglot\Parser\Listener\IgnoredNodesListener;
-use Weglot\Parser\Listener\RecoverTagsInScriptListener;
+use Weglot\Parser\Listener\TagsInScriptListener;
 
 /**
  * Class Parser
@@ -99,7 +98,7 @@ class Parser implements ParserInterface
     protected function defaultListeners()
     {
         $this->addListener('parser.crawler.before', new IgnoredNodesListener());
-        $this->addListener('parser.crawler.before', new ForgetTagsInScriptListener());
+        $this->addListener('parser.crawler.before', new TagsInScriptListener());
 
         $this->addListener('parser.crawler.after', new ExcludeBlocksListener(), 1);
         $this->addListener('parser.crawler.after', new DomTextListener());
@@ -117,7 +116,7 @@ class Parser implements ParserInterface
         $this->addListener('parser.translated', new DomReplaceListener());
         
         $this->addListener('parser.render', new CleanHtmlEntitiesListener());
-        $this->addListener('parser.render', new RecoverTagsInScriptListener());
+        $this->addListener('parser.render', new TagsInScriptListener(false));
     }
 
     /**
