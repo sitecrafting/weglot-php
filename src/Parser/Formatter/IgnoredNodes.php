@@ -89,9 +89,7 @@ class IgnoredNodes
 
         // Using while instead of preg_match_all is the key to handle nested ignored nodes.
         while (preg_match($pattern, $this->getSource(), $matches)) {
-            if ($matches[0] !== '' && $matches['tag'] === $matches['tagclosed']) {
                 $this->replaceContent($matches);
-            }
         }
     }
 }
