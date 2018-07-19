@@ -180,6 +180,10 @@ class DomCheckerProvider
                         'class' => $class,
                         'property' => $property,
                     ];
+                } else {
+                    if (strpos($node->$property, '&gt;') !== false || strpos($node->$property, '&lt;') !== false) {
+                        $node->$property = str_replace(['&lt;', '&gt;'], ['<', '>'], $node->$property);
+                    }
                 }
             }
         }
