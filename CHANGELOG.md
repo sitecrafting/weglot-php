@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.9] - 2018-07-19
+### Changed
+- Cleaning tags html entities before rendering
+- Fix URL and infinite loop bug
+
 ## [0.5.8] - 2018-06-26
 ### Changed
 - Simplify code and fix all ignore nodes related problems
