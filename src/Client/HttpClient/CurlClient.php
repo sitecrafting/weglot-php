@@ -73,7 +73,7 @@ class CurlClient implements ClientInterface
      */
     public function initUserAgentInfo()
     {
-        $curlVersion = curl_version();
+        $curlVersion = \curl_version();
         $this->userAgentInfo = [
             'curl' =>  'cURL\\' .$curlVersion['version'],
             'ssl' => $curlVersion['ssl_version']
@@ -301,17 +301,17 @@ class CurlClient implements ClientInterface
         while (true) {
             $rcode = $errno = 0;
 
-            $curl = curl_init();
-            curl_setopt_array($curl, $options);
-            $rbody = curl_exec($curl);
+            $curl = \curl_init();
+            \curl_setopt_array($curl, $options);
+            $rbody = \curl_exec($curl);
 
             if ($rbody === false) {
-                $errno = curl_errno($curl);
-                $message = curl_error($curl);
+                $errno = \curl_errno($curl);
+                $message = \curl_error($curl);
             } else {
-                $rcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                $rcode = \curl_getinfo($curl, CURLINFO_HTTP_CODE);
             }
-            curl_close($curl);
+            \curl_close($curl);
 
             if ($this->shouldRetry($errno, $rcode, $numRetries)) {
                 $numRetries += 1;
