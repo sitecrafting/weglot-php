@@ -270,7 +270,6 @@ class Parser
         $this->formatters($translated, $nodes, $jsons);
 
         $source = $dom->save();
-        $source = str_replace(['&lt;', '&gt;'], ['<', '>'], $source);
         return $source;
     }
 
