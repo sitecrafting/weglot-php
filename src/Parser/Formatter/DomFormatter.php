@@ -34,22 +34,20 @@ class DomFormatter extends AbstractFormatter
      * @param array $details
      * @param string $translated
      */
-    protected function metaContent(array $details, $translated)
-    {
+    protected function metaContent(array $details, $translated) {
         $property = $details['property'];
 
-        if ($details['class'] instanceof MetaContent) {
+        if ($details['class'] === '\Weglot\Parser\Check\Dom\MetaContent') {
             $details['node']->$property = htmlspecialchars($translated);
         } else {
             $details['node']->$property = $translated;
         }
     }
 
-    protected function imageSource(array $details, $translated, $index)
-    {
+    protected function imageSource(array $details, $translated, $index) {
         $words = $this->getTranslated()->getInputWords();
 
-        if ($details['class'] instanceof ImageSource) {
+        if ($details['class'] === '\Weglot\Parser\Check\Dom\ImageSource') {
             $details['node']->src = $translated;
             if ($details['node']->hasAttribute('srcset') &&
                 $details['node']->srcset != '' &&
