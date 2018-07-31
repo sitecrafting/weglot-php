@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.11] - 2018-07-31
+### Changed
+Better API errors management
+
+## [0.5.10] - ????-??-??
+???
+
 ## [0.5.9] - 2018-07-19
 ### Changed
 - Cleaning tags html entities before rendering
