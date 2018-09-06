@@ -35,6 +35,13 @@ abstract class AbstractDomChecker
     const WORD_TYPE = WordType::TEXT;
 
     /**
+	 * Need to escape DOM attribute
+	 *
+	 * @var bool
+	 */
+	const ESCAPE_SPECIAL_CHAR = false;
+
+    /**
      * @var simple_html_dom_node
      */
     protected $node;

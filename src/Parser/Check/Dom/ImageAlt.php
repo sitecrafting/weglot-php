@@ -24,4 +24,9 @@ class ImageAlt extends AbstractDomChecker
      * {@inheritdoc}
      */
     const WORD_TYPE = WordType::IMG_ALT;
+
+    /**
+	 * {@inheritdoc}
+	 */
+	const ESCAPE_SPECIAL_CHAR =true;
 }

@@ -37,7 +37,7 @@ class DomFormatter extends AbstractFormatter
     protected function metaContent(array $details, $translated) {
         $property = $details['property'];
 
-        if ($details['class'] === '\Weglot\Parser\Check\Dom\MetaContent') {
+        if ($details['class']::ESCAPE_SPECIAL_CHAR) {
             $details['node']->$property = htmlspecialchars($translated);
         } else {
             $details['node']->$property = $translated;

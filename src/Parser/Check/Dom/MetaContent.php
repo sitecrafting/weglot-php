@@ -27,6 +27,11 @@ class MetaContent extends AbstractDomChecker
     const WORD_TYPE = WordType::META_CONTENT;
 
     /**
+	 * {@inheritdoc}
+	 */
+    const ESCAPE_SPECIAL_CHAR = true;
+
+    /**
      * {@inheritdoc}
      */
     protected function check()

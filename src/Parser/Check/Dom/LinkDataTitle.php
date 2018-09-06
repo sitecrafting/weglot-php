@@ -24,4 +24,9 @@ class LinkDataTitle extends AbstractDomChecker
      * {@inheritdoc}
      */
     const WORD_TYPE = WordType::TEXT;
+
+    /**
+	 * {@inheritdoc}
+	 */
+	const ESCAPE_SPECIAL_CHAR =true;
 }
