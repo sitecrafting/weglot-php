@@ -15,11 +15,7 @@ final class CleanHtmlEntitiesListener
     public function __invoke(ParserRenderEvent $event)
     {
         $source = $event->getContext()->getSource();
-
-        $source = str_replace('&lt;', '<', $source);
-        $source = str_replace('&gt;', '>', $source);
         $source = str_replace('&amp;', '&', $source);
-
         $event->getContext()->setSource($source);
     }
 }

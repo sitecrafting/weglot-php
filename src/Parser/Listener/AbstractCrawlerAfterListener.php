@@ -75,6 +75,8 @@ abstract class AbstractCrawlerAfterListener
         if ($node instanceof \DOMText) {
             $fixed = str_replace("\n", '', $fixed);
             $fixed = preg_replace('/\s+/u', ' ', $fixed);
+            $fixed = str_replace('<', '&lt;', $fixed);
+            $fixed = str_replace('>', '&gt;', $fixed);
         }
 
         return $fixed;
@@ -127,6 +129,8 @@ abstract class AbstractCrawlerAfterListener
             // reserved character in XML: &
             $text = str_replace('&amp;', '&', $text);
             $text = str_replace('&', '&amp;', $text);
+            $text = str_replace('&lt;', '<', $text);
+            $text = str_replace('&gt;', '>', $text);
 
             $node->$attribute = $text;
         };
