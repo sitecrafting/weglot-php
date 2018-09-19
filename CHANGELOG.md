@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.12] - 2018-09-19
+Add escape property on dom checker
+
 ## [0.5.11] - 2018-07-31
 ### Changed
 Better API errors management
