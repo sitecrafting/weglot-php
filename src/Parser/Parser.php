@@ -175,9 +175,14 @@ class Parser implements ParserInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param $source
+     * @param $languageFrom
+     * @param $languageTo
+     * @return ParserContext
+     * @throws Exception\ParserContextException
+     * @throws \Weglot\Client\Api\Exception\MissingRequiredParamException
      */
-    public function translate($source, $languageFrom, $languageTo)
+    public function parse($source, $languageFrom, $languageTo)
     {
         $context = new ParserContext($this, $languageFrom, $languageTo, $source);
 
@@ -186,7 +191,6 @@ class Parser implements ParserInterface
         $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
 
         // crawling source
-        $hasBodyTag = (strpos($context->getSource(), '<body') !== false);
         $crawler = new Crawler($context->getSource());
         $context
             ->setCrawler($crawler)
@@ -195,6 +199,27 @@ class Parser implements ParserInterface
         // dispatch - parser.crawler.after
         $event = new ParserCrawlerAfterEvent($context);
         $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
+
+        return $context;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @param $source
+     * @param $languageFrom
+     * @param $languageTo
+     * @return string
+     * @throws Exception\ParserContextException
+     * @throws \Weglot\Client\Api\Exception\ApiError
+     * @throws \Weglot\Client\Api\Exception\InputAndOutputCountMatchException
+     * @throws \Weglot\Client\Api\Exception\InvalidWordTypeException
+     * @throws \Weglot\Client\Api\Exception\MissingRequiredParamException
+     * @throws \Weglot\Client\Api\Exception\MissingWordsOutputException
+     */
+    public function translate($source, $languageFrom, $languageTo)
+    {
+        $context = $this->parse($source, $languageFrom, $languageTo);
+        $hasBodyTag = (strpos($context->getSource(), '<body') !== false);
 
         // translating through Weglot API
         $translate = new Translate($context->getTranslateEntry(), $this->getClient());

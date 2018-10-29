@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.6.6] - 2018-10-29
+### Changed
+- Divide parse and translate logic into twi distinct method
+
 ## [0.6.5] - 2018-09-17
 ### Removed
 - IgnoredNodesListener has been removed since it's a duplicate of '0.6.4' changes.
