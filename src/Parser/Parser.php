@@ -220,22 +220,6 @@ class Parser implements ParserInterface
     {
         $context = $this->parse($source, $languageFrom, $languageTo);
         $hasBodyTag = (strpos($context->getSource(), '<body') !== false);
-//        $context = new ParserContext($this, $languageFrom, $languageTo, $source);
-//
-//        // dispatch - parser.crawler.before
-//        $event = new ParserCrawlerBeforeEvent($context);
-//        $this->eventDispatcher->dispatch(ParserCrawlerBeforeEvent::NAME, $event);
-//
-//        // crawling source
-//        $hasBodyTag = (strpos($context->getSource(), '<body') !== false);
-//        $crawler = new Crawler($context->getSource());
-//        $context
-//            ->setCrawler($crawler)
-//            ->generateTranslateEntry();
-//
-//        // dispatch - parser.crawler.after
-//        $event = new ParserCrawlerAfterEvent($context);
-//        $this->eventDispatcher->dispatch(ParserCrawlerAfterEvent::NAME, $event);
 
         // translating through Weglot API
         $translate = new Translate($context->getTranslateEntry(), $this->getClient());
