@@ -49,6 +49,13 @@ class IgnoredNodes
     }
 
     /**
+     * @return array
+     */
+    public function getIgnoredNodes(){
+        return $this->ignoredNodes;
+    }
+
+    /**
      * @param string $source
      * @return $this
      */
