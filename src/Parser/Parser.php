@@ -71,7 +71,7 @@ class Parser
     /**
      * @var IgnoredNodes
      */
-    protected $ignoredNodes;
+    protected $ignoredNodesFormatter;
 
     /**
      * Parser constructor.
@@ -87,7 +87,7 @@ class Parser
             ->setExcludeBlocks($excludeBlocks)
             ->setWords(new WordCollection())
             ->setDomCheckerProvider(new DomCheckerProvider($this))
-            ->setIgnoredNodes(new IgnoredNodes());
+            ->setIgnoredNodesFormatter(new IgnoredNodes());
     }
 
     /**
@@ -226,17 +226,17 @@ class Parser
      * @param IgnoredNodes $ignoredNodes
      * @return $this
      */
-    public function setIgnoredNodes(IgnoredNodes $ignoredNodes)
+    public function setIgnoredNodesFormatter(IgnoredNodes $ignoredNodesFormatter)
     {
-        $this->ignoredNodes = $ignoredNodes;
+        $this->ignoredNodesFormatter = $ignoredNodesFormatter;
         return $this;
     }
 
     /**
      * @return IgnoredNodes
      */
-    public function getIgnoredNodes(){
-        return $this->ignoredNodes;
+    public function getIgnoredNodesFormatter(){
+        return $this->ignoredNodesFormatter;
     }
 
     /**
@@ -258,9 +258,11 @@ class Parser
             ->setLanguageTo($languageTo);
 
         if ($this->client->getProfile()->getIgnoredNodes()) {
-            $ignoredNodesFormatter = $this->getIgnoredNodes()
-                                          ->setSource($source)
-                                          ->handle();
+            $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
+
+            $ignoredNodesFormatter->setSource($source)
+                                  ->handle();
+
             $source = $ignoredNodesFormatter->getSource();
         }
 
