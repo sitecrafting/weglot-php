@@ -69,6 +69,11 @@ class Parser
     protected $domCheckerProvider;
 
     /**
+     * @var IgnoredNodes
+     */
+    protected $ignoredNodes;
+
+    /**
      * Parser constructor.
      * @param Client $client
      * @param ConfigProviderInterface $config
@@ -81,7 +86,8 @@ class Parser
             ->setConfigProvider($config)
             ->setExcludeBlocks($excludeBlocks)
             ->setWords(new WordCollection())
-            ->setDomCheckerProvider(new DomCheckerProvider($this));
+            ->setDomCheckerProvider(new DomCheckerProvider($this))
+            ->setIgnoredNodes(new IgnoredNodes());
     }
 
     /**
@@ -217,6 +223,23 @@ class Parser
     }
 
     /**
+     * @param IgnoredNodes $ignoredNodes
+     * @return $this
+     */
+    public function setIgnoredNodes(IgnoredNodes $ignoredNodes)
+    {
+        $this->ignoredNodes = $ignoredNodes;
+        return $this;
+    }
+
+    /**
+     * @return IgnoredNodes
+     */
+    public function getIgnoredNodes(){
+        return $this->ignoredNodes;
+    }
+
+    /**
      * @param string $source
      * @param string $languageFrom
      * @param string $languageTo
@@ -235,7 +258,9 @@ class Parser
             ->setLanguageTo($languageTo);
 
         if ($this->client->getProfile()->getIgnoredNodes()) {
-            $ignoredNodesFormatter = new IgnoredNodes($source);
+            $ignoredNodesFormatter = $this->getIgnoredNodes()
+                                          ->setSource($source)
+                                          ->handle();
             $source = $ignoredNodesFormatter->getSource();
         }
 

@@ -34,11 +34,18 @@ class IgnoredNodes
      * IgnoredNodes constructor.
      * @param string $source
      */
-    public function __construct($source)
+    public function __construct($source = null)
     {
-        $this
-            ->setSource($source)
-            ->handle();
+        $this->setSource($source);
+    }
+
+    /**
+     * @param array $ignoredNodes
+     * @return $this
+     */
+    public function setIgnoredNodes($ignoredNodes){
+        $this->ignoredNodes = $ignoredNodes;
+        return $this;
     }
 
     /**
