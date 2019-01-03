@@ -235,7 +235,8 @@ class Parser
     /**
      * @return IgnoredNodes
      */
-    public function getIgnoredNodesFormatter(){
+    public function getIgnoredNodesFormatter()
+    {
         return $this->ignoredNodesFormatter;
     }
 
@@ -261,7 +262,7 @@ class Parser
             $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
 
             $ignoredNodesFormatter->setSource($source)
-                                  ->handle();
+                ->handle();
 
             $source = $ignoredNodesFormatter->getSource();
         }
@@ -298,6 +299,49 @@ class Parser
 
         $source = $dom->save();
         return $source;
+    }
+
+    /**
+     * @param $source
+     * @return string|WordCollection
+     * @throws InvalidWordTypeException
+     */
+    public function parse($source)
+    {
+        if ($this->client->getProfile()->getIgnoredNodes()) {
+            $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
+
+            $ignoredNodesFormatter->setSource($source)
+                ->handle();
+
+            $source = $ignoredNodesFormatter->getSource();
+        }
+
+        // simple_html_dom
+        $dom = \WGSimpleHtmlDom\str_get_html(
+            $source,
+            true,
+            true,
+            WG_DEFAULT_TARGET_CHARSET,
+            false
+        );
+
+        // if simple_html_dom can't parse the $source, it returns false
+        // so we just return raw $source
+        if ($dom === false) {
+            return $source;
+        }
+
+        // exclude blocks
+        if (!empty($this->excludeBlocks)) {
+            $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
+            $dom = $excludeBlocks->getDom();
+        }
+
+        // checkers
+        $this->checkers($dom);
+
+        return $this->getWords();
     }
 
     /**
