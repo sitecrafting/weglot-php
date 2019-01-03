@@ -2,7 +2,7 @@
 
 namespace Weglot\Parser;
 
-use SimpleHtmlDom\simple_html_dom;
+use WGSimpleHtmlDom\simple_html_dom;
 use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
@@ -267,11 +267,11 @@ class Parser
         }
 
         // simple_html_dom
-        $dom = \SimpleHtmlDom\str_get_html(
+        $dom = \WGSimpleHtmlDom\str_get_html(
             $source,
             true,
             true,
-            DEFAULT_TARGET_CHARSET,
+            WG_DEFAULT_TARGET_CHARSET,
             false
         );
 
