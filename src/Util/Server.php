@@ -42,7 +42,7 @@ class Server
                             Text::contains($userAgent, 'facebook') ||
                             Text::contains($userAgent, 'wprocketbot') ||
                             Text::contains($userAgent, 'SemrushBot'));
-        
+
         if ($userAgent !== null && !$checkBotAgent) {
             return BotType::HUMAN;
         }
@@ -77,7 +77,24 @@ class Server
      */
     private static function isSsl(array $server)
     {
-        return !empty($server['HTTPS']) && $server['HTTPS'] === 'on';
+        if ( isset($server['HTTPS']) ) {
+            if ( 'on' == strtolower($server['HTTPS']) ) {
+                return true;
+            }
+
+            if ( '1' == $server['HTTPS'] ){
+                return true;
+            }
+	        elseif ( isset($server['SERVER_PORT']) && ( '443' == $server['SERVER_PORT'] ) ) {
+                return true;
+            }
+        }
+
+        if( isset( $server['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $server['HTTP_X_FORWARDED_PROTO'] ){
+            return true;
+        }
+
+        return false;
     }
 
     /**
