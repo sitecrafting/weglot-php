@@ -70,14 +70,14 @@ class MetaContentTest extends \Codeception\Test\Unit
 
     private function _getSimpleDom($source)
     {
-        return \SimpleHtmlDom\str_get_html(
+        return \WGSimpleHtmlDom\str_get_html(
             $source,
             true,
             true,
-            DEFAULT_TARGET_CHARSET,
+            WG_DEFAULT_TARGET_CHARSET,
             false,
-            DEFAULT_BR_TEXT,
-            DEFAULT_SPAN_TEXT
+            WG_DEFAULT_BR_TEXT,
+            WG_DEFAULT_SPAN_TEXT
         );
     }
 }

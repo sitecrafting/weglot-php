@@ -2,8 +2,8 @@
 
 namespace Weglot\Parser\Check;
 
-use SimpleHtmlDom\simple_html_dom;
-use SimpleHtmlDom\simple_html_dom_node;
+use WGSimpleHtmlDom\simple_html_dom;
+use WGSimpleHtmlDom\simple_html_dom_node;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\Check\Dom\AbstractDomChecker;

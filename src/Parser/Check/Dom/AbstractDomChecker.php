@@ -2,7 +2,7 @@
 
 namespace Weglot\Parser\Check\Dom;
 
-use SimpleHtmlDom\simple_html_dom_node;
+use WGSimpleHtmlDom\simple_html_dom_node;
 use Weglot\Client\Api\Enum\WordType;
 use Weglot\Parser\Parser;
 use Weglot\Util\Text;

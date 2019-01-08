@@ -2,7 +2,7 @@
 
 namespace Weglot\Parser\Check;
 
-use SimpleHtmlDom\simple_html_dom;
+use WGSimpleHtmlDom\simple_html_dom;
 use Weglot\Parser\Parser;
 
 /**
