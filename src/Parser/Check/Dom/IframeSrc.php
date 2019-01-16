@@ -31,6 +31,6 @@ class IframeSrc extends AbstractDomChecker
      */
     protected function check()
     {
-        return TextUtil::contains(TextUtil::fullTrim($this->node->src), '.youtube.');
+        return TextUtil::contains(TextUtil::fullTrim($this->node->src), '.youtube.') || TextUtil::contains(TextUtil::fullTrim($this->node->src), '.vimeo.') || TextUtil::contains(TextUtil::fullTrim($this->node->src), '.dailymotion.');
     }
 }
