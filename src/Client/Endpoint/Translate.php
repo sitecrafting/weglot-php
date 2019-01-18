@@ -174,7 +174,8 @@ class Translate extends Endpoint
             $beforeRequest = $this->beforeRequest();
             $asArray['words'] = $beforeRequest[0];
         }
-
+        var_dump(array_map('html_entity_decode',array_column($asArray['words'],'w')));
+        exit;
         list($rawBody, $httpStatusCode, $httpHeader) = $this->request($asArray, false);
         if ($httpStatusCode !== 200) {
             throw new ApiError($rawBody, $asArray);
