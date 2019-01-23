@@ -61,7 +61,7 @@ class ClientTest extends \Codeception\Test\Unit
             $profile = $client->getProfile();
 
             $this->assertEquals($version, $profile->getApiVersion());
-            $this->assertEquals($version === 2, $profile->getIgnoredNodes());
+            $this->assertEquals(3, $profile->getTranslationEngine());
         }
     }
 
