@@ -25,7 +25,7 @@ class StatusTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
-        $this->client = new Client(getenv('WG_API_KEY'));
+        $this->client = new Client(getenv('WG_API_KEY'), 3);
         $this->status = new Status($this->client);
     }
 

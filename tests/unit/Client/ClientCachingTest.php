@@ -26,7 +26,7 @@ class ClientCachingTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
-        $this->client = new Client(getenv('WG_API_KEY'));
+        $this->client = new Client(getenv('WG_API_KEY'), 3);
 
         $this->redis = new Redis([
             'scheme' => getenv('REDIS_SCHEME'),
