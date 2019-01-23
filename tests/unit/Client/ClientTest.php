@@ -57,7 +57,7 @@ class ClientTest extends \Codeception\Test\Unit
             'wg_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' => 2
         ];
         foreach ($wgApiKeys as $wgApiKey => $version) {
-            $client = new Client($wgApiKey);
+            $client = new Client($wgApiKey , 3);
             $profile = $client->getProfile();
 
             $this->assertEquals($version, $profile->getApiVersion());
