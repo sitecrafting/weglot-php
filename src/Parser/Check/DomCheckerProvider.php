@@ -13,7 +13,10 @@ use Weglot\Util\Text;
 class DomCheckerProvider
 {
 
-    const INLINE_NODES = [
+    /**
+     * @var array
+     */
+    protected $inlineNodes = [
         'a' , 'span',
         'strong', 'b',
         'em', 'i',
@@ -79,6 +82,26 @@ class DomCheckerProvider
     {
         return $this->parser;
     }
+
+    /**
+     * @param array $inlineNodes
+     * @return $this
+     */
+    public function setInlineNodes($inlineNodes)
+    {
+        $this->inlineNodes = $inlineNodes;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInlineNodes()
+    {
+        return $this->inlineNodes;
+    }
+
 
     /**
      * @param int $translationEngine
@@ -238,6 +261,8 @@ class DomCheckerProvider
 
                     if ($instance->handle()) {
 
+                        $attributes = [];
+
                         if($selector === 'text') {
                             $jump = 0;
 
@@ -246,6 +271,10 @@ class DomCheckerProvider
 
 
                             $node = $this->getMinimalNode($node);
+
+                            //We remove attributes from all child nodes and replace by wg-1, wg-2, etc... Real attributes are saved into $attributes.
+                            $node = $this->removeAttributesFromChild($node, $attributes);
+
                             $i = $i + $jump;
                         }
 
@@ -255,6 +284,7 @@ class DomCheckerProvider
                             'node' => $node,
                             'class' => $class,
                             'property' => $property,
+                            'attributes' => $attributes,
                         ];
 
                     }
@@ -332,6 +362,20 @@ class DomCheckerProvider
         return $node;
     }
 
+
+    public function removeAttributesFromChild($node, &$attributes) {
+
+        foreach ($node->children() as $n) {
+            $k = count($attributes)+1;
+            $attributes['wg-'.$k] = $n->getAllAttributes();
+            $n->attr = [];
+            $n->setAttribute('wg-'.$k, "");
+            $this->removeAttributesFromChild($n, $attributes);
+        }
+
+        return $node;
+    }
+
     public function hasOnlyEmptyChild($node) {
         if($this->isText($node)) {
             if(Text::fullTrim($node->innertext()) != '')
@@ -349,7 +393,7 @@ class DomCheckerProvider
     }
 
     public function isInline($node) {
-        return in_array($node->tag, self::INLINE_NODES);
+        return in_array($node->tag, $this->getInlineNodes());
     }
 
     public function isText($node) {

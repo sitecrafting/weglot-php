@@ -5,7 +5,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "Hello, <b>this is</b> a test!"
+        "w": "Hello, <b wg-1=\"\">this is</b> a test!"
       }
     ]
   },
@@ -15,7 +15,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "Hello, <strong>this is</strong> a test!"
+        "w": "Hello, <strong wg-1=\"\">this is</strong> a test!"
       }
     ]
   },
@@ -25,7 +25,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "Hello, <em>this is</em> a test!"
+        "w": "Hello, <em wg-1=\"\">this is</em> a test!"
       }
     ]
   },
@@ -45,7 +45,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "Hello, <i><b>this is</b></i> a test!"
+        "w": "Hello, <i wg-1=\"\"><b wg-2=\"\">this is</b></i> a test!"
       }
     ]
   },
@@ -55,7 +55,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "This is a sentence with <strong>bolded</strong> text."
+        "w": "This is a sentence with <strong wg-1=\"\">bolded</strong> text."
       }
     ]
   },
@@ -109,17 +109,17 @@
     "expected": [
       {
         "t": 1,
-        "w": "We believe <strong>everything is <em>really</em> important</strong>"
+        "w": "We believe <strong wg-1=\"\">everything is <em wg-2=\"\">really</em> important</strong>"
       }
     ]
   },
   {
     "name": "Nested tags 6",
-    "body": "<p>We believe <strong><strong>everything</strong></strong><em>em> is important</em></em></p>",
+    "body": "<p>We believe <strong><strong>everything</strong></strong><em><em> is important</em></em></p>",
     "expected": [
       {
         "t": 1,
-        "w": "We believe <strong><strong>everything</strong></strong><em>em> is important</em></em>"
+        "w": "We believe <strong wg-1=\"\"><strong wg-2=\"\">everything</strong></strong><em wg-3=\"\"><em wg-4=\"\"> is important</em></em>"
       }
     ]
   },
@@ -129,7 +129,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "<i></i><i></i><strong><strong>Hello, </strong></strong><em><em>how are you</em></em><i></i>"
+        "w": "<i wg-1=\"\"></i><i wg-2=\"\"></i><strong wg-3=\"\"><strong wg-4=\"\">Hello, </strong></strong><em wg-5=\"\"><em wg-6=\"\">how are you</em></em><i wg-7=\"\"></i>"
       }
     ]
   },
@@ -139,7 +139,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "<strong><strong>Hello, </strong></strong><em><em>how are you</em></em>"
+        "w": "<strong wg-1=\"\"><strong wg-2=\"\">Hello, </strong></strong><em wg-3=\"\"><em wg-4=\"\">how are you</em></em>"
       }
     ]
   },
@@ -159,7 +159,7 @@
     "expected": [
       {
         "t": 1,
-        "w": "Hello, <a href='#'>this is</a> a test!"
+        "w": "Hello, <a wg-1=''>this is</a> a test!"
       }
     ]
   },

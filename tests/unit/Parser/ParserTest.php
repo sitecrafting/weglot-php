@@ -56,7 +56,6 @@ class ParserTest extends \Codeception\Test\Unit
     }
 
     // tests
-    /*
     public function testTranslateManual()
     {
         // Parser
@@ -84,7 +83,7 @@ class ParserTest extends \Codeception\Test\Unit
             'de'
         );
         $this->assertTrue(\is_string($translatedContent));
-    }*/
+    }
 
     public function testParser1JsonCases()
     {

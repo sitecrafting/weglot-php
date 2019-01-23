@@ -42,18 +42,29 @@ class DomFormatter extends AbstractFormatter
         } else {
             $details['node']->$property = $translated;
         }
+
+        if(array_key_exists('attributes' , $details)) {
+            foreach ($details['attributes'] as $k => $attributes) {
+                $attributeString = "";
+                foreach ($attributes as $key => $attribute) {
+                    $attributeString .= $key."=\"".$attribute."\" ";
+                }
+                $details['node']->$property = str_replace($k.'=""', $attributeString, $details['node']->$property);
+            }
+        }
+
     }
 
     protected function imageSource(array $details, $translated, $index) {
         $words = $this->getTranslated()->getInputWords();
 
-        if ($details['class'] === '\Weglot\Parser\Check\Dom\ImageSource') {
-            $details['node']->src = $translated;
-            if ($details['node']->hasAttribute('srcset') &&
-                $details['node']->srcset != '' &&
-                $translated != $words[$index]->getWord()) {
-                $details['node']->srcset = '';
-            }
+            if ($details['class'] === '\Weglot\Parser\Check\Dom\ImageSource') {
+                $details['node']->src = $translated;
+                if ($details['node']->hasAttribute('srcset') &&
+                    $details['node']->srcset != '' &&
+                    $translated != $words[$index]->getWord()) {
+                    $details['node']->srcset = '';
+                }
         }
     }
 }
