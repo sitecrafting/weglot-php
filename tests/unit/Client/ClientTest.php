@@ -53,7 +53,6 @@ class ClientTest extends \Codeception\Test\Unit
     public function testProfile()
     {
         $wgApiKeys = [
-            'wg_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' => 1,
             'wg_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' => 2
         ];
         foreach ($wgApiKeys as $wgApiKey => $version) {
