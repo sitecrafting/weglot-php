@@ -12,6 +12,21 @@ use Weglot\Util\Text;
 
 class DomCheckerProvider
 {
+
+    const INLINE_NODES = [
+        'a' , 'span',
+        'strong', 'b',
+        'em', 'i',
+        'small', 'big',
+        'sub', 'sup',
+        'abbr',
+        'acronym',
+        'bdo',
+        'cite',
+        'kbd',
+        'q', 'u'
+    ];
+
     const DEFAULT_CHECKERS_NAMESPACE = '\\Weglot\\Parser\\Check\\Dom\\';
 
     /**
@@ -30,12 +45,19 @@ class DomCheckerProvider
     protected $discoverCaching = [];
 
     /**
+     * @var int
+     */
+    protected $translationEngine;
+
+    /**
      * DomChecker constructor.
      * @param Parser $parser
+     * @param int $translationEngine
      */
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, $translationEngine)
     {
         $this->setParser($parser);
+        $this->setTranslationEngine($translationEngine);
         $this->loadDefaultCheckers();
     }
 
@@ -56,6 +78,25 @@ class DomCheckerProvider
     public function getParser()
     {
         return $this->parser;
+    }
+
+    /**
+     * @param int $translationEngine
+     * @return $this
+     */
+    public function setTranslationEngine($translationEngine)
+    {
+        $this->translationEngine = $translationEngine;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTranslationEngine()
+    {
+        return $this->translationEngine;
     }
 
     /**
@@ -169,25 +210,165 @@ class DomCheckerProvider
             list($selector, $property, $wordType) = $class::toArray();
 
             $discoveringNodes = $this->discoverCachingGet($selector, $dom);
-            foreach ($discoveringNodes as $k => $node) {
-                $instance = new $class($node, $property);
 
-                if ($instance->handle()) {
-                    $this->getParser()->getWords()->addOne(new WordEntry($node->$property, $wordType));
+            if($this->getTranslationEngine() <= 2) { // Old model
+                foreach ($discoveringNodes as $k => $node) {
+                    $instance = new $class($node, $property);
 
-                    $nodes[] = [
-                        'node' => $node,
-                        'class' => $class,
-                        'property' => $property,
-                    ];
-                } else {
-                    if (strpos($node->$property, '&gt;') !== false || strpos($node->$property, '&lt;') !== false) {
-                        $node->$property = str_replace(['&lt;', '&gt;'], ['<', '>'], $node->$property);
+                    if ($instance->handle()) {
+                        $this->getParser()->getWords()->addOne(new WordEntry($node->$property, $wordType));
+
+                        $nodes[] = [
+                            'node' => $node,
+                            'class' => $class,
+                            'property' => $property,
+                        ];
+                    } else {
+                        if (strpos($node->$property, '&gt;') !== false || strpos($node->$property, '&lt;') !== false) {
+                            $node->$property = str_replace(['&lt;', '&gt;'], ['<', '>'], $node->$property);
+                        }
                     }
                 }
             }
+            if($this->getTranslationEngine() == 3)  { //New model
+
+                for ($i = 0; $i < count($discoveringNodes); $i++) {
+                    $node = $discoveringNodes[$i];
+                    $instance = new $class($node, $property);
+
+                    if ($instance->handle()) {
+
+                        if($selector === 'text') {
+                            $jump = 0;
+
+                            while($this->shouldMergeWithSiblings($node, $jump))
+                                $node = $node->parentNode();
+
+
+                            $node = $this->getMinimalNode($node);
+                            $i = $i + $jump;
+                        }
+
+                        $this->getParser()->getWords()->addOne(new WordEntry($node->$property, $wordType));
+
+                        $nodes[] = [
+                            'node' => $node,
+                            'class' => $class,
+                            'property' => $property,
+                        ];
+
+                    }
+                }
+            }
+
         }
 
         return $nodes;
+    }
+
+    public function shouldMergeWithSiblings($node, &$c) {
+        //echo "Start shouldMergeWithSiblings node : ". $node->tag . " & content : " . $node->innertext(). ". c is : ". $c . "\n";
+        if($this->isBlock($node)) {
+          return false;
+        }
+
+        //echo "Checking node : " . $node->tag."\n";
+        $siblings = $node->parentNode()->nodes;
+        $siblings = $this->unsetValue($siblings, $node);
+        //echo "Count :" . count($parent->nodes);
+        $c_copy = $c;
+        foreach($siblings as $sibling) {
+           if($this->containsChildBlock($sibling, $c)) {
+               $c = $c_copy;
+               return false;
+           }
+
+
+        }
+        return true;
+    }
+
+    public function containsChildBlock($node, &$c) {
+        //echo "Start containsChildBlock node : ". $node->tag . " & content : " . $node->innertext(). ". c is : ". $c . "\n";
+        if($this->isText($node)) {
+            $c++;
+            return false;
+        }
+        elseif($this->isInline($node)) {
+          foreach($node->nodes as $n) {
+              if($this->containsChildBlock($n, $c))
+                 return true;
+          }
+          return false;
+
+        }
+        else {
+            return true;
+        }
+
+    }
+
+    public function getMinimalNode($node) {
+        if($this->isText($node)) {
+            return $node;
+        }
+
+        //We remove unnecessary wrapping nodes
+        while(count($node->nodes) == 1)
+            $node = $node->nodes[0];
+
+        $notEmptyChild = [];
+        foreach ($node->nodes as $n) {
+            if(!$this->hasOnlyEmptyChild($n)) {
+                $notEmptyChild[] = $n;
+            }
+        }
+
+        if(count($notEmptyChild) == 1) {
+            return $this->getMinimalNode($notEmptyChild[0]);
+        }
+
+
+        return $node;
+    }
+
+    public function hasOnlyEmptyChild($node) {
+        if($this->isText($node)) {
+            if(Text::fullTrim($node->innertext()) != '')
+               return false;
+            else
+                return true;
+        }
+        else {
+            foreach ($node->nodes as $n) {
+                if(!$this->hasOnlyEmptyChild($n))
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    public function isInline($node) {
+        return in_array($node->tag, self::INLINE_NODES);
+    }
+
+    public function isText($node) {
+        return $node->tag == 'text';
+    }
+
+    public function isBlock($node) {
+        return (!$this->isInline($node) && !$this->isText($node));
+    }
+
+    public function isInlineOrText($node) {
+        return $this->isInline($node) || $this->isText($node);
+    }
+
+    public function unsetValue(array $array, $value, $strict = TRUE)
+    {
+        if(($key = array_search($value, $array, $strict)) !== FALSE) {
+            unset($array[$key]);
+        }
+        return $array;
     }
 }

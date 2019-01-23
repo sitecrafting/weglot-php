@@ -52,10 +52,11 @@ class ParserTest extends \Codeception\Test\Unit
         ];
 
         // Client
-        $this->client = new Client(getenv('WG_API_KEY'));
+        $this->client = new Client(getenv('WG_API_KEY'), 3);
     }
 
     // tests
+    /*
     public function testTranslateManual()
     {
         // Parser
@@ -83,7 +84,71 @@ class ParserTest extends \Codeception\Test\Unit
             'de'
         );
         $this->assertTrue(\is_string($translatedContent));
+    }*/
+
+    public function testParser1JsonCases()
+    {
+        $string = file_get_contents(__DIR__ . "/tests_parser_1.json");
+        $json_array = json_decode($string, true);
+
+
+        foreach ($json_array as $test) {
+
+            // Parser
+            $client = new Client(getenv('WG_API_KEY') , 1);
+            $this->parser = new Parser($client, $this->config['server']);
+
+            // Run the Parser
+            $strings = $this->parser->parse($test['body']);
+               foreach ($strings as $k => $string) {
+                $this->assertEquals( $test['expected'][$k]['w'], $string->getWord());
+                $this->assertEquals( $test['expected'][$k]['t'], $string->getType());
+            }
+        }
     }
+
+    public function testParser2JsonCases()
+    {
+        $string = file_get_contents(__DIR__ . "/tests_parser_2.json");
+        $json_array = json_decode($string, true);
+
+
+        foreach ($json_array as $test) {
+
+            // Parser
+            $client = new Client(getenv('WG_API_KEY') , 2);
+            $this->parser = new Parser($client, $this->config['server']);
+
+            // Run the Parser
+            $strings = $this->parser->parse($test['body']);
+            foreach ($strings as $k => $string) {
+                $this->assertEquals( $test['expected'][$k]['w'], $string->getWord());
+                $this->assertEquals( $test['expected'][$k]['t'], $string->getType());
+            }
+        }
+    }
+
+    public function testParser3JsonCases()
+    {
+        $string = file_get_contents(__DIR__ . "/tests_parser_3.json");
+        $json_array = json_decode($string, true);
+
+
+        foreach ($json_array as $test) {
+
+            // Parser
+            $client = new Client(getenv('WG_API_KEY') , 3);
+            $this->parser = new Parser($client, $this->config['server']);
+
+            // Run the Parser
+            $strings = $this->parser->parse($test['body']);
+            foreach ($strings as $k => $string) {
+                $this->assertEquals( $test['expected'][$k]['w'], $string->getWord());
+                $this->assertEquals( $test['expected'][$k]['t'], $string->getType());
+            }
+        }
+    }
+
 
     private function _getContent($url)
     {

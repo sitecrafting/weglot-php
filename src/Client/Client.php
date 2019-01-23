@@ -58,12 +58,13 @@ class Client
     /**
      * Client constructor.
      * @param string    $apiKey     your Weglot API key
+     * @param int     $translationEngine
      * @param array     $options    an array of options, currently only "host" is implemented
      */
-    public function __construct($apiKey, $options = [])
+    public function __construct($apiKey, $translationEngine, $options = [])
     {
         $this->apiKey = $apiKey;
-        $this->profile = new Profile($apiKey);
+        $this->profile = new Profile($apiKey, $translationEngine);
 
         $this
             ->setHttpClient()
