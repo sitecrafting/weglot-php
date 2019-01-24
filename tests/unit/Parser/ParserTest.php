@@ -85,7 +85,7 @@ class ParserTest extends \Codeception\Test\Unit
         $this->assertTrue(\is_string($translatedContent));
     }
 
-    public function testParser1JsonCases()
+    public function testParserEngine1NodeSplit()
     {
         $string = file_get_contents(__DIR__ . "/tests_parser_1.json");
         $json_array = json_decode($string, true);
@@ -106,7 +106,7 @@ class ParserTest extends \Codeception\Test\Unit
         }
     }
 
-    public function testParser2JsonCases()
+    public function testParserEngine2NodeSplit()
     {
         $string = file_get_contents(__DIR__ . "/tests_parser_2.json");
         $json_array = json_decode($string, true);
@@ -127,7 +127,7 @@ class ParserTest extends \Codeception\Test\Unit
         }
     }
 
-    public function testParser3JsonCases()
+    public function testParserEngine3NodeSplit()
     {
         $string = file_get_contents(__DIR__ . "/tests_parser_3.json");
         $json_array = json_decode($string, true);

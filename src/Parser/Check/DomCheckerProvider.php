@@ -261,21 +261,26 @@ class DomCheckerProvider
 
                     if ($instance->handle()) {
 
-                        $attributes = [];
+                        $attributes = []; // Will contain attributes of merged node so that we can put them back after the API call.
 
                         if($selector === 'text') {
-                            $jump = 0;
 
-                            while($this->shouldMergeWithSiblings($node, $jump))
+                            $shift = 0;
+
+                            // If the parent node is eligible, we take it instead and we continue until it's not eligible.
+                            while($number = $this->numberOfTextNodeInParentAfterChild($node->parentNode(), $node)) {
+
                                 $node = $node->parentNode();
+                                $shift = $number - 1;
+                            }
 
-
+                            // We descend the node to see if we can take a child instead, in the case there are wrapping node or empty nodes. For instance, In that case <p><b>Hello</b></p>, it's better to chose node "b" than "p"
                             $node = $this->getMinimalNode($node);
 
                             //We remove attributes from all child nodes and replace by wg-1, wg-2, etc... Real attributes are saved into $attributes.
                             $node = $this->removeAttributesFromChild($node, $attributes);
 
-                            $i = $i + $jump;
+                            $i = $i + $shift;
                         }
 
                         $this->getParser()->getWords()->addOne(new WordEntry($node->$property, $wordType));
@@ -292,50 +297,35 @@ class DomCheckerProvider
             }
 
         }
-
         return $nodes;
     }
 
-    public function shouldMergeWithSiblings($node, &$c) {
-        //echo "Start shouldMergeWithSiblings node : ". $node->tag . " & content : " . $node->innertext(). ". c is : ". $c . "\n";
-        if($this->isBlock($node)) {
-          return false;
-        }
 
-        //echo "Checking node : " . $node->tag."\n";
-        $siblings = $node->parentNode()->nodes;
-        $siblings = $this->unsetValue($siblings, $node);
-        //echo "Count :" . count($parent->nodes);
-        $c_copy = $c;
-        foreach($siblings as $sibling) {
-           if($this->containsChildBlock($sibling, $c)) {
-               $c = $c_copy;
-               return false;
-           }
+    // This function is important : It return the number of text node inside a given node, but it count only text node that are inside or after a given child (if no child is given it count everything)
+    // If at some point it find a block or a excluded block, it returns false.
+    public function numberOfTextNodeInParentAfterChild($node, $child = null) {
 
-
-        }
-        return true;
-    }
-
-    public function containsChildBlock($node, &$c) {
-        //echo "Start containsChildBlock node : ". $node->tag . " & content : " . $node->innertext(). ". c is : ". $c . "\n";
-        if($this->isText($node)) {
+        $c = 0;
+        if($this->isText($node))
             $c++;
-            return false;
-        }
-        elseif($this->isInline($node)) {
-          foreach($node->nodes as $n) {
-              if($this->containsChildBlock($n, $c))
-                 return true;
-          }
-          return false;
 
-        }
-        else {
-            return true;
-        }
+        foreach($node->nodes as $n) {
 
+            if($this->isBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE))
+                return false;
+
+            if($child != null && $n->outertext() == $child->outertext())
+                $child = null;
+
+            if($child == null) {
+                $number = $this->numberOfTextNodeInParentAfterChild($n);
+                if($number === false)
+                    return false;
+                else
+                    $c += $number;
+            }
+        }
+        return $c;
     }
 
     public function getMinimalNode($node) {

@@ -154,6 +154,88 @@
     ]
   },
   {
+    "name": "Nested tags 10",
+    "body": " <p><b>Hello </b><b>this is</b></p><p>bonjour</p><p><b>Hi </b><b>we are</b></p> ",
+    "expected": [
+      {
+        "t": 1,
+        "w": "<b wg-1=\"\">Hello </b><b wg-2=\"\">this is</b>"
+      },
+      {
+        "t": 1,
+        "w": "bonjour"
+      },
+      {
+        "t": 1,
+        "w": "<b wg-1=\"\">Hi </b><b wg-2=\"\">we are</b>"
+      }
+    ]
+  },
+  {
+    "name": "Nested tags 11",
+    "body": " <p><b>Hello </b> <b>this is</b></p> <i> </i> <p>bonjour</p><p><b>Hi </b><b>we are</b></p> ",
+    "expected": [
+      {
+        "t": 1,
+        "w": "<b wg-1=\"\">Hello </b> <b wg-2=\"\">this is</b>"
+      },
+      {
+        "t": 1,
+        "w": "bonjour"
+      },
+      {
+        "t": 1,
+        "w": "<b wg-1=\"\">Hi </b><b wg-2=\"\">we are</b>"
+      }
+    ]
+  },
+  {
+    "name": "Nested tags 12",
+    "body": " <p> <b>Hello</b> <i> </i> <i></i></p><p>This</p><p>is</p> ",
+    "expected": [
+      {
+        "t": 1,
+        "w": "Hello"
+      },
+      {
+        "t": 1,
+        "w": "This"
+      },
+      {
+        "t": 1,
+        "w": "is"
+      }
+    ]
+  },
+  {
+    "name": "Nested tags 13",
+    "body": " <p><b>8</b><b> Hello </b></p><p> Hi</p><p>Cool</p>",
+    "expected": [
+      {
+        "t": 1,
+        "w": "<b wg-1=\"\">8</b><b wg-2=\"\"> Hello </b>"
+      },
+      {
+        "t": 1,
+        "w": " Hi"
+      },
+      {
+        "t": 1,
+        "w": "Cool"
+      }
+    ]
+  },
+  {
+    "name": "Exclude tags 1",
+    "body": " <p><b>Hello </b><b data-wg-notranslate>man</b></p> ",
+    "expected": [
+      {
+        "t": 1,
+        "w": "Hello "
+      }
+    ]
+  },
+  {
     "name": "Link tag",
     "body": "<p>Hello, <a href='#'>this is</a> a test!</p>",
     "expected": [
