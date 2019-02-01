@@ -36,7 +36,7 @@ class TranslateTest extends \Codeception\Test\Unit
     protected function _before()
     {
         // Client
-        $this->client = new Client(getenv('WG_API_KEY'));
+        $this->client = new Client(getenv('WG_API_KEY'), 3);
 
         // TranslateEntry
         $params = [

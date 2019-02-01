@@ -86,7 +86,7 @@ class Parser
             ->setConfigProvider($config)
             ->setExcludeBlocks($excludeBlocks)
             ->setWords(new WordCollection())
-            ->setDomCheckerProvider(new DomCheckerProvider($this))
+            ->setDomCheckerProvider(new DomCheckerProvider($this, $client->getProfile()->getTranslationEngine()))
             ->setIgnoredNodesFormatter(new IgnoredNodes());
     }
 
@@ -258,7 +258,7 @@ class Parser
             ->setLanguageFrom($languageFrom)
             ->setLanguageTo($languageTo);
 
-        if ($this->client->getProfile()->getIgnoredNodes()) {
+        if ($this->client->getProfile()->getTranslationEngine() === 2) {
             $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
 
             $ignoredNodesFormatter->setSource($source)
@@ -308,7 +308,7 @@ class Parser
      */
     public function parse($source)
     {
-        if ($this->client->getProfile()->getIgnoredNodes()) {
+        if ($this->client->getProfile()->getTranslationEngine() == 2) {
             $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
 
             $ignoredNodesFormatter->setSource($source)

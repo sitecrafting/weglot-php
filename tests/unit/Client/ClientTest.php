@@ -20,7 +20,7 @@ class ClientTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
-        $this->client = new Client(getenv('WG_API_KEY'));
+        $this->client = new Client(getenv('WG_API_KEY') , 3);
     }
 
     // tests
@@ -53,15 +53,14 @@ class ClientTest extends \Codeception\Test\Unit
     public function testProfile()
     {
         $wgApiKeys = [
-            'wg_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' => 1,
             'wg_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' => 2
         ];
         foreach ($wgApiKeys as $wgApiKey => $version) {
-            $client = new Client($wgApiKey);
+            $client = new Client($wgApiKey , 3);
             $profile = $client->getProfile();
 
             $this->assertEquals($version, $profile->getApiVersion());
-            $this->assertEquals($version === 2, $profile->getIgnoredNodes());
+            $this->assertEquals(3, $profile->getTranslationEngine());
         }
     }
 

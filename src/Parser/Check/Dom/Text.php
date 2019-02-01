@@ -19,7 +19,7 @@ class Text extends AbstractDomChecker
     /**
      * {@inheritdoc}
      */
-    const PROPERTY = 'outertext';
+    const PROPERTY = 'innertext';
 
     /**
      * {@inheritdoc}
@@ -35,9 +35,9 @@ class Text extends AbstractDomChecker
             && $this->node->parent()->tag != 'style'
             && $this->node->parent()->tag != 'noscript'
             && $this->node->parent()->tag != 'code'
-            && !is_numeric(TextUtil::fullTrim($this->node->outertext))
-            && !preg_match('/^\d+%$/', TextUtil::fullTrim($this->node->outertext))
-            && strpos($this->node->outertext, '[vc_') === false
-            && strpos($this->node->outertext, '<?php') === false);
+            && !is_numeric(TextUtil::fullTrim($this->node->innertext))
+            && !preg_match('/^\d+%$/', TextUtil::fullTrim($this->node->innertext))
+            && strpos($this->node->innertext, '[vc_') === false
+            && strpos($this->node->innertext, '<?php') === false);
     }
 }

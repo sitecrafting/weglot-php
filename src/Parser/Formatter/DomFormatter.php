@@ -16,15 +16,18 @@ class DomFormatter extends AbstractFormatter
      */
     public function handle(array $nodes)
     {
-        $translated_words = $this->getTranslated()->getOutputWords();
+        $translatable_attributes = $this->getTranslatableAttributes();
+
+        $original_words     = array_column($this->getTranslated()->getInputWords()->jsonSerialize() , 'w');
+        $translated_words   = array_column($this->getTranslated()->getOutputWords()->jsonSerialize() , 'w');
 
         for ($i = 0; $i < \count($nodes); ++$i) {
             $currentNode = $nodes[$i];
 
             if ($translated_words[$i] !== null) {
-                $currentTranslated = $translated_words[$i]->getWord();
+                $currentTranslated = $translated_words[$i];
 
-                $this->metaContent($currentNode, $currentTranslated);
+                $this->metaContent($currentNode,  $currentTranslated, $translatable_attributes, $original_words, $translated_words);
                 $this->imageSource($currentNode, $currentTranslated, $i);
             }
         }
@@ -34,7 +37,7 @@ class DomFormatter extends AbstractFormatter
      * @param array $details
      * @param string $translated
      */
-    protected function metaContent(array $details, $translated) {
+    protected function metaContent(array $details, $translated, $translatable_attributes, $original_words, $translated_words) {
         $property = $details['property'];
 
         if ($details['class']::ESCAPE_SPECIAL_CHAR) {
@@ -42,18 +45,47 @@ class DomFormatter extends AbstractFormatter
         } else {
             $details['node']->$property = $translated;
         }
+
+        if(array_key_exists('attributes' , $details)) {
+            foreach ($details['attributes'] as $wg => $attributes) {
+                $attributeString = "";
+                foreach ($attributes as $key => $attribute) {
+                    if(in_array($key, $translatable_attributes)) {
+                        $pos = array_search($attribute, $original_words);
+                        if($pos !== false) {
+                            $attribute = $translated_words[$pos];
+                        }
+                    }
+                    $attributeString .= $key."=\"".$attribute."\" ";
+                }
+                $attributeString = strlen($attributeString) > 0 ? " ".$attributeString:$attributeString;
+                $details['node']->$property = str_replace(" ".$wg.'=""', rtrim($attributeString), $details['node']->$property);
+                $details['node']->$property = str_replace(" ".$wg.'=\'\'', rtrim($attributeString), $details['node']->$property);
+            }
+        }
+
     }
 
     protected function imageSource(array $details, $translated, $index) {
         $words = $this->getTranslated()->getInputWords();
 
-        if ($details['class'] === '\Weglot\Parser\Check\Dom\ImageSource') {
-            $details['node']->src = $translated;
-            if ($details['node']->hasAttribute('srcset') &&
-                $details['node']->srcset != '' &&
-                $translated != $words[$index]->getWord()) {
-                $details['node']->srcset = '';
+            if ($details['class'] === '\Weglot\Parser\Check\Dom\ImageSource') {
+                $details['node']->src = $translated;
+                if ($details['node']->hasAttribute('srcset') &&
+                    $details['node']->srcset != '' &&
+                    $translated != $words[$index]->getWord()) {
+                    $details['node']->srcset = '';
+                }
             }
+    }
+
+    protected function getTranslatableAttributes() {
+        $checkers = $this->getParser()->getDomCheckerProvider()->getCheckers();
+
+        $attributes= [];
+        foreach ($checkers as $class) {
+            $attributes[] = $class::toArray()[1];
         }
+        return $attributes;
     }
 }

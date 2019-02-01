@@ -10,34 +10,36 @@ class Profile
     protected $version;
 
     /**
-     * @var bool
+     * @var int
      */
-    protected $ignoredNodes;
+    protected $translationEngine;
 
     /**
      * Profile constructor.
      * @param string $apiKey
+     * @param int $translationEngine
      */
-    public function __construct($apiKey)
+    public function __construct($apiKey, $translationEngine)
     {
-        $this->setup($apiKey);
+        $this->setup($apiKey, $translationEngine);
     }
 
     /**
      * @param string $apiKey
+     * @param int $translationEngine
      */
-    protected function setup($apiKey)
+    protected function setup($apiKey, $translationEngine)
     {
         $apiKeyLength = \strlen($apiKey);
 
         if ($apiKeyLength === 35) {
             $this
                 ->setApiVersion(1)
-                ->setIgnoredNodes(false);
+                ->setTranslationEngine(1);
         } else {
             $this
                 ->setApiVersion(2)
-                ->setIgnoredNodes(true);
+                ->setTranslationEngine($translationEngine);
         }
     }
 
@@ -61,21 +63,21 @@ class Profile
     }
 
     /**
-     * @param bool $ignoredNodes
+     * @param int $translationEngine
      * @return $this
      */
-    public function setIgnoredNodes($ignoredNodes)
+    public function setTranslationEngine($translationEngine)
     {
-        $this->ignoredNodes = $ignoredNodes;
+        $this->translationEngine = $translationEngine;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function getIgnoredNodes()
+    public function getTranslationEngine()
     {
-        return $this->ignoredNodes;
+        return $this->translationEngine;
     }
 }
