@@ -235,23 +235,7 @@ class DomCheckerProvider
             $discoveringNodes = $this->discoverCachingGet($selector, $dom);
 
             if($this->getTranslationEngine() <= 2) { // Old model
-                foreach ($discoveringNodes as $k => $node) {
-                    $instance = new $class($node, $property);
-
-                    if ($instance->handle()) {
-                        $this->getParser()->getWords()->addOne(new WordEntry($node->$property, $wordType));
-
-                        $nodes[] = [
-                            'node' => $node,
-                            'class' => $class,
-                            'property' => $property,
-                        ];
-                    } else {
-                        if (strpos($node->$property, '&gt;') !== false || strpos($node->$property, '&lt;') !== false) {
-                            $node->$property = str_replace(['&lt;', '&gt;'], ['<', '>'], $node->$property);
-                        }
-                    }
-                }
+               $this->handleOldEngine($discoveringNodes, $nodes , $class, $property, $wordType);
             }
             if($this->getTranslationEngine() == 3)  { //New model
 
@@ -300,32 +284,60 @@ class DomCheckerProvider
         return $nodes;
     }
 
+    public function handleOldEngine($discoveringNodes, &$nodes, $class, $property, $wordType) {
+        foreach ($discoveringNodes as $k => $node) {
+            $instance = new $class($node, $property);
+
+            if ($instance->handle()) {
+                $this->getParser()->getWords()->addOne(new WordEntry($node->$property, $wordType));
+
+                $nodes[] = [
+                    'node' => $node,
+                    'class' => $class,
+                    'property' => $property,
+                ];
+            } else {
+                if (strpos($node->$property, '&gt;') !== false || strpos($node->$property, '&lt;') !== false) {
+                    $node->$property = str_replace(['&lt;', '&gt;'], ['<', '>'], $node->$property);
+                }
+            }
+        }
+    }
+
 
     // This function is important : It return the number of text node inside a given node, but it count only text node that are inside or after a given child (if no child is given it count everything)
     // If at some point it find a block or a excluded block, it returns false.
     public function numberOfTextNodeInParentAfterChild($node, $child = null) {
 
-        $c = 0;
-        if($this->isText($node))
-            $c++;
+        $count = 0;
+        if($this->isText($node)) {
+            $count++;
+        }
+
 
         foreach($node->nodes as $n) {
 
-            if($this->isBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE))
+            if($this->isBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)) {
                 return false;
+            }
 
-            if($child != null && $n->outertext() == $child->outertext())
+
+            if($child != null && $n->outertext() == $child->outertext()) {
                 $child = null;
+            }
+
 
             if($child == null) {
                 $number = $this->numberOfTextNodeInParentAfterChild($n);
-                if($number === false)
+                if($number === false) {
                     return false;
-                else
-                    $c += $number;
+                }
+                else {
+                    $count += $number;
+                }
             }
         }
-        return $c;
+        return $count;
     }
 
     public function getMinimalNode($node) {
@@ -355,12 +367,12 @@ class DomCheckerProvider
 
     public function removeAttributesFromChild($node, &$attributes) {
 
-        foreach ($node->children() as $n) {
+        foreach ($node->children() as $child) {
             $k = count($attributes)+1;
-            $attributes['wg-'.$k] = $n->getAllAttributes();
-            $n->attr = [];
-            $n->setAttribute('wg-'.$k, "");
-            $this->removeAttributesFromChild($n, $attributes);
+            $attributes['wg-'.$k] = $child->getAllAttributes();
+            $child->attr = [];
+            $child->setAttribute('wg-'.$k, '');
+            $this->removeAttributesFromChild($child, $attributes);
         }
 
         return $node;
@@ -373,13 +385,13 @@ class DomCheckerProvider
             else
                 return true;
         }
-        else {
-            foreach ($node->nodes as $n) {
-                if(!$this->hasOnlyEmptyChild($n))
-                    return false;
-            }
-            return true;
+
+        foreach ($node->nodes as $child) {
+            if(!$this->hasOnlyEmptyChild($child))
+                return false;
         }
+        return true;
+
     }
 
     public function isInline($node) {
@@ -387,7 +399,7 @@ class DomCheckerProvider
     }
 
     public function isText($node) {
-        return $node->tag == 'text';
+        return $node->tag === 'text';
     }
 
     public function isBlock($node) {

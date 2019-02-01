@@ -258,7 +258,7 @@ class Parser
             ->setLanguageFrom($languageFrom)
             ->setLanguageTo($languageTo);
 
-        if ($this->client->getProfile()->getTranslationEngine() == 2) {
+        if ($this->client->getProfile()->getTranslationEngine() === 2) {
             $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
 
             $ignoredNodesFormatter->setSource($source)

@@ -246,6 +246,38 @@
     ]
   },
   {
+    "name": "Link tag with title",
+    "body": "<p>Hello, <a href='#' title='title needs translation'>this is</a> a test!</p>",
+    "expected": [
+      {
+        "t": 1,
+        "w": "title needs translation"
+      },
+      {
+        "t": 1,
+        "w": "Hello, <a wg-1=''>this is</a> a test!"
+      }
+    ]
+  },
+  {
+    "name": "Link tag with title 2",
+    "body": "<p>Hello, <b><a href='#' class='translate' title='translate'>this is</a> a <a href='#' title='link needs translation'>link</a></b> and a test!</p>",
+    "expected": [
+      {
+        "t": 1,
+        "w": "translate"
+      },
+      {
+        "t": 1,
+        "w": "link needs translation"
+      },
+      {
+        "t": 1,
+        "w": "Hello, <b wg-1=\"\"><a wg-2=''>this is</a> a <a wg-3=''>link</a></b> and a test!"
+      }
+    ]
+  },
+  {
     "name": "Button tag",
     "body": "<form><button value='Click me!'></button></form>",
     "expected": [

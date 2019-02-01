@@ -58,7 +58,7 @@ class Client
     /**
      * Client constructor.
      * @param string    $apiKey     your Weglot API key
-     * @param int     $translationEngine
+     * @param int       $translationEngine
      * @param array     $options    an array of options, currently only "host" is implemented
      */
     public function __construct($apiKey, $translationEngine, $options = [])
