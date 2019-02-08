@@ -226,6 +226,26 @@
     ]
   },
   {
+    "name": "tag with br",
+    "body": "<p>Hello, <br /> a test!</p>",
+    "expected": [
+      {
+        "t": 1,
+        "w": "Hello, <br wg-1=\"\" /> a test!"
+      }
+    ]
+  },
+  {
+    "name": "tag with br",
+    "body": "<p>Hello, <br> a test! how are <b>you</b></p>",
+    "expected": [
+      {
+        "t": 1,
+        "w": "Hello, <br wg-1=\"\"> a test! how are <b wg-2=\"\">you</b>"
+      }
+    ]
+  },
+  {
     "name": "Exclude tags 1",
     "body": " <p><b>Hello </b><b data-wg-notranslate>man</b></p> ",
     "expected": [

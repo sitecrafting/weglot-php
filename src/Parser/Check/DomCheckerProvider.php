@@ -403,7 +403,7 @@ class DomCheckerProvider
     }
 
     public function isBlock($node) {
-        return (!$this->isInline($node) && !$this->isText($node));
+        return (!$this->isInline($node) && !$this->isText($node) && !($node->tag === 'br'));
     }
 
     public function isInlineOrText($node) {
