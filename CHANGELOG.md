@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.21] - 2019-03-12
+### Added
+- Util Regex for excluded paths
+### Changed
+- Update translation engine
+
 ## [0.5.12] - 2018-09-19
 Add escape property on dom checker
 
