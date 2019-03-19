@@ -29,7 +29,7 @@ class RegexTest extends \Codeception\Test\Unit {
 		$regex = $this->_regexInstance($option);
 
 		$this->assertEquals('^http:\/\/', $regex->getRegex());
-		$this->assertRegExp($regex->getRegex(), 'http://');
+		$this->assertRegExp("#" . $regex->getRegex() . "#", 'http://');
 	}
 
 	public function testRegexEndWith() {
@@ -41,7 +41,7 @@ class RegexTest extends \Codeception\Test\Unit {
 		$regex = $this->_regexInstance($option);
 
 		$this->assertEquals('http:\/\/$', $regex->getRegex());
-		$this->assertRegExp($regex->getRegex(), 'test string http://');
+		$this->assertRegExp("#" . $regex->getRegex() . "#", 'test string http://');
 	}
 
 	public function testRegexContain() {
@@ -53,7 +53,7 @@ class RegexTest extends \Codeception\Test\Unit {
 		$regex = $this->_regexInstance($option);
 
 		$this->assertEquals('http:\/\/', $regex->getRegex());
-		$this->assertRegExp($regex->getRegex(), 'test http:// string');
+		$this->assertRegExp("#" . $regex->getRegex() . "#", 'test http:// string');
 	}
 
 	public function testRegexIsExactly() {
@@ -65,7 +65,7 @@ class RegexTest extends \Codeception\Test\Unit {
 		$regex = $this->_regexInstance($option);
 
 		$this->assertEquals('^http:\/\/$', $regex->getRegex());
-		$this->assertRegExp($regex->getRegex(), 'http://');
+		$this->assertRegExp("#" . $regex->getRegex() . "#", 'http://');
 	}
 	public function testMatchRegex() {
 		$option = [
@@ -76,6 +76,6 @@ class RegexTest extends \Codeception\Test\Unit {
 		$regex = $this->_regexInstance($option);
 
 		$this->assertEquals('^http:\/\/', $regex->getRegex());
-		$this->assertRegExp($regex->getRegex(), 'http://weglot.com');
+		$this->assertRegExp("#" . $regex->getRegex() . "#", 'http://weglot.com');
 	}
 }
