@@ -28,7 +28,7 @@ class RegexTest extends \Codeception\Test\Unit {
 
 		$regex = $this->_regexInstance($option);
 
-		$this->assertEquals('#^http:\/\/#', $regex->getRegex());
+		$this->assertEquals('^http:\/\/', $regex->getRegex());
 		$this->assertRegExp($regex->getRegex(), 'http://');
 	}
 
@@ -40,7 +40,7 @@ class RegexTest extends \Codeception\Test\Unit {
 
 		$regex = $this->_regexInstance($option);
 
-		$this->assertEquals('#http:\/\/$#', $regex->getRegex());
+		$this->assertEquals('http:\/\/$', $regex->getRegex());
 		$this->assertRegExp($regex->getRegex(), 'test string http://');
 	}
 
@@ -52,7 +52,7 @@ class RegexTest extends \Codeception\Test\Unit {
 
 		$regex = $this->_regexInstance($option);
 
-		$this->assertEquals('#http:\/\/#', $regex->getRegex());
+		$this->assertEquals('http:\/\/', $regex->getRegex());
 		$this->assertRegExp($regex->getRegex(), 'test http:// string');
 	}
 
@@ -64,18 +64,18 @@ class RegexTest extends \Codeception\Test\Unit {
 
 		$regex = $this->_regexInstance($option);
 
-		$this->assertEquals('#^http:\/\/$#', $regex->getRegex());
+		$this->assertEquals('^http:\/\/$', $regex->getRegex());
 		$this->assertRegExp($regex->getRegex(), 'http://');
 	}
 	public function testMatchRegex() {
 		$option = [
 			'type'  => RegexEnum::MATCH_REGEX,
-			'value' => '#^http:\/\/#',
+			'value' => '^http:\/\/',
 		];
 
 		$regex = $this->_regexInstance($option);
 
-		$this->assertEquals('#^http:\/\/#', $regex->getRegex());
+		$this->assertEquals('^http:\/\/', $regex->getRegex());
 		$this->assertRegExp($regex->getRegex(), 'http://weglot.com');
 	}
 }
