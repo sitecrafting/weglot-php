@@ -27,9 +27,10 @@ class RegexTest extends \Codeception\Test\Unit {
 		];
 
 		$regex = $this->_regexInstance($option);
+        $regex = str_replace('/', '\/', $regex->getRegex());
 
-		$this->assertEquals('^http:\/\/', $regex->getRegex());
-		$this->assertRegExp("#" . $regex->getRegex() . "#", 'http://');
+		$this->assertEquals('^http:\/\/', $regex);
+		$this->assertRegExp("#" . $regex . "#", 'http://');
 	}
 
 	public function testRegexEndWith() {
@@ -39,9 +40,10 @@ class RegexTest extends \Codeception\Test\Unit {
 		];
 
 		$regex = $this->_regexInstance($option);
+        $regex = str_replace('/', '\/', $regex->getRegex());
 
-		$this->assertEquals('http:\/\/$', $regex->getRegex());
-		$this->assertRegExp("#" . $regex->getRegex() . "#", 'test string http://');
+		$this->assertEquals('http:\/\/$', $regex);
+		$this->assertRegExp("#" . $regex . "#", 'test string http://');
 	}
 
 	public function testRegexContain() {
@@ -51,9 +53,10 @@ class RegexTest extends \Codeception\Test\Unit {
 		];
 
 		$regex = $this->_regexInstance($option);
+        $regex = str_replace('/', '\/', $regex->getRegex());
 
-		$this->assertEquals('http:\/\/', $regex->getRegex());
-		$this->assertRegExp("#" . $regex->getRegex() . "#", 'test http:// string');
+		$this->assertEquals('http:\/\/', $regex);
+		$this->assertRegExp("#" . $regex . "#", 'test http:// string');
 	}
 
 	public function testRegexIsExactly() {
@@ -63,9 +66,10 @@ class RegexTest extends \Codeception\Test\Unit {
 		];
 
 		$regex = $this->_regexInstance($option);
+        $regex = str_replace('/', '\/', $regex->getRegex());
 
-		$this->assertEquals('^http:\/\/$', $regex->getRegex());
-		$this->assertRegExp("#" . $regex->getRegex() . "#", 'http://');
+		$this->assertEquals('^http:\/\/$', $regex);
+		$this->assertRegExp("#" . $regex . "#", 'http://');
 	}
 	public function testMatchRegex() {
 		$option = [
@@ -74,8 +78,8 @@ class RegexTest extends \Codeception\Test\Unit {
 		];
 
 		$regex = $this->_regexInstance($option);
-
-		$this->assertEquals('^http:\/\/', $regex->getRegex());
-		$this->assertRegExp("#" . $regex->getRegex() . "#", 'http://weglot.com');
+		$regex = str_replace('/', '\/', $regex->getRegex());
+		$this->assertEquals('^http:\/\/', $regex);
+		$this->assertRegExp("#" . $regex . "#", 'http://weglot.com');
 	}
 }
