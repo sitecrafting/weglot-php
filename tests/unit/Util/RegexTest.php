@@ -77,8 +77,8 @@ class RegexTest extends \Codeception\Test\Unit {
 			'value' => '^http:\/\/',
 		];
 
-		$regex = $this->_regexInstance($option);
-		$regex = str_replace('/', '\/', $regex->getRegex());
+        $regex = $this->_regexInstance($option)->getRegex();
+
 		$this->assertEquals('^http:\/\/', $regex);
 		$this->assertRegExp("#" . $regex . "#", 'http://weglot.com');
 	}
