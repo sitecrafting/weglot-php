@@ -25,16 +25,16 @@ class Regex {
 		$str = null;
 		switch ($this->type) {
 			case RegexEnum::START_WITH:
-				$str = sprintf('#^%s#', $this->value);
+				$str = sprintf('^%s', $this->value);
 				break;
 			case RegexEnum::END_WITH:
-				$str = sprintf('#%s$#', $this->value);
+				$str = sprintf('%s$', $this->value);
 				break;
 			case RegexEnum::CONTAIN:
-				$str = sprintf('#%s#', $this->value);
+				$str = sprintf('%s', $this->value);
 				break;
 			case RegexEnum::IS_EXACTLY:
-				$str = sprintf('#^%s$#', $this->value);
+				$str = sprintf('^%s$', $this->value);
 				break;
 			case RegexEnum::MATCH_REGEX:
 				return $this->value;
@@ -44,7 +44,6 @@ class Regex {
 			return $this->value;
 		}
 
-		$str = str_replace('/', '\/', $str);
 		return $str;
 	}
 }
