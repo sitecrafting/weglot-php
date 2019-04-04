@@ -354,5 +354,15 @@
         "w": "Click here!"
       }
     ]
+  },
+  {
+    "name": "tag with new line and blanks",
+    "body": "<p> \n\n <strong>test</strong> \n\n </p>",
+    "expected": [
+      {
+        "t": 1,
+        "w": "test"
+      }
+    ]
   }
 ]
