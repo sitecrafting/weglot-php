@@ -175,14 +175,20 @@ class Translate extends Endpoint
             $asArray['words'] = $beforeRequest[0];
         }
 
-        list($rawBody, $httpStatusCode, $httpHeader) = $this->request($asArray, false);
-        if ($httpStatusCode !== 200) {
-            throw new ApiError($rawBody, $asArray);
-        }
+        if (empty($asArray['words'])) {
+            if ($this->getCache()->enabled()) {
+                $response = $this->afterRequest($asArray, $beforeRequest);
+            }
+        } else {
+            list($rawBody, $httpStatusCode) = $this->request($asArray, false);
+            if ($httpStatusCode !== 200) {
+                throw new ApiError($rawBody, $asArray);
+            }
 
-        $response = json_decode($rawBody, true);
-        if ($this->getCache()->enabled()) {
-            $response = $this->afterRequest($response, $beforeRequest);
+            $response = json_decode($rawBody, true);
+            if ($this->getCache()->enabled()) {
+                $response = $this->afterRequest($response, $beforeRequest);
+            }
         }
 
         $factory = new TranslateFactory($response);
