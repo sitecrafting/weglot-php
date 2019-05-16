@@ -43,7 +43,7 @@
     "php": ">=5.4",
     "weglot/simplehtmldom": "^0.5",
     "psr/cache": "^1.0",
-    "weglot/translation-definitions": "v2.0.0"
+    "weglot/translation-definitions": "v2.1.2"
   },
   "autoload": {
     "psr-4": {
