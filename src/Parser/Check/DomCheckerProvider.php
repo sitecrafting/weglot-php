@@ -317,7 +317,7 @@ class DomCheckerProvider
 
         foreach($node->nodes as $n) {
 
-            if($this->isBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)) {
+            if($this->containsBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)) {
                 return false;
             }
 
@@ -404,6 +404,20 @@ class DomCheckerProvider
 
     public function isBlock($node) {
         return (!$this->isInline($node) && !$this->isText($node) && !($node->tag === 'br'));
+    }
+
+    public function containsBlock($node) {
+
+        if($this->isBlock($node))
+            return true;
+        else {
+            foreach($node->nodes as $n) {
+                if($this->containsBlock($n))
+                    return true;
+            }
+            return false;
+        }
+
     }
 
     public function isInlineOrText($node) {

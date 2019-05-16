@@ -226,6 +226,24 @@
     ]
   },
   {
+    "name": "Nested tags 14",
+    "body": "<li><a><h2>Banho Floral</h2><span>A first link</span></a><a>Another link</a></li>",
+    "expected": [
+      {
+        "t": 1,
+        "w": "Banho Floral"
+      },
+      {
+        "t": 1,
+        "w": "A first link"
+      },
+      {
+        "t": 1,
+        "w": "Another link"
+      }
+    ]
+  },
+  {
     "name": "tag with br",
     "body": "<p>Hello, <br /> a test!</p>",
     "expected": [
