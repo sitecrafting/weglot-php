@@ -226,6 +226,13 @@ $hreflang = $url->generateHrefLangsTags()
  */
 ```
 
+##Tests
+Only parser
+`./vendor/codeception/codeception/codecept run -g parser`
+
+Full test
+`./vendor/codeception/codeception/codecept run`
+
 ## About
 `weglot-php` is guided and supported by the Weglot Developer Team.
 

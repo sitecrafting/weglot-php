@@ -33,10 +33,17 @@
     "languages",
     "i18n"
   ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/weglot/weglot-translation-definitions"
+    }
+  ],
   "require": {
     "php": ">=5.4",
     "weglot/simplehtmldom": "^0.5",
-    "psr/cache": "^1.0"
+    "psr/cache": "^1.0",
+    "weglot/translation-definitions": "^2.0"
   },
   "autoload": {
     "psr-4": {
