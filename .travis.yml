@@ -30,6 +30,7 @@ matrix:
       env: COVERAGE=true TEST_FLAGS="--coverage --coverage-xml"
 
 install:
+  - composer config -g github-oauth.github.com "$TOKEN"
   - |
     if [[ $prefer = low ]]; then
       $COMPOSER_UP --prefer-lowest --prefer-stable
