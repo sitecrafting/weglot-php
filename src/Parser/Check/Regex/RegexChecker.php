@@ -41,7 +41,7 @@ abstract class RegexChecker
      * @param Parser $parser
      * @param string $jsonString
      */
-    public function __construct(Parser $parser, string $jsonString)
+    public function __construct(Parser $parser, $jsonString)
     {
         $this
             ->setParser($parser);

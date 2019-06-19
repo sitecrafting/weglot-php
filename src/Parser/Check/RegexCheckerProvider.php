@@ -2,6 +2,7 @@
 
 namespace Weglot\Parser\Check;
 
+use Weglot\Parser\Check\Regex\RegexChecker;
 use Weglot\Util\SourceType;
 use WGSimpleHtmlDom\simple_html_dom;
 use WGSimpleHtmlDom\simple_html_dom_node;
@@ -138,7 +139,7 @@ class RegexCheckerProvider
      */
     public function register($checker)
     {
-        if ($checker instanceof AbstractDomChecker) {
+        if ($checker instanceof RegexChecker) {
             $this->addChecker($checker);
             return true;
         }
@@ -165,15 +166,14 @@ class RegexCheckerProvider
      * @return array
      * @throws InvalidWordTypeException
      */
-    public function handle(string $domString)
+    public function handle($domString)
     {
 
         $checkers = $this->getCheckers();
         $regexes = [];
+
         foreach ($checkers as $class) {
             list($regex, $type, $extraKeys) = $class::toArray();
-
-
             preg_match_all($regex, $domString, $matches);
             if(isset($matches[1])) {
                 $matches = $matches[1];
@@ -192,7 +192,6 @@ class RegexCheckerProvider
                     array_push($regexes, $regex);
                 }
             }
-
         }
 
         return $regexes;

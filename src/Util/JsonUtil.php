@@ -13,6 +13,7 @@ use Weglot\Client\Api\WordEntry;
  */
 class JsonUtil
 {
+    const SEPARATOR = "##";
     /**
      * @param array $data
      * @param string $key
@@ -45,7 +46,7 @@ class JsonUtil
      */
     public static function set(WordCollection $words, $data, $index, &$nextJson)
     {
-        $keys = explode("." , $index);
+        $keys = explode( self::SEPARATOR , $index);
         $current = &$data;
         foreach ($keys as $key) {
             $current =  &$current[$key];
@@ -59,7 +60,7 @@ class JsonUtil
 
     public static function setHTML($newHTML, $data, $key)
     {
-        $keys = explode("." , $key);
+        $keys = explode(self::SEPARATOR , $key);
         $current = &$data;
         foreach ($keys as $key) {
             $current =  &$current[$key];

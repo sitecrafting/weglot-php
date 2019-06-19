@@ -6,6 +6,7 @@ use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
 use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\Parser;
+use Weglot\Util\JsonUtil;
 use Weglot\Util\Text;
 
 /**
@@ -108,18 +109,17 @@ class JsonChecker
 
         foreach ($json as $key => $value) {
             if(is_array($value)) {
-                $this->findWords($value, ltrim($currentKey.".".$key, '.'), $paths);
+                $this->findWords($value, ltrim($currentKey.JsonUtil::SEPARATOR.$key, JsonUtil::SEPARATOR), $paths);
             }
             else {
                 if(Text::isHTML($value)) {
                     $parsed = $this->getParser()->parseHTML($value);
-                    array_push($paths, array( "key" => ltrim($currentKey.".".$key, '.') ,
+                    array_push($paths, array( "key" => ltrim($currentKey.JsonUtil::SEPARATOR.$key, JsonUtil::SEPARATOR) ,
                         "count" => count($parsed['nodes']) , "dom" => $parsed['dom'], "nodes" => $parsed['nodes']));
 
                 }
                 if(in_array($key, array_unique(array_merge(self::DEFAULT_KEYS , $this->getExtraKeys())) , true)) {
-                    var_dump($key);
-                    array_push($paths, array( "key" => ltrim($currentKey.".".$key, '.') ,
+                    array_push($paths, array( "key" => ltrim($currentKey.JsonUtil::SEPARATOR.$key, JsonUtil::SEPARATOR) ,
                         "count" => 1 , "dom" => null, "nodes" => null));
                     $this->getParser()->getWords()->addOne(new WordEntry($value, WordType::TEXT));
                 }

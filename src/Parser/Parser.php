@@ -446,12 +446,7 @@ class Parser
     protected function checkers($dom, $source)
     {
         $nodes = $this->getDomCheckerProvider()->handle($dom);
-
         $regexes = $this->getRegexCheckerProvider()->handle($source);
-/*
-        $checker = new  JsonChecker($this, $dom);
-        $jsons = $checker->handle();
-*/
 
         return [
             $nodes,
