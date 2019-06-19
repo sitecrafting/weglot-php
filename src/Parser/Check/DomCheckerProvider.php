@@ -256,6 +256,8 @@ class DomCheckerProvider
 
                                 $node = $node->parentNode();
                                 $shift = $number - 1;
+                                if($node->tag === 'root')
+                                    break;
                             }
 
                             // We descend the node to see if we can take a child instead, in the case there are wrapping node or empty nodes. For instance, In that case <p><b>Hello</b></p>, it's better to chose node "b" than "p"

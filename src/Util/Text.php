@@ -44,4 +44,13 @@ class Text
     {
         return str_replace('\\\\/', '\/', str_replace('/', '\/', $regex));
     }
+
+    public static function isJSON($string) {
+            json_decode($string);
+            return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    public static function isHTML($string) {
+        return strip_tags($string) !== $string && is_string($string);
+    }
 }

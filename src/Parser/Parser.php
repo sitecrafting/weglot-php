@@ -2,6 +2,14 @@
 
 namespace Weglot\Parser;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Source;
+use Weglot\Client\Api\Enum\WordType;
+use Weglot\Client\Api\WordEntry;
+use Weglot\Parser\Check\Regex\JsonChecker;
+use Weglot\Parser\Check\RegexCheckerProvider;
+use Weglot\Parser\Formatter\JsonFormatter;
+use Weglot\Util\SourceType;
+use Weglot\Util\Text;
 use WGSimpleHtmlDom\simple_html_dom;
 use Weglot\Client\Api\Exception\ApiError;
 use Weglot\Client\Api\Exception\InputAndOutputCountMatchException;
@@ -12,9 +20,8 @@ use Weglot\Client\Api\TranslateEntry;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Client;
 use Weglot\Client\Endpoint\Translate;
-use Weglot\Parser\Check\DomChecker;
 use Weglot\Parser\Check\DomCheckerProvider;
-use Weglot\Parser\Check\JsonLdChecker;
+
 use Weglot\Parser\ConfigProvider\ConfigProviderInterface;
 use Weglot\Parser\ConfigProvider\ServerConfigProvider;
 use Weglot\Parser\Formatter\DomFormatter;
@@ -32,6 +39,7 @@ class Parser
      * Attribute to match in DOM when we don't want to translate innertext & childs.
      */
     const ATTRIBUTE_NO_TRANSLATE = 'data-wg-notranslate';
+
 
     /**
      * @var Client
@@ -69,6 +77,11 @@ class Parser
     protected $domCheckerProvider;
 
     /**
+     * @var RegexCheckerProvider
+     */
+    protected $regexCheckerProvider;
+
+    /**
      * @var IgnoredNodes
      */
     protected $ignoredNodesFormatter;
@@ -87,6 +100,7 @@ class Parser
             ->setExcludeBlocks($excludeBlocks)
             ->setWords(new WordCollection())
             ->setDomCheckerProvider(new DomCheckerProvider($this, $client->getProfile()->getTranslationEngine()))
+            ->setRegexCheckerProvider(new RegexCheckerProvider($this))
             ->setIgnoredNodesFormatter(new IgnoredNodes());
     }
 
@@ -205,6 +219,24 @@ class Parser
     }
 
     /**
+     * @param RegexCheckerProvider $regexCheckerProvider
+     * @return $this
+     */
+    public function setRegexCheckerProvider(RegexCheckerProvider $regexCheckerProvider)
+    {
+        $this->regexCheckerProvider = $regexCheckerProvider;
+        return $this;
+    }
+
+    /**
+     * @return RegexCheckerProvider
+     */
+    public function getRegexCheckerProvider()
+    {
+        return $this->regexCheckerProvider;
+    }
+
+    /**
      * @param DomCheckerProvider $domCheckerProvider
      * @return $this
      */
@@ -258,55 +290,50 @@ class Parser
             ->setLanguageFrom($languageFrom)
             ->setLanguageTo($languageTo);
 
-        if ($this->client->getProfile()->getTranslationEngine() === 2) {
-            $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
+        $type = $this->getSourceType($source);
 
-            $ignoredNodesFormatter->setSource($source)
-                ->handle();
+        $results = $this->parse($source);
+        $tree = $results['tree'];
 
-            $source = $ignoredNodesFormatter->getSource();
+        if($tree['type'] === SourceType::SOURCE_HTML) {
+            $title = $this->getTitle($tree['dom']);
         }
-
-        // simple_html_dom
-        $dom = \WGSimpleHtmlDom\str_get_html(
-            $source,
-            true,
-            true,
-            WG_DEFAULT_TARGET_CHARSET,
-            false
-        );
-
-        // if simple_html_dom can't parse the $source, it returns false
-        // so we just return raw $source
-        if ($dom === false) {
-            return $source;
+        else {
+            $title = "";
         }
-
-        // exclude blocks
-        if (!empty($this->excludeBlocks)) {
-            $excludeBlocks = new ExcludeBlocksFormatter($dom, $this->excludeBlocks);
-            $dom = $excludeBlocks->getDom();
-        }
-
-        // checkers
-        list($nodes, $jsons) = $this->checkers($dom);
 
         // api communication
-        $translated = $this->apiTranslate($dom);
+        $translated = $this->apiTranslate($title);
 
-        // formatters
-        $this->formatters($translated, $nodes, $jsons);
+        $source = $this->formatters($source, $translated, $tree);
 
-        $source = $dom->save();
+
         return $source;
     }
 
     /**
      * @param $source
-     * @return string|WordCollection
+     * @return array
      * @throws InvalidWordTypeException
      */
     public function parse($source)
+    {
+        $type = $this->getSourceType($source);
+
+        if($type === SourceType::SOURCE_HTML) {
+           $tree = $this->parseHTML($source);
+        }
+        elseif($type === SourceType::SOURCE_JSON) {
+            $tree = $this->parseJSON($source);
+        }
+        else {
+           $tree = $this->parseText($source);
+        }
+
+        return array( 'tree' => $tree, 'words' => $this->getWords());
+    }
+
+    public function parseHTML($source)
     {
         if ($this->client->getProfile()->getTranslationEngine() == 2) {
             $ignoredNodesFormatter = $this->getIgnoredNodesFormatter();
@@ -339,13 +366,25 @@ class Parser
         }
 
         // checkers
-        $this->checkers($dom);
+        list($nodes, $regexes) = $this->checkers($dom, $source);
 
-        return $this->getWords();
+        return [ 'type' => SourceType::SOURCE_HTML ,'dom' => $dom, 'nodes' => $nodes , 'regexes' => $regexes ];
+    }
+
+    public function parseJSON($jsonString, $extraKeys = null) {
+
+        $checker = new  JsonChecker($this, $jsonString, $extraKeys);
+        return $checker->handle();
+    }
+
+    public function parseText($text) {
+
+        $this->getWords()->addOne(new WordEntry($text, WordType::TEXT));
+        return array( "type" => SourceType::SOURCE_TEXT, "text" => $text);
     }
 
     /**
-     * @param simple_html_dom $dom
+     * @param string $title
      * @return TranslateEntry
      * @throws ApiError
      * @throws InputAndOutputCountMatchException
@@ -353,7 +392,7 @@ class Parser
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
      */
-    protected function apiTranslate(simple_html_dom $dom)
+    protected function apiTranslate(string $title = null)
     {
         // Translate endpoint parameters
         $params = [
@@ -367,7 +406,7 @@ class Parser
         }
 
         if ($this->getConfigProvider()->getAutoDiscoverTitle()) {
-            $params['title'] = $this->getTitle($dom);
+            $params['title'] = $title;
         }
         $params = array_merge($params, $this->getConfigProvider()->asArray());
 
@@ -404,30 +443,59 @@ class Parser
      * @return array
      * @throws InvalidWordTypeException
      */
-    protected function checkers($dom)
+    protected function checkers($dom, $source)
     {
         $nodes = $this->getDomCheckerProvider()->handle($dom);
 
-        $checker = new JsonLdChecker($this, $dom);
+        $regexes = $this->getRegexCheckerProvider()->handle($source);
+/*
+        $checker = new  JsonChecker($this, $dom);
         $jsons = $checker->handle();
+*/
 
         return [
             $nodes,
-            $jsons
+            $regexes
         ];
     }
 
     /**
+     * @param string $source
      * @param TranslateEntry $translateEntry
-     * @param array $nodes
-     * @param array $jsons
+     * @param mixed $tree
+     * @return string $source
      */
-    protected function formatters(TranslateEntry $translateEntry, array $nodes, array $jsons)
+    protected function formatters($source, TranslateEntry $translateEntry, $tree, &$index = 0)
     {
-        $formatter = new DomFormatter($this, $translateEntry);
-        $formatter->handle($nodes);
+        if($tree['type'] === SourceType::SOURCE_TEXT) {
+            $index++;
+            $source = str_replace($tree['text'] , $translateEntry->getOutputWords()[$index], $source);
+        }
+        if($tree['type'] === SourceType::SOURCE_JSON) {
+            $formatter = new JsonFormatter($this, $source, $translateEntry);
+            $source = $formatter->handle($tree, $index);
+        }
+        if($tree['type'] === SourceType::SOURCE_HTML) {
+            $formatter = new DomFormatter($this, $translateEntry);
+            $formatter->handle($tree['nodes'], $index);
+            $source = $tree['dom']->save();
 
-        $formatter = new JsonLdFormatter($this, $translateEntry, count($nodes));
-        $formatter->handle($jsons);
+            foreach ($tree['regexes'] as $regex) {
+                $translatedRegex = $this->formatters($regex['jsonString'], $translateEntry, $regex, $index); //todo : replace la clé jsonString car on peut avoir du HTML ou TEXT
+                $source = str_replace($regex['jsonString'] , $translatedRegex, $source);
+            }
+        }
+        return $source;
+    }
+
+
+
+    protected function getSourceType($source) {
+        if(Text::isJSON($source))
+            return SourceType::SOURCE_JSON;
+        elseif(Text::isHTML($source))
+            return SourceType::SOURCE_HTML;
+        else
+            return SourceType::SOURCE_TEXT;
     }
 }
