@@ -171,19 +171,19 @@ class RegexCheckerProvider
 
         $checkers = $this->getCheckers();
         $regexes = [];
-
         foreach ($checkers as $class) {
             list($regex, $type, $extraKeys) = $class::toArray();
             preg_match_all($regex, $domString, $matches);
             if(isset($matches[1])) {
-                $matches = $matches[1];
-                foreach ($matches as $match) {
+                $matches0 = $matches[0];
+                $matches1 = $matches[1];
+                foreach ($matches1 as $k => $match) {
 
                     if($type === SourceType::SOURCE_JSON) {
                         $regex = $this->getParser()->parseJSON($match, $extraKeys);
                     }
                     if($type === SourceType::SOURCE_TEXT) {
-                        $regex = $this->getParser()->parseText($match);
+                        $regex = $this->getParser()->parseText($match, $matches0[$k]);
                     }
                     if($type === SourceType::SOURCE_HTML) {
                         $regex = $this->getParser()->parseHTML($match);

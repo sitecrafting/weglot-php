@@ -52,7 +52,7 @@ class JsonChecker
      * @param string $jsonString
      * @return $this
      */
-    public function setJsonString(string $jsonString)
+    public function setJsonString($jsonString)
     {
         $this->jsonString = $jsonString;
 
@@ -99,7 +99,7 @@ class JsonChecker
 
         return array(
             "type" => "JSON",
-            "jsonString" => $this->jsonString,
+            "source" => $this->jsonString,
             "jsonArray" => $json,
             "paths" => $paths);
 
@@ -112,16 +112,19 @@ class JsonChecker
                 $this->findWords($value, ltrim($currentKey.JsonUtil::SEPARATOR.$key, JsonUtil::SEPARATOR), $paths);
             }
             else {
-                if(Text::isHTML($value)) {
+                $k = ltrim($currentKey.JsonUtil::SEPARATOR.$key, JsonUtil::SEPARATOR);
+                if(Text::isJSON($value)) {
+                    $parsed = $this->getParser()->parseJSON($value, $this->getExtraKeys());
+                    array_push($paths, array( "key" => $k, "parsed" => $parsed));
+                }
+                elseif(Text::isHTML($value)) {
                     $parsed = $this->getParser()->parseHTML($value);
-                    array_push($paths, array( "key" => ltrim($currentKey.JsonUtil::SEPARATOR.$key, JsonUtil::SEPARATOR) ,
-                        "count" => count($parsed['nodes']) , "dom" => $parsed['dom'], "nodes" => $parsed['nodes']));
+                    array_push($paths, array( "key" => $k , "parsed" => $parsed));
 
                 }
-                if(in_array($key, array_unique(array_merge(self::DEFAULT_KEYS , $this->getExtraKeys())) , true)) {
-                    array_push($paths, array( "key" => ltrim($currentKey.JsonUtil::SEPARATOR.$key, JsonUtil::SEPARATOR) ,
-                        "count" => 1 , "dom" => null, "nodes" => null));
-                    $this->getParser()->getWords()->addOne(new WordEntry($value, WordType::TEXT));
+                elseif(in_array($key, array_unique(array_merge(self::DEFAULT_KEYS , $this->getExtraKeys())) , true)) {
+                    $parsed = $this->getParser()->parseText($value);
+                    array_push($paths, array( "key" => $k , "parsed" => $parsed));
                 }
             }
         }

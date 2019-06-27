@@ -71,4 +71,18 @@ class JsonUtil
 
         return $data;
     }
+
+    public static function setJSONString($jsonString, $data, $key)
+    {
+        $keys = explode(self::SEPARATOR , $key);
+        $current = &$data;
+        foreach ($keys as $key) {
+            $current =  &$current[$key];
+        }
+
+        $current = $jsonString;
+
+
+        return $data;
+    }
 }

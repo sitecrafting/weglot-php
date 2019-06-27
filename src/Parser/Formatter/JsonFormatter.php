@@ -5,6 +5,7 @@ namespace Weglot\Parser\Formatter;
 use Weglot\Client\Api\TranslateEntry;
 use Weglot\Parser\Parser;
 use Weglot\Util\JsonUtil;
+use Weglot\Util\SourceType;
 
 /**
  * Class JsonFormatter
@@ -56,27 +57,33 @@ class JsonFormatter extends AbstractFormatter
     {
         $translated_words = $this->getTranslated()->getOutputWords();
 
-            $jsonString = $tree['jsonString'];
-            $jsonArray = $tree['jsonArray'];
-            $paths = $tree['paths'];
+        $jsonString = $tree['source'];
+        $jsonArray = $tree['jsonArray'];
+        $paths = $tree['paths'];
 
-            foreach ($paths as $path) {
-               $key = $path['key'];
-               $count = $path['count'];
-               $dom = $path['dom'];
-               $nodes = $path['nodes'];
-               if(empty($nodes)) {
-                   $jsonArray = JsonUtil::set($translated_words, $jsonArray, $key, $index);
+        foreach ($paths as $path) {
+           $key = $path['key'];
+           $parsed = $path['parsed'];
+
+
+           if($parsed['type'] === SourceType::SOURCE_TEXT) {
+               $jsonArray = JsonUtil::set($translated_words, $jsonArray, $key, $index);
+           }
+           if($parsed['type'] === SourceType::SOURCE_JSON) {
+               $source = $this->getParser()->formatters($parsed['source'], $this->getTranslated(), $parsed, $index);
+               $jsonArray = JsonUtil::setJSONString($source, $jsonArray, $key);
+           }
+            if($parsed['type'] === SourceType::SOURCE_HTML) {
+               if($parsed['nodes']) {
+                   $formatter = new DomFormatter($this->getParser(),  $this->getTranslated());
+                   $formatter->handle($parsed['nodes'], $index);
+                   $jsonArray= JsonUtil::setHTML($parsed['dom']->save(), $jsonArray, $key);
+
+                   //TODO : We should also replace regexes
                }
-               else {
-                   if($nodes) {
-                       $formatter = new DomFormatter($this->getParser(),  $this->getTranslated());
-                       $formatter->handle($nodes, $index);
-                       $jsonArray= JsonUtil::setHTML($dom->save(), $jsonArray, $key);
-                   }
-               }
-            }
-            $this->setSource(str_replace($jsonString, json_encode($jsonArray ), $this->getSource()));
+           }
+        }
+        $this->setSource(str_replace($jsonString, json_encode($jsonArray ), $this->getSource()));
 
 
         return $this->getSource();

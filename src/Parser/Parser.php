@@ -284,7 +284,7 @@ class Parser
      * @throws MissingWordsOutputException
      */
     public function translate($source, $languageFrom, $languageTo)
-    {
+    {  $t0 = microtime(true);
         // setters
         $this
             ->setLanguageFrom($languageFrom)
@@ -293,6 +293,7 @@ class Parser
         $type = $this->getSourceType($source);
 
         $results = $this->parse($source);
+
         $tree = $results['tree'];
 
         if($tree['type'] === SourceType::SOURCE_HTML) {
@@ -303,11 +304,15 @@ class Parser
         }
 
         // api communication
+        $t1 = microtime(true);
+        error_log($t1-$t0);
         $translated = $this->apiTranslate($title);
+        $t2 = microtime(true);
+        error_log($t2-$t1);
 
         $source = $this->formatters($source, $translated, $tree);
-
-
+        $t3 = microtime(true);
+        error_log($t3-$t2);
         return $source;
     }
 
@@ -329,7 +334,6 @@ class Parser
         else {
            $tree = $this->parseText($source);
         }
-
         return array( 'tree' => $tree, 'words' => $this->getWords());
     }
 
@@ -368,7 +372,7 @@ class Parser
         // checkers
         list($nodes, $regexes) = $this->checkers($dom, $source);
 
-        return [ 'type' => SourceType::SOURCE_HTML ,'dom' => $dom, 'nodes' => $nodes , 'regexes' => $regexes ];
+        return [ 'type' => SourceType::SOURCE_HTML , 'source' => $source , 'dom' => $dom, 'nodes' => $nodes, 'regexes' => $regexes ];
     }
 
     public function parseJSON($jsonString, $extraKeys = null) {
@@ -377,10 +381,10 @@ class Parser
         return $checker->handle();
     }
 
-    public function parseText($text) {
+    public function parseText($text, $regex = null) {
 
         $this->getWords()->addOne(new WordEntry($text, WordType::TEXT));
-        return array( "type" => SourceType::SOURCE_TEXT, "text" => $text);
+        return array( "type" => SourceType::SOURCE_TEXT, "source" => $regex , "text" => $text );
     }
 
     /**
@@ -392,7 +396,7 @@ class Parser
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
      */
-    protected function apiTranslate(string $title = null)
+    protected function apiTranslate($title = null)
     {
         // Translate endpoint parameters
         $params = [
@@ -460,11 +464,11 @@ class Parser
      * @param mixed $tree
      * @return string $source
      */
-    protected function formatters($source, TranslateEntry $translateEntry, $tree, &$index = 0)
+    public function formatters($source, TranslateEntry $translateEntry, $tree, &$index = 0)
     {
         if($tree['type'] === SourceType::SOURCE_TEXT) {
+            $source = str_replace($tree['text'] , $translateEntry->getOutputWords()[$index]->getWord(), $source);
             $index++;
-            $source = str_replace($tree['text'] , $translateEntry->getOutputWords()[$index], $source);
         }
         if($tree['type'] === SourceType::SOURCE_JSON) {
             $formatter = new JsonFormatter($this, $source, $translateEntry);
@@ -474,10 +478,9 @@ class Parser
             $formatter = new DomFormatter($this, $translateEntry);
             $formatter->handle($tree['nodes'], $index);
             $source = $tree['dom']->save();
-
             foreach ($tree['regexes'] as $regex) {
-                $translatedRegex = $this->formatters($regex['jsonString'], $translateEntry, $regex, $index); //todo : replace la clé jsonString car on peut avoir du HTML ou TEXT
-                $source = str_replace($regex['jsonString'] , $translatedRegex, $source);
+                $translatedRegex = $this->formatters($regex['source'], $translateEntry, $regex, $index);
+                $source = str_replace($regex['source'] , $translatedRegex, $source);
             }
         }
         return $source;
