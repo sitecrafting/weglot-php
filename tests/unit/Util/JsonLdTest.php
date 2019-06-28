@@ -1,10 +1,10 @@
 <?php
 
-use Weglot\Util\JsonLd;
+use Weglot\Util\JsonUtil;
 use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Api\WordEntry;
 
-class JsonLdTest extends \Codeception\Test\Unit
+class JsonUtilTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
@@ -14,7 +14,7 @@ class JsonLdTest extends \Codeception\Test\Unit
     /**
      * @var array
      */
-    protected $jsonLd = [];
+    protected $json = [];
 
     protected function _before()
     {
@@ -34,15 +34,15 @@ class JsonLdTest extends \Codeception\Test\Unit
   "homepage": "http://www.example.com/"
 }
 EOT;
-        $this->jsonLd = json_decode($raw, true);
+        $this->json = json_decode($raw, true);
     }
 
 
     // tests
     public function testGet()
     {
-        $this->assertNull(JsonLd::get($this->jsonLd, 'description'));
-        $this->assertEquals('John Smith', JsonLd::get($this->jsonLd, 'name'));
+        $this->assertNull(JsonUtil::get($this->json, 'description'));
+        $this->assertEquals('John Smith', JsonUtil::get($this->json, 'name'));
     }
 
     public function testAdd()
@@ -52,8 +52,8 @@ EOT;
 
         $this->assertEquals(1, $words->count());
 
-        $value = JsonLd::get($this->jsonLd, 'name');
-        JsonLd::add($words, $value);
+        $value = JsonUtil::get($this->json, 'name');
+        JsonUtil::add($words, $value);
 
         $this->assertEquals(2, $words->count());
         $this->assertEquals(new WordEntry($value), $words[1]);
@@ -68,7 +68,7 @@ EOT;
         $this->assertEquals(0, $nextJson);
         $this->assertEquals(1, $words->count());
 
-        $data = JsonLd::set($words, $this->jsonLd, 'name', $nextJson);
+        $data = JsonUtil::set($words, $this->json, 'name', $nextJson);
 
         $this->assertEquals(1, $nextJson);
         $this->assertEquals($data['name'], $words[0]->getWord());
