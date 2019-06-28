@@ -40,7 +40,7 @@ class JsonChecker
         return $this->parser;
     }
 
-    public function __construct(Parser $parser, string $jsonString, $extraKeys)
+    public function __construct(Parser $parser, $jsonString, $extraKeys)
     {
         $this
             ->setParser($parser)

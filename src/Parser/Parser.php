@@ -284,7 +284,7 @@ class Parser
      * @throws MissingWordsOutputException
      */
     public function translate($source, $languageFrom, $languageTo)
-    {  $t0 = microtime(true);
+    {
         // setters
         $this
             ->setLanguageFrom($languageFrom)
@@ -304,15 +304,9 @@ class Parser
         }
 
         // api communication
-        $t1 = microtime(true);
-        error_log($t1-$t0);
         $translated = $this->apiTranslate($title);
-        $t2 = microtime(true);
-        error_log($t2-$t1);
 
         $source = $this->formatters($source, $translated, $tree);
-        $t3 = microtime(true);
-        error_log($t3-$t2);
         return $source;
     }
 
