@@ -17,5 +17,5 @@ class JsonLdChecker extends RegexChecker
 
     const TYPE = SourceType::SOURCE_JSON;
 
-    const KEYS = array( "description" ,  "name" , "headline" , "articleSection" );
+    public static $KEYS = array( "description" ,  "name" , "headline" , "articleSection" ); // Can't put a const because PHP 5.4 + 5.5 doesn't allow array in class constants.
 }

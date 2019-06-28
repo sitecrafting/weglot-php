@@ -76,7 +76,7 @@ abstract class RegexChecker
         return [
             $class::REGEX,
             $class::TYPE,
-            $class::KEYS,
+            $class::$KEYS,
         ];
     }
 }
