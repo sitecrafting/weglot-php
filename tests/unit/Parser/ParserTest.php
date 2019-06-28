@@ -112,7 +112,8 @@ class ParserTest extends \Codeception\Test\Unit
             $this->parser = new Parser($client, $this->config['server']);
 
             // Run the Parser
-            $strings = $this->parser->parse($test['body']);
+            $parsed = $this->parser->parse($test['body']);
+            $strings = $parsed['words'];
             foreach ($strings as $k => $string) {
                 $this->assertEquals( $test['expected'][$k]['w'], $string->getWord());
                 $this->assertEquals( $test['expected'][$k]['t'], $string->getType());

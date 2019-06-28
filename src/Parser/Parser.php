@@ -369,7 +369,7 @@ class Parser
         return [ 'type' => SourceType::SOURCE_HTML , 'source' => $source , 'dom' => $dom, 'nodes' => $nodes, 'regexes' => $regexes ];
     }
 
-    public function parseJSON($jsonString, $extraKeys = null) {
+    public function parseJSON($jsonString, $extraKeys = []) {
 
         $checker = new  JsonChecker($this, $jsonString, $extraKeys);
         return $checker->handle();
