@@ -31,6 +31,14 @@ abstract class RegexChecker
      */
     const TYPE = '';
 
+
+    /**
+     * DOM node to match
+     *
+     * @var string
+     */
+    public static $KEYS = '';
+
     /**
      * @var Parser
      */
@@ -72,7 +80,6 @@ abstract class RegexChecker
     public static function toArray()
     {
         $class = \get_called_class();
-
         return [
             $class::REGEX,
             $class::TYPE,

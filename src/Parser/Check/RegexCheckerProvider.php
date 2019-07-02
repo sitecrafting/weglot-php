@@ -157,7 +157,7 @@ class RegexCheckerProvider
             $class,
             $class::REGEX,
             $class::TYPE,
-            $class::KEYS,
+            $class::$KEYS,
         ];
     }
 
@@ -168,7 +168,6 @@ class RegexCheckerProvider
      */
     public function handle($domString)
     {
-
         $checkers = $this->getCheckers();
         $regexes = [];
         foreach ($checkers as $class) {
@@ -193,7 +192,6 @@ class RegexCheckerProvider
                 }
             }
         }
-
         return $regexes;
     }
 
