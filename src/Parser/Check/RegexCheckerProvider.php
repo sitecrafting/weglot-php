@@ -157,6 +157,7 @@ class RegexCheckerProvider
             $class,
             $class::REGEX,
             $class::TYPE,
+            $class::VAR_NUMBER,
             $class::$KEYS,
         ];
     }
@@ -171,11 +172,11 @@ class RegexCheckerProvider
         $checkers = $this->getCheckers();
         $regexes = [];
         foreach ($checkers as $class) {
-            list($regex, $type, $extraKeys) = $class::toArray();
+            list($regex, $type, $varNumber, $extraKeys) = $class::toArray();
             preg_match_all($regex, $domString, $matches);
-            if(isset($matches[1])) {
+            if(isset($matches[$varNumber])) {
                 $matches0 = $matches[0];
-                $matches1 = $matches[1];
+                $matches1 = $matches[$varNumber];
                 foreach ($matches1 as $k => $match) {
 
                     if($type === SourceType::SOURCE_JSON) {

@@ -32,6 +32,9 @@ abstract class RegexChecker
     const TYPE = '';
 
 
+    const VAR_NUMBER = 1;
+
+
     /**
      * DOM node to match
      *
@@ -83,6 +86,7 @@ abstract class RegexChecker
         return [
             $class::REGEX,
             $class::TYPE,
+            $class::VAR_NUMBER,
             $class::$KEYS,
         ];
     }
