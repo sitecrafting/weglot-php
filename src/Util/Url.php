@@ -195,7 +195,9 @@ class Url
         $fullUrl = preg_replace('#' . $escapedPathPrefix . '\/(' . $languages . ')/#i', '/', $fullUrl);
         $parsed = parse_url($fullUrl);
 
-        $this->host = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':'.$parsed['port'] : '');
+        if(isset($parsed['scheme'])) {
+            $this->host = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':'.$parsed['port'] : '');
+        }
         $this->path = isset($parsed['path']) ? $parsed['path'] : '/';
         $this->query = isset($parsed['query']) ? $parsed['query'] : null;
 
