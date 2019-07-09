@@ -47,7 +47,7 @@ class Text
 
     public static function isJSON($string) {
             $json = json_decode($string);
-            return (json_last_error() == JSON_ERROR_NONE && $string != $json); // Adding $string != $json to prevent having true for isJSON(false) or isJSON(65)
+            return (json_last_error() == JSON_ERROR_NONE && in_array(substr($string, 0 , 1), array('{' , '[')) );
     }
 
     public static function isHTML($string) {
