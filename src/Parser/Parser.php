@@ -304,8 +304,11 @@ class Parser
         }
 
         // api communication
-        $translated = $this->apiTranslate($title);
+        if(count($this->getWords()) === 0) {
+            return $source;
+        }
 
+        $translated = $this->apiTranslate($title);
         $source = $this->formatters($source, $translated, $tree);
         return $source;
     }
@@ -370,7 +373,6 @@ class Parser
     }
 
     public function parseJSON($jsonString, $extraKeys = []) {
-
         $checker = new  JsonChecker($this, $jsonString, $extraKeys);
         return $checker->handle();
     }

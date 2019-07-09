@@ -91,33 +91,7 @@ class RegexCheckerProvider
      */
     public function getCheckers()
     {
-        $this->resetDiscoverCaching();
-
         return $this->checkers;
-    }
-
-    /**
-     * @return $this
-     */
-    public function resetDiscoverCaching()
-    {
-        $this->discoverCaching = [];
-
-        return $this;
-    }
-
-    /**
-     * @param $domToSearch
-     * @param simple_html_dom $dom
-     * @return simple_html_dom_node
-     */
-    public function discoverCachingGet($domToSearch, simple_html_dom $dom)
-    {
-        if (!isset($discoverCaching[$domToSearch])) {
-            $this->discoverCaching[$domToSearch] = $dom->find($domToSearch);
-        }
-
-        return $this->discoverCaching[$domToSearch];
     }
 
     /**
@@ -125,12 +99,11 @@ class RegexCheckerProvider
      */
     protected function loadDefaultCheckers()
     {
-        $files = array_diff(scandir(__DIR__ . '/Regex'), ['RegexChecker.php', 'JsonChecker.php', '..', '.']);
-        $checkers = array_map(function ($filename) {
-            return self::DEFAULT_CHECKERS_NAMESPACE . Text::removeFileExtension($filename);
-        }, $files);
+        /* Add JSON LD checker */
+        $this->addChecker(new RegexChecker("#<script type=('|\")application\/ld\+json('|\")>((.|\n)*?)<\/script>#" , SourceType::SOURCE_JSON, 3 , array( "description" ,  "name" , "headline" , "articleSection" )));
 
-        $this->addCheckers($checkers);
+        /* Add HTML template checker */
+        $this->addChecker(new RegexChecker( "#<script type=('|\")text/html('|\")([^\>]+?)?>((.|\n)*?)<\/script>#" , SourceType::SOURCE_HTML, 4));
     }
 
     /**
@@ -146,21 +119,6 @@ class RegexCheckerProvider
         return false;
     }
 
-    /**
-     * @param string $class
-     * @return array
-     */
-    protected function getClassDetails($class)
-    {
-        $class = self::CHECKERS_NAMESPACE. $class;
-        return [
-            $class,
-            $class::REGEX,
-            $class::TYPE,
-            $class::VAR_NUMBER,
-            $class::$KEYS,
-        ];
-    }
 
     /**
      * @param string $domString
@@ -172,7 +130,7 @@ class RegexCheckerProvider
         $checkers = $this->getCheckers();
         $regexes = [];
         foreach ($checkers as $class) {
-            list($regex, $type, $varNumber, $extraKeys) = $class::toArray();
+            list($regex, $type, $varNumber, $extraKeys) = $class->toArray();
             preg_match_all($regex, $domString, $matches);
             if(isset($matches[$varNumber])) {
                 $matches0 = $matches[0];
@@ -188,7 +146,6 @@ class RegexCheckerProvider
                     if($type === SourceType::SOURCE_HTML) {
                         $regex = $this->getParser()->parseHTML($match);
                     }
-
                     array_push($regexes, $regex);
                 }
             }

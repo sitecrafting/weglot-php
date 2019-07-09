@@ -15,24 +15,24 @@ use Weglot\Parser\Parser;
  * Class RegexChecker
  * @package Weglot\Parser\Check
  */
-abstract class RegexChecker
+class RegexChecker
 {
     /**
      * DOM node to match
      *
      * @var string
      */
-    const REGEX = '';
+    public $regex = '';
 
     /**
      * DOM node to match
      *
      * @var string
      */
-    const TYPE = '';
+    public $type = '';
 
 
-    const VAR_NUMBER = 1;
+    public $var_number = 1;
 
 
     /**
@@ -40,54 +40,34 @@ abstract class RegexChecker
      *
      * @var string
      */
-    public static $KEYS = '';
+    public $keys = '';
 
-    /**
-     * @var Parser
-     */
-    protected $parser;
+
 
     /**
      * DomChecker constructor.
      * @param Parser $parser
-     * @param string $jsonString
      */
-    public function __construct(Parser $parser, $jsonString)
+    public function __construct($regex = '' , $type = '' , $var_number = 0 , $keys = array())
     {
-        $this
-            ->setParser($parser);
+        $this->regex        = $regex;
+        $this->type         =  $type;
+        $this->var_number   = $var_number;
+        $this->keys         = $keys;
     }
 
-    /**
-     * @param Parser $parser
-     * @return $this
-     */
-    public function setParser(Parser $parser)
-    {
-        $this->parser = $parser;
-
-        return $this;
-    }
-
-    /**
-     * @return Parser
-     */
-    public function getParser()
-    {
-        return $this->parser;
-    }
 
     /**
      * @return array
      */
-    public static function toArray()
+
+    public function toArray()
     {
-        $class = \get_called_class();
         return [
-            $class::REGEX,
-            $class::TYPE,
-            $class::VAR_NUMBER,
-            $class::$KEYS,
+            $this->regex,
+            $this->type,
+            $this->var_number,
+            $this->keys
         ];
     }
 }
