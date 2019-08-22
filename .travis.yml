@@ -3,6 +3,8 @@ language: php
 services:
   - redis-server
 
+dist: trusty
+
 notifications:
   email:
     on_failure: change
