@@ -40,7 +40,7 @@ class DomFormatter extends AbstractFormatter
     /**
      * {@inheritdoc}
      */
-    public function handle(array $nodes)
+    public function handle(array $nodes, &$index)
     {
         $translatable_attributes = $this->getTranslatableAttributes();
 
@@ -50,13 +50,14 @@ class DomFormatter extends AbstractFormatter
         for ($i = 0; $i < \count($nodes); ++$i) {
             $currentNode = $nodes[$i];
 
-            if ($translated_words[$i] !== null) {
-                $currentTranslated = $translated_words[$i];
+            if ($translated_words[$i+$index] !== null) {
+                $currentTranslated = $translated_words[$i+$index];
 
                 $this->metaContent($currentNode,  $currentTranslated, $translatable_attributes, $original_words, $translated_words);
                 $this->imageSource($currentNode, $currentTranslated, $i);
             }
         }
+        $index = $index + count($nodes);
     }
 
     /**
@@ -68,7 +69,7 @@ class DomFormatter extends AbstractFormatter
 
         if ($details['class']::ESCAPE_SPECIAL_CHAR) {
             $details['node']->$property = htmlspecialchars($translated);
-        } else {
+        } else {    
             $details['node']->$property = $translated;
         }
 

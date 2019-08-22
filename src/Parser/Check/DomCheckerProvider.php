@@ -256,6 +256,8 @@ class DomCheckerProvider
 
                                 $node = $node->parentNode();
                                 $shift = $number - 1;
+                                if($node->tag === 'root')
+                                    break;
                             }
 
                             // We descend the node to see if we can take a child instead, in the case there are wrapping node or empty nodes. For instance, In that case <p><b>Hello</b></p>, it's better to chose node "b" than "p"
@@ -314,26 +316,26 @@ class DomCheckerProvider
             $count++;
         }
 
+        if (is_array($node) || is_object($node)) {
+            foreach ($node->nodes as $n) {
 
-        foreach($node->nodes as $n) {
-
-            if($this->containsBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)) {
-                return false;
-            }
-
-
-            if($child != null && $n->outertext() == $child->outertext()) {
-                $child = null;
-            }
-
-
-            if($child == null) {
-                $number = $this->numberOfTextNodeInParentAfterChild($n);
-                if($number === false) {
+                if ($this->containsBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)) {
                     return false;
                 }
-                else {
-                    $count += $number;
+
+
+                if ($child != null && $n->outertext() == $child->outertext()) {
+                    $child = null;
+                }
+
+
+                if ($child == null) {
+                    $number = $this->numberOfTextNodeInParentAfterChild($n);
+                    if ($number === false) {
+                        return false;
+                    } else {
+                        $count += $number;
+                    }
                 }
             }
         }

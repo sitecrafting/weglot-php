@@ -8,11 +8,12 @@ use Weglot\Client\Api\WordCollection;
 use Weglot\Client\Api\WordEntry;
 
 /**
- * Class JsonLd
+ * Class JsonUtil
  * @package Weglot\Parser\Util
  */
-class JsonLd
+class JsonUtil
 {
+    const SEPARATOR = "##";
     /**
      * @param array $data
      * @param string $key
@@ -45,8 +46,42 @@ class JsonLd
      */
     public static function set(WordCollection $words, $data, $index, &$nextJson)
     {
-        $data[$index] = $words[$nextJson]->getWord();
+        $keys = explode( self::SEPARATOR , $index);
+        $current = &$data;
+        foreach ($keys as $key) {
+            $current =  &$current[$key];
+        }
+
+        $current = $words[$nextJson]->getWord();
         ++$nextJson;
+
+        return $data;
+    }
+
+    public static function setHTML($newHTML, $data, $key)
+    {
+        $keys = explode(self::SEPARATOR , $key);
+        $current = &$data;
+        foreach ($keys as $key) {
+            $current =  &$current[$key];
+        }
+
+        $current = $newHTML;
+
+
+        return $data;
+    }
+
+    public static function setJSONString($jsonString, $data, $key)
+    {
+        $keys = explode(self::SEPARATOR , $key);
+        $current = &$data;
+        foreach ($keys as $key) {
+            $current =  &$current[$key];
+        }
+
+        $current = $jsonString;
+
 
         return $data;
     }
