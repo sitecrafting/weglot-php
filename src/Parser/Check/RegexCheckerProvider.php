@@ -100,7 +100,7 @@ class RegexCheckerProvider
     protected function loadDefaultCheckers()
     {
         /* Add JSON LD checker */
-        $this->addChecker(new RegexChecker("#<script type=('|\")application\/ld\+json('|\")>((.|\n)*?)<\/script>#" , SourceType::SOURCE_JSON, 3 , array( "description" ,  "name" , "headline" , "articleSection" )));
+        $this->addChecker(new RegexChecker("#<script type=('|\")application\/ld\+json('|\")([^\>]+?)?>((.|\n)*?)<\/script>#" , SourceType::SOURCE_JSON, 4 , array( "description" ,  "name" , "headline" , "articleSection" )));
 
         /* Add HTML template checker */
         $this->addChecker(new RegexChecker( "#<script type=('|\")text/html('|\")([^\>]+?)?>((.|\n)*?)<\/script>#" , SourceType::SOURCE_HTML, 4));
