@@ -290,7 +290,7 @@ class Parser
             ->setLanguageFrom($languageFrom)
             ->setLanguageTo($languageTo);
 
-        $type = $this->getSourceType($source);
+        $type = self::getSourceType($source);
 
         $results = $this->parse($source);
 
@@ -320,7 +320,7 @@ class Parser
      */
     public function parse($source)
     {
-        $type = $this->getSourceType($source);
+        $type = self::getSourceType($source);
 
         if($type === SourceType::SOURCE_HTML) {
            $tree = $this->parseHTML($source);
@@ -484,7 +484,7 @@ class Parser
 
 
 
-    protected function getSourceType($source) {
+    public static function getSourceType($source) {
         if(Text::isJSON($source))
             return SourceType::SOURCE_JSON;
         elseif(Text::isHTML($source))
