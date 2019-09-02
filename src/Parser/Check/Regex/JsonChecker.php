@@ -2,9 +2,7 @@
 
 namespace Weglot\Parser\Check\Regex;
 
-use Weglot\Client\Api\Enum\WordType;
 use Weglot\Client\Api\Exception\InvalidWordTypeException;
-use Weglot\Client\Api\WordEntry;
 use Weglot\Parser\Parser;
 use Weglot\Util\JsonUtil;
 use Weglot\Util\Text;
@@ -15,7 +13,7 @@ use Weglot\Util\Text;
  */
 class JsonChecker
 {
-    const DEFAULT_KEYS = array(  'description' , 'name' ); //TODO : pouvoir ajouter des clés facilement
+    protected $default_keys = array(  'description' , 'name' );
 
     protected $jsonString;
     protected $parser;
@@ -122,7 +120,7 @@ class JsonChecker
                     array_push($paths, array( "key" => $k , "parsed" => $parsed));
 
                 }
-                elseif(in_array($key, array_unique(array_merge(self::DEFAULT_KEYS , $this->getExtraKeys())) , true)) {
+                elseif(in_array($key, array_unique(array_merge($this->default_keys , $this->getExtraKeys())) , true)) {
                     $parsed = $this->getParser()->parseText($value);
                     array_push($paths, array( "key" => $k , "parsed" => $parsed));
                 }

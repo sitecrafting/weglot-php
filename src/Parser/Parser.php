@@ -255,7 +255,7 @@ class Parser
     }
 
     /**
-     * @param IgnoredNodes $ignoredNodes
+     * @param IgnoredNodes $ignoredNodesFormatter
      * @return $this
      */
     public function setIgnoredNodesFormatter(IgnoredNodes $ignoredNodesFormatter)
@@ -276,6 +276,7 @@ class Parser
      * @param string $source
      * @param string $languageFrom
      * @param string $languageTo
+     * @param array $extraKeys
      * @return string
      * @throws ApiError
      * @throws InputAndOutputCountMatchException
@@ -289,8 +290,6 @@ class Parser
         $this
             ->setLanguageFrom($languageFrom)
             ->setLanguageTo($languageTo);
-
-        $type = self::getSourceType($source);
 
         $results = $this->parse($source, $extraKeys);
 
@@ -315,6 +314,7 @@ class Parser
 
     /**
      * @param $source
+     * @param $extraKeys
      * @return array
      * @throws InvalidWordTypeException
      */
@@ -440,6 +440,7 @@ class Parser
 
     /**
      * @param $dom
+     * @param $source
      * @return array
      * @throws InvalidWordTypeException
      */
@@ -458,6 +459,7 @@ class Parser
      * @param string $source
      * @param TranslateEntry $translateEntry
      * @param mixed $tree
+     * @param int $index
      * @return string $source
      */
     public function formatters($source, TranslateEntry $translateEntry, $tree, &$index = 0)
