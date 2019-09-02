@@ -283,7 +283,7 @@ class Parser
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
      */
-    public function translate($source, $languageFrom, $languageTo)
+    public function translate($source, $languageFrom, $languageTo, $extraKeys = [])
     {
         // setters
         $this
@@ -292,7 +292,7 @@ class Parser
 
         $type = self::getSourceType($source);
 
-        $results = $this->parse($source);
+        $results = $this->parse($source, $extraKeys);
 
         $tree = $results['tree'];
 
@@ -318,18 +318,18 @@ class Parser
      * @return array
      * @throws InvalidWordTypeException
      */
-    public function parse($source)
+    public function parse($source, $extraKeys = [])
     {
         $type = self::getSourceType($source);
 
         if($type === SourceType::SOURCE_HTML) {
-           $tree = $this->parseHTML($source);
+            $tree = $this->parseHTML($source);
         }
         elseif($type === SourceType::SOURCE_JSON) {
-            $tree = $this->parseJSON($source);
+            $tree = $this->parseJSON($source, $extraKeys);
         }
         else {
-           $tree = $this->parseText($source);
+            $tree = $this->parseText($source);
         }
         return array( 'tree' => $tree, 'words' => $this->getWords());
     }
