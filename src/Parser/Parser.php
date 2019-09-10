@@ -255,7 +255,7 @@ class Parser
     }
 
     /**
-     * @param IgnoredNodes $ignoredNodes
+     * @param IgnoredNodes $ignoredNodesFormatter
      * @return $this
      */
     public function setIgnoredNodesFormatter(IgnoredNodes $ignoredNodesFormatter)
@@ -276,6 +276,7 @@ class Parser
      * @param string $source
      * @param string $languageFrom
      * @param string $languageTo
+     * @param array $extraKeys
      * @return string
      * @throws ApiError
      * @throws InputAndOutputCountMatchException
@@ -283,16 +284,14 @@ class Parser
      * @throws MissingRequiredParamException
      * @throws MissingWordsOutputException
      */
-    public function translate($source, $languageFrom, $languageTo)
+    public function translate($source, $languageFrom, $languageTo, $extraKeys = [])
     {
         // setters
         $this
             ->setLanguageFrom($languageFrom)
             ->setLanguageTo($languageTo);
 
-        $type = $this->getSourceType($source);
-
-        $results = $this->parse($source);
+        $results = $this->parse($source, $extraKeys);
 
         $tree = $results['tree'];
 
@@ -315,21 +314,22 @@ class Parser
 
     /**
      * @param $source
+     * @param $extraKeys
      * @return array
      * @throws InvalidWordTypeException
      */
-    public function parse($source)
+    public function parse($source, $extraKeys = [])
     {
-        $type = $this->getSourceType($source);
+        $type = self::getSourceType($source);
 
         if($type === SourceType::SOURCE_HTML) {
-           $tree = $this->parseHTML($source);
+            $tree = $this->parseHTML($source);
         }
         elseif($type === SourceType::SOURCE_JSON) {
-            $tree = $this->parseJSON($source);
+            $tree = $this->parseJSON($source, $extraKeys);
         }
         else {
-           $tree = $this->parseText($source);
+            $tree = $this->parseText($source);
         }
         return array( 'tree' => $tree, 'words' => $this->getWords());
     }
@@ -440,6 +440,7 @@ class Parser
 
     /**
      * @param $dom
+     * @param $source
      * @return array
      * @throws InvalidWordTypeException
      */
@@ -458,6 +459,7 @@ class Parser
      * @param string $source
      * @param TranslateEntry $translateEntry
      * @param mixed $tree
+     * @param int $index
      * @return string $source
      */
     public function formatters($source, TranslateEntry $translateEntry, $tree, &$index = 0)
@@ -484,7 +486,7 @@ class Parser
 
 
 
-    protected function getSourceType($source) {
+    public static function getSourceType($source) {
         if(Text::isJSON($source))
             return SourceType::SOURCE_JSON;
         elseif(Text::isHTML($source))

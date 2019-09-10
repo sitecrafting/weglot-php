@@ -80,7 +80,7 @@ class JsonFormatter extends AbstractFormatter
                    $jsonArray= JsonUtil::setHTML($parsed['dom']->save(), $jsonArray, $key);
 
                    foreach ($parsed['regexes'] as $regex) {
-                       $translatedRegex = $this->formatters($regex['source'], $this->getTranslated(), $regex, $index);
+                       $translatedRegex = $this->getParser()->formatters($regex['source'], $this->getTranslated(), $regex, $index);
                        $source = str_replace($regex['source'] , $translatedRegex, $parsed['source']);
                    }
                }
