@@ -188,6 +188,10 @@ class Url
      */
     public function detectUrlDetails()
     {
+        if (defined('WP_CLI') && WP_CLI) {
+            return;
+        }
+
         $escapedPathPrefix = Text::escapeForRegex($this->config->getPathPrefix());
         $languages = implode('|', $this->translate->getLanguages());
 
@@ -223,6 +227,10 @@ class Url
      */
     public function currentRequestAllUrls()
     {
+        if (defined('WP_CLI') && WP_CLI) {
+            return array();
+        }
+
         $urls = $this->allUrls;
 
         if ($urls === null) {

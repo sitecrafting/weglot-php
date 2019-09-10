@@ -128,6 +128,9 @@ class Server
      */
     public static function getPort(array $server)
     {
+        if (!isset($server['SERVER_PORT'])) {
+            return '';
+        }
         return $server['SERVER_PORT'];
     }
 
@@ -146,7 +149,7 @@ class Server
             $host = $server['HTTP_HOST'];
         }
 
-        if ($host === null) {
+        if ($host === null && isset($server['SERVER_NAME'])) {
             $host = $server['SERVER_NAME'] . self::getPort($server);
         }
 
