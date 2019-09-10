@@ -25,8 +25,8 @@ class ServerConfigProvider extends AbstractConfigProvider
      */
     public function loadFromServer()
     {
-        if( http_response_code() !== 200) {
-            $url = '/404';
+        if (http_response_code() !== 200) {
+            $url = Server::urlOrigin($_SERVER).'/404';
         } else {
             $url = Server::fullUrl($_SERVER);
         }
