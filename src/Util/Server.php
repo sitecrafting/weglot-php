@@ -25,7 +25,7 @@ class Server
      * @param bool $use_forwarded_host
      * @return string
      */
-    protected static function urlOrigin(array $server, $use_forwarded_host = false)
+    public static function urlOrigin(array $server, $use_forwarded_host = false)
     {
         return self::getProtocol($server) . '://' . self::getHost($server, $use_forwarded_host);
     }
