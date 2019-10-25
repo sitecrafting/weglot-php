@@ -41,6 +41,7 @@ class Server
         $checkBotGoogle = (Text::contains($userAgent, 'Google') ||
                             Text::contains($userAgent, 'facebook') ||
                             Text::contains($userAgent, 'wprocketbot') ||
+                            Text::contains($userAgent, 'AhrefsBot') ||
                             Text::contains($userAgent, 'SemrushBot'));
 
         if ($userAgent !== null && !$checkBotAgent) {
