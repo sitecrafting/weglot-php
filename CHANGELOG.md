@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1] - 2019-12-03
+### Changed
+- Fixed formatter on text regex to only take word
+
 ## [0.5.21] - 2019-03-12
 ### Added
 - Util Regex for excluded paths
