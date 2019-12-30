@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.3] - 2019-12-16
+### Changed
+- Fixed formatter on JSON source, only apply previous change to TEXT regex
+
 ## [1.0.2] - 2019-12-16
 ### Changed
 - Fixed formatter on text regex when it contain '#'
