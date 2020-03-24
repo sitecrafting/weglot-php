@@ -130,12 +130,15 @@ class RegexCheckerProvider
         $checkers = $this->getCheckers();
         $regexes = [];
         foreach ($checkers as $class) {
-            list($regex, $type, $varNumber, $extraKeys) = $class->toArray();
+            list($regex, $type, $varNumber, $extraKeys, $callback) = $class->toArray();
             preg_match_all($regex, $domString, $matches);
             if(isset($matches[$varNumber])) {
                 $matches0 = $matches[0];
                 $matches1 = $matches[$varNumber];
                 foreach ($matches1 as $k => $match) {
+                    if($callback) {
+                        $match = call_user_func($callback, $match);
+                    }
 
                     if($type === SourceType::SOURCE_JSON) {
                         $regex = $this->getParser()->parseJSON($match, $extraKeys);

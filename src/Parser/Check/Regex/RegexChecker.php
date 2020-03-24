@@ -43,17 +43,21 @@ class RegexChecker
     public $keys = '';
 
 
+    public $callback = null;
+
+
 
     /**
      * DomChecker constructor.
      * @param Parser $parser
      */
-    public function __construct($regex = '' , $type = '' , $var_number = 0 , $keys = array())
+    public function __construct($regex = '' , $type = '' , $var_number = 0 , $keys = array(), $callback = null)
     {
         $this->regex        = $regex;
         $this->type         =  $type;
         $this->var_number   = $var_number;
         $this->keys         = $keys;
+        $this->callback     = $callback;
     }
 
 
@@ -67,7 +71,8 @@ class RegexChecker
             $this->regex,
             $this->type,
             $this->var_number,
-            $this->keys
+            $this->keys,
+            $this->callback
         ];
     }
 }
