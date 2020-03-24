@@ -236,7 +236,7 @@ class DomCheckerProvider
             $discoveringNodes = $this->discoverCachingGet($selector, $dom);
 
             if($this->getTranslationEngine() <= 2) { // Old model
-               $this->handleOldEngine($discoveringNodes, $nodes , $class, $property, $wordType);
+               $this->handleOldEngine($discoveringNodes, $nodes , $class, $property, $defaultWordType);
             }
             if($this->getTranslationEngine() == 3)  { //New model
 
@@ -323,7 +323,13 @@ class DomCheckerProvider
         }
 
         if (is_array($node) || is_object($node)) {
-            foreach ($node->nodes as $n) {
+            foreach ($node->nodes as $k => $n) {
+
+                if($n->tag === 'comment') {
+                    unset($node->nodes[$k]);
+                    continue;
+                }
+
 
                 if ($this->containsBlock($n) || $n->hasAttribute(Parser::ATTRIBUTE_NO_TRANSLATE)) {
                     return false;
