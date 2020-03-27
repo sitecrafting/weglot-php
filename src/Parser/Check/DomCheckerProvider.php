@@ -382,6 +382,11 @@ class DomCheckerProvider
     public function removeAttributesFromChild($node, &$attributes) {
 
         foreach ($node->children() as $child) {
+
+            if($child->tag === 'comment') {
+                continue;
+            }
+
             $k = count($attributes)+1;
             $attributes['wg-'.$k] = $child->getAllAttributes();
             $child->attr = [];
