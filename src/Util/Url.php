@@ -133,7 +133,9 @@ class Url
 
         if ($this->translate->checkIfAvailable($code)) {
             $all = $this->currentRequestAllUrls();
-            $url = $all[$code];
+            if (isset($all[$code])) {
+                $url = $all[$code];
+            }
         }
 
         return $url;
